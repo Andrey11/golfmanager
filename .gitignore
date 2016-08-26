@@ -1,3 +1,6 @@
+# Dev keys
+config/firebaseKeys.js
+
 # OSX
 #
 .DS_Store

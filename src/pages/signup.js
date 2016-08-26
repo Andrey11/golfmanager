@@ -1,5 +1,4 @@
 'use strict';
-import firebaseApp from '../modules/firebase';
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -26,13 +25,13 @@ export default class signup extends Component {
 		};
 	}
 
-  signup(){
+  signup() {
+
+    let firebaseApp = this.props.firebaseApp;
 
     this.setState({
       loaded: false
     });
-
-
 
     firebaseApp.auth.createUserWithEmailAndPassword({
       'email': this.state.email,

@@ -1,5 +1,4 @@
 'use strict';
-import firebaseApp from '../modules/firebase';
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -63,6 +62,8 @@ export default class login extends Component {
   }
 
   login(){
+
+    let firebaseApp = this.props.firebaseApp;
 
     this.setState({
       loaded: false

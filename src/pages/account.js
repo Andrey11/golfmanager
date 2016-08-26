@@ -1,5 +1,4 @@
 'use strict';
-import firebaseApp from '../modules/firebase';
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -66,6 +65,8 @@ export default class account extends Component {
   }
 
   logout(){
+
+    let firebaseApp = this.props.firebaseApp;
 
     AsyncStorage.removeItem('user_data').then(() => {
       firebaseApp.unauth();

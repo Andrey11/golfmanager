@@ -4,7 +4,8 @@
  * @flow
  */
  'use strict';
-import firebaseApp from './src/modules/firebase';
+import firebaseKeys from './config/firebaseKeys';
+import * as Firebase from 'firebase';
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -20,33 +21,11 @@ import Account from './src/pages/account';
 import Header from './src/components/header';
 import styles from './src/styles/basestyles.js';
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyBxLYjM1p5G0c2hYI59hiQmCVw_VQsmzb4",
-//   authDomain: "golfmanager-1f9b8.firebaseapp.com",
-//   databaseURL: "https://golfmanager-1f9b8.firebaseio.com",
-//   storageBucket: "golfmanager-1f9b8.appspot.com",
-// };
-// const firebaseApp = Firebase.initializeApp(firebaseConfig);
+const firebaseApp = Firebase.initializeApp(firebaseKeys);
 
 class golfmanager extends Component {
-  // render() {
-  //   return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.welcome}>
-  //         Welcome to React Native!
-  //       </Text>
-  //       <Text style={styles.instructions}>
-  //         To get started, edit index.ios.js
-  //       </Text>
-  //       <Text style={styles.instructions}>
-  //         Press Cmd+R to reload,{'\n'}
-  //         Cmd+D or shake for dev menu
-  //       </Text>
-  //     </View>
-  //   );
-  // }
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       component: null,
@@ -54,17 +33,15 @@ class golfmanager extends Component {
     };
   }
 
-  componentWillMount(){
-
+  componentWillMount() {
     AsyncStorage.getItem('user_data').then((user_data_json) => {
-
       let user_data = JSON.parse(user_data_json);
       let component = {component: Signup};
       if(user_data != null) {
         firebaseApp.authWithCustomToken(user_data.token, (error, authData) => {
-          if(error){
+          if(error) {
             this.setState(component);
-          }else{
+          } else {
             this.setState({component: Account});
           }
         });
@@ -72,12 +49,10 @@ class golfmanager extends Component {
         this.setState(component);
       }
     });
-
   }
 
-  render(){
-
-    if(this.state.component){
+  render() {
+    if(this.state.component) {
       return (
         <Navigator
           initialRoute={{component: this.state.component}}
@@ -86,12 +61,12 @@ class golfmanager extends Component {
           }}
           renderScene={(route, navigator) => {
             if(route.component){
-              return React.createElement(route.component, { navigator });
+              return React.createElement(route.component, { navigator, firebaseApp });
             }
           }}
         />
       );
-    }else{
+    } else {
       return (
         <View style={styles.container}>
           <Header text="React Native Firebase Auth" loaded={this.state.loaded} />
@@ -99,29 +74,7 @@ class golfmanager extends Component {
         </View>
       );
     }
-
   }
-
-
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#F5FCFF',
-//   },
-//   welcome: {
-//     fontSize: 24,
-//     textAlign: 'center',
-//     margin: 10,
-//   },
-//   instructions: {
-//     textAlign: 'center',
-//     color: '#AAA333',
-//     marginBottom: 5,
-//   },
-// });
 
 AppRegistry.registerComponent('golfmanager', () => golfmanager);

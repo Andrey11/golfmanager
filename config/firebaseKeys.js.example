@@ -1,0 +1,6 @@
+const firebaseConfig = {
+  apiKey: "<YOUR API KEYS>",
+  authDomain: "<YOUR DOMAIN>.firebaseapp.com",
+  databaseURL: "https:<YOUR DB URL>.firebaseio.com",
+  storageBucket: "<YOUR STORAGE ID>.appspot.com",
+};
