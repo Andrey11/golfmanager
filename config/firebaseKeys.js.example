@@ -1,6 +1,10 @@
-const firebaseConfig = {
-  apiKey: "<YOUR API KEYS>",
-  authDomain: "<YOUR DOMAIN>.firebaseapp.com",
-  databaseURL: "https:<YOUR DB URL>.firebaseio.com",
-  storageBucket: "<YOUR STORAGE ID>.appspot.com",
-};
+export function getFirebaseConfig() {
+  let config = {
+    apiKey: "<YOUR API KEYS>",
+    authDomain: "<YOUR DOMAIN>.firebaseapp.com",
+    databaseURL: "https:<YOUR DB URL>.firebaseio.com",
+    storageBucket: "<YOUR STORAGE ID>.appspot.com"
+  };
+
+  return config;
+}

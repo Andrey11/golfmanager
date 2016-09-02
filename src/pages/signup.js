@@ -28,41 +28,30 @@ export default class signup extends Component {
   signup() {
 
     let firebaseApp = this.props.firebaseApp;
+    let fbAuth = firebaseApp.auth();
 
     this.setState({
       loaded: false
     });
 
-    firebaseApp.auth.createUserWithEmailAndPassword({
-      'email': this.state.email,
-      'password': this.state.password
-    }, (error, userData) => {
-
-      if(error){
+    fbAuth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
         switch(error.code){
-
           case "EMAIL_TAKEN":
             alert("The new user account cannot be created because the email is already in use.");
-          break;
-
+            break;
           case "INVALID_EMAIL":
             alert("The specified email is not a valid email.");
-          break;
-
+            break;
           default:
             alert("Error creating user:");
         }
-
-      }else{
-        alert('Your account was created!');
-      }
-
-      this.setState({
-        email: '',
-        password: '',
-        loaded: true
-      });
-
+    }).then(function() {
+      alert('Your account was created!');
+      // this.setState({
+      //   email: '',
+      //   password: '',
+      //   loaded: true
+      // });
     });
 
   }

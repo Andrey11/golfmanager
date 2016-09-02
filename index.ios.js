@@ -4,7 +4,7 @@
  * @flow
  */
  'use strict';
-import firebaseKeys from './config/firebaseKeys';
+import * as FirebaseKeys from './config/firebaseKeys';
 import * as Firebase from 'firebase';
 import React, { Component } from 'react';
 import {
@@ -21,7 +21,7 @@ import Account from './src/pages/account';
 import Header from './src/components/header';
 import styles from './src/styles/basestyles.js';
 
-const firebaseApp = Firebase.initializeApp(firebaseKeys);
+const firebaseApp = Firebase.initializeApp(FirebaseKeys.getFirebaseConfig());
 
 class golfmanager extends Component {
 
