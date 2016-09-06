@@ -4,35 +4,33 @@ import {
   AppRegistry,
   Text,
   TextInput,
-  View
+  View,
+  Image
 } from 'react-native';
 
 import Button from '../components/button';
-import Header from '../components/header';
-import Login from './login';
 
 import styles from '../styles/basestyles.js';
 
 export default class signup extends Component {
 
 	constructor(props){
-		super(props);
+    super(props);
 
-		this.state = {
-      loaded: true,
-			email: '',
-			password: ''
-		};
+    // bind function to signup.js scope
+    this.signup = this.signup.bind(this);
 	}
 
-  signup() {
+  componentWillMount() {
+    this.setState({
+      email: '',
+      password: ''
+    });
+  }
 
+  signup() {
     let firebaseApp = this.props.firebaseApp;
     let fbAuth = firebaseApp.auth();
-
-    this.setState({
-      loaded: false
-    });
 
     fbAuth.createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(error) {
         switch(error.code){
@@ -45,54 +43,55 @@ export default class signup extends Component {
           default:
             alert("Error creating user:");
         }
-    }).then(function() {
-      alert('Your account was created!');
-      // this.setState({
-      //   email: '',
-      //   password: '',
-      //   loaded: true
-      // });
-    });
-
-  }
-
-  goToLogin(){
-    this.props.navigator.push({
-      component: Login
     });
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Header text="Signup" loaded={this.state.loaded} />
-        <View style={styles.body}>
-
+      <View style={styles.body}>
+        <View style={styles.text_field_with_icon}>
+          <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
   		    <TextInput
-    		    style={styles.textinput}
-    		    onChangeText={(text) => this.setState({email: text})}
-    		    value={this.state.email}
+            style={styles.textinput}
+            keyboardType="email-address"
             placeholder={"Email Address"}
-  		    />
+            autoCapitalize="none"
+            autoCorrect={false}
+            autoFocus={true}
+            value={this.state.email}
+            blurOnSubmit={false}
+            onChangeText={(text) => this.setState({email: text})}
+            onSubmitEditing={(event) => {
+              this.refs.passwordTextField.focus();
+            }}
+          />
+        </View>
+        <View style={styles.text_field_with_icon}>
+          <Image style={styles.icon_button} source={require('../images/ic_key.png')} />
           <TextInput
+            ref="passwordTextField"
             style={styles.textinput}
             onChangeText={(text) => this.setState({password: text})}
             value={this.state.password}
             secureTextEntry={true}
+            blurOnSubmit={true}
             placeholder={"Password"}
+            onSubmitEditing={(event) => {
+              this.signup;
+            }}
           />
-          <Button
-            text="Signup"
-            onpress={this.signup.bind(this)}
-            button_styles={styles.primary_button}
-            button_text_styles={styles.primary_button_text} />
-
-          <Button
-            text="Got an Account?"
-            onpress={this.goToLogin.bind(this)}
-            button_styles={styles.transparent_button}
-            button_text_styles={styles.transparent_button_text} />
         </View>
+        <Button
+          text="Signup"
+          onpress={this.signup}
+          button_styles={styles.primary_button}
+          button_text_styles={styles.primary_button_text} />
+
+        <Button
+          text="Got an Account?"
+          onpress={this.props.goShowLogin}
+          button_styles={styles.transparent_button}
+          button_text_styles={styles.transparent_button_text} />
       </View>
     );
   }

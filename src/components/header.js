@@ -9,34 +9,42 @@ import {
 } from 'react-native';
 
 import GiftedSpinner from 'react-native-gifted-spinner';
+import IconButton from './iconButton';
 
 export default class header extends Component {
 
   render(){
     return (
       <View style={styles.header}>
+        { this.props.showBackButton ?
+          <IconButton
+            icon={require('../images/ic_arrow_back.png')}
+            onButtonPressed={this.props.onBackButtonPressed}>
+          </IconButton> :
+          null
+        }
         <View style={styles.header_item}>
           <Text style={styles.header_text}>{this.props.text}</Text>
         </View>
-        <View style={styles.header_item}>
-        {  !this.props.loaded &&
-            <GiftedSpinner />
+        { this.props.showSettingsButton ?
+          <IconButton
+            icon={require('../images/ic_settings.png')}
+            onButtonPressed={this.props.onSettingsButtonPressed}>
+          </IconButton> :
+          null
         }
-        </View>
       </View>
     );
   }
-
-
 }
 
 const styles = StyleSheet.create({
   header: {
-    padding: 10,
+    paddingTop: 30,
+    height: 70,
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    flex: 1
+    justifyContent: 'space-between',
+    backgroundColor: '#DDDDDD',
   },
   header_item: {
     paddingLeft: 10,

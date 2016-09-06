@@ -1,21 +1,53 @@
 'use strict';
 import React, {
-  StyleSheet
+  StyleSheet,
+  PixelRatio
 } from 'react-native';
 
 module.exports = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  body: {
-    flex: 9,
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  textinput: {
+  start_page__body: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  start_page__text: {
+    paddingRight: 10,
+  },
+  body: {
+    // flex: 1,
+    alignItems: 'center',
+    // backgroundColor: '#F5FCFF',
+  },
+
+  text_field_with_icon: {
+    marginTop: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
     height: 40,
-    borderColor: 'red',
-    borderWidth: 1
+    backgroundColor: '#CCCCCC',
+    borderColor: '#CCCCCC',
+    borderRadius: 3,
+    borderWidth: 1 / PixelRatio.get()
+  },
+
+  textinput: {
+    fontSize: 14,
+    width: 300,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  icon_button: {
+    width: 24,
+    height: 24,
+    paddingLeft: 10,
+    paddingRight: 10
   },
   transparent_button: {
     marginTop: 10,
