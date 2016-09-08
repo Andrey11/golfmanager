@@ -57,7 +57,7 @@ export default class settings extends Component {
     let firebaseApp = this.props.firebaseApp;
     let user = firebaseApp.auth().currentUser;
 
-    user.updateProfile({displayName: this.state.displayName}).then(() =>{
+    user.updateProfile({displayName: this.state.displayName}).then(() => {
       debugger;
     });
 

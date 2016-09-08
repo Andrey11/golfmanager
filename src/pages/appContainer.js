@@ -30,9 +30,6 @@ export default class appContainer extends Component {
     this.onBackButtonPressed = this.onBackButtonPressed.bind(this);
     this.onShowUserMain = this.onShowUserMain.bind(this);
 
-    let firebaseApp = this.props.firebaseApp;
-    let fbAuth = firebaseApp.auth();
-    fbAuth.onAuthStateChanged(this.onAuthStateChanged);
 	}
 
   componentWillMount () {
@@ -41,6 +38,12 @@ export default class appContainer extends Component {
       headerTitle: '',
       loaded: false
     });
+  }
+
+  componentDidMount () {
+    let firebaseApp = this.props.firebaseApp;
+    let fbAuth = firebaseApp.auth();
+    fbAuth.onAuthStateChanged(this.onAuthStateChanged);
   }
 
   onShowSettings () {

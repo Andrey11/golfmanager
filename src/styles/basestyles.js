@@ -23,6 +23,14 @@ module.exports = StyleSheet.create({
     alignItems: 'center',
     // backgroundColor: '#F5FCFF',
   },
+  scroll_body: {
+    height: 500
+  },
+
+  picker_android: {
+    flex: 1,
+    flexDirection: 'column'
+  },
 
   text_field_with_icon: {
     marginTop: 10,
@@ -41,7 +49,8 @@ module.exports = StyleSheet.create({
     fontSize: 14,
     width: 300,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
+    borderWidth: 0
   },
   icon_button: {
     width: 24,

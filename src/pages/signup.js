@@ -14,21 +14,21 @@ import styles from '../styles/basestyles.js';
 
 export default class signup extends Component {
 
-	constructor(props){
+	constructor (props) {
     super(props);
 
     // bind function to signup.js scope
     this.signup = this.signup.bind(this);
 	}
 
-  componentWillMount() {
+  componentWillMount () {
     this.setState({
       email: '',
       password: ''
     });
   }
 
-  signup() {
+  signup () {
     let firebaseApp = this.props.firebaseApp;
     let fbAuth = firebaseApp.auth();
 
@@ -43,10 +43,38 @@ export default class signup extends Component {
           default:
             alert("Error creating user:");
         }
+    }).then(this.addUserToGolfmanagerDatabase);
+  }
+
+  /**
+   * Upon creating a user in Firebase.Auth table, add user to our own
+   * Firebase.database using UID as a lookup reference for the newly
+   * created user.
+   *
+   * @param {user} firebase.database.Reference reference to the new user object
+   */
+  addUserToGolfmanagerDatabase = (user) => {
+
+    let firebaseApp = this.props.firebaseApp;
+    let userDatabaseRef = firebaseApp.database().ref('users');
+
+    // Add golfer to users database
+    let userRef = userDatabaseRef.child(user.uid).set({
+      firstname: '',
+      lastname: '',
+      address: {
+        line1: '',
+        line2: '',
+        city: '',
+        province: '',
+        postal_code: '',
+        country: '',
+        phone: ''
+      }
     });
   }
 
-  render() {
+  render () {
     return (
       <View style={styles.body}>
         <View style={styles.text_field_with_icon}>

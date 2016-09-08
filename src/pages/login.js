@@ -46,6 +46,7 @@ export default class login extends Component {
           <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
           <TextInput
             style={styles.textinput}
+            underlineColorAndroid='rgba(0,0,0,0)'
             keyboardType="email-address"
             placeholder={"Email Address"}
             autoCapitalize="none"
