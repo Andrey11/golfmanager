@@ -30,12 +30,14 @@ export default class usermain extends Component {
     this.onAddCourse = this.onAddCourse.bind(this);
     this.onModalClosed = this.onModalClosed.bind(this);
     this.setModalVisible = this.setModalVisible.bind(this);
+    this.onCourseTypePickerChange = this.onCourseTypePickerChange.bind(this);
 	}
 
   componentWillMount () {
     this.setState({
       courseName: '',
-      courseType: 'full',
+      courseTypeIndex: 0,
+      courseTypeValues: ['Full', 'Executive', 'Pitch & Putt', 'Mini'],
       courseDisplayName: '',
       line1: '',
       line2: '',
@@ -58,38 +60,9 @@ export default class usermain extends Component {
   }
 
   onAddCourse () {
-
     // TODO: Add validation
-
     /*
-18-9 hole
-Tee Box (teeing ground) (Black, Gold, Blue, White, Red, Green, Yellow, Purple)
-Par 1-18
-Distance 1-18
-
-Saving
-Into database().getRef(‘courses’) Populate golf course info => returns course_object
-Into database().getRef(‘courses/names/all') Populate course_object->uid
-Into database().getRef(‘courses/names/type’) Populate course_object->did
-
-Example:
-let coursesRef = firebase.database().getRef(‘courses’);
-let coursesAllNamesRef = firebase.database().getRef(‘courses/names/all’);
-let coursesNamesByTypeRef = firebase.database().getRef(‘courses/names/<type>’);
-let courseRef =  coursesRef.push();
-courseRef.set({ all course data });
-
-coursesAllNamesRef.set({
-courseDisplayName: course_uid
-});
-
-coursesNamesByTypeRef.set({
-courseDisplayName: course_uid
-
-
-
-});
-
+      18-9 hole
     */
     let firebaseApp = this.props.firebaseApp;
     let coursesRef = firebaseApp.database().ref('courses');
@@ -99,10 +72,14 @@ courseDisplayName: course_uid
                             this.state.province + ',' +
                             this.state.country;
 
-    let course = coursesRef.push();
-    course.set({
+    let courseKey = coursesRef.push().key;
+
+    let courseUpdateData = {};
+
+    courseUpdateData['/courses/' + courseKey] = {
       courseName: this.state.courseName,
       courseDisplayName: courseDisplayName,
+      courseType: this.state.courseType,
       address: {
         line1: this.state.line1,
         line2: this.state.line2,
@@ -113,7 +90,11 @@ courseDisplayName: course_uid
       }
     });
 
+    courseUpdateData['courses/all/' + courseDisplayName] = courseKey;
+    courseUpdateData['courses/' + this.state.courseTypeIndex + '/' + courseDisplayName] = courseKey;
 
+
+    firebaseApp.database().ref().update(courseUpdateData);
   }
 
   setModalVisible(visible) {
@@ -124,8 +105,8 @@ courseDisplayName: course_uid
     debugger;
   }
 
-  onCourseTypePickerChange () {
-    debugger;
+  onCourseTypePickerChange (index) {
+    this.setState({courseTypeIndex: index});
   }
 
   render () {
@@ -150,8 +131,13 @@ courseDisplayName: course_uid
               onChangeText={(text) => this.setState({courseName: text})}
             />
           </View>
-          <Text>{'Course Type:'}</Text>
-          <CourseTypePicker onValueChange={this.onCourseTypePickerChange} />
+
+          <Text>{'Select course type:'}</Text>
+          <CourseTypePicker
+            courseTypeValues={this.state.courseTypeValues}
+            onValueChange={this.onCourseTypePickerChange}
+            defaultValue={this.state.courseTypeIndex}>
+          </CourseTypePicker>
 
           <Text>{'Address:'}</Text>
           <View style={styles.text_field_with_icon}>

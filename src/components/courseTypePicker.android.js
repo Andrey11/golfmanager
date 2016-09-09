@@ -8,29 +8,16 @@ import {
 import styles from '../styles/basestyles.js';
 
 export default class courseTypePicker extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      courseType: 'full'
-    };
-  }
-
-  onValueChange(type) {
-    this.props.onValueChange(type);
-    this.setState({courseType: type});
-  }
-
   render() {
     return (
       <View style={styes.picker_android}>
         <Picker
-          selectedValue={this.state.courseType}
-          onValueChange={(type) => this.setState({courseType: type})}>
-          <Picker.Item label="Full" value="full" />
-          <Picker.Item label="Executive" value="exec" />
-          <Picker.Item label="Pitch and Putt" value="pitchandputt" />
-          <Picker.Item label="Mini" value="mini" />
+          selectedValue={this.props.courseTypeValues[this.props.defaultValue]}
+          onValueChange={(type) => {this.props.onValueChange(this.props.courseTypeValues.indexOf(type))}}>
+          <Picker.Item label={thos.props.courseTypeValues[0]} value={thos.props.courseTypeValues[0]} />
+          <Picker.Item label={thos.props.courseTypeValues[1]} value={thos.props.courseTypeValues[1]} />
+          <Picker.Item label={thos.props.courseTypeValues[2]} value={thos.props.courseTypeValues[2]} />
+          <Picker.Item label={thos.props.courseTypeValues[3]} value={thos.props.courseTypeValues[3]} />
         </Picker>
       </View>
     );
