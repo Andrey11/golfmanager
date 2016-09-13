@@ -7,6 +7,7 @@ import {
   TextInput,
   View,
   Image,
+  Modal,
 } from 'react-native';
 import Button from '../components/button';
 
@@ -60,8 +61,6 @@ export default class settings extends Component {
     user.updateProfile({displayName: this.state.displayName}).then(() => {
       debugger;
     });
-
-
   }
 
   logout () {
@@ -88,7 +87,7 @@ export default class settings extends Component {
     */
 
     return (
-      <View style={styles.body}>
+      <View style={styles.settings_body}>
         <Text>{this.state.accountInfoHeader}</Text>
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />

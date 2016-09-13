@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import Button from '../components/button';
+import Login from './login';
 
 import styles from '../styles/basestyles.js';
 
@@ -19,12 +20,25 @@ export default class signup extends Component {
 
     // bind function to signup.js scope
     this.signup = this.signup.bind(this);
+    this.goToLogin = this.goToLogin.bind(this);
 	}
 
   componentWillMount () {
     this.setState({
       email: '',
       password: ''
+    });
+  }
+
+  goToLogin () {
+    this.props.navigator.replace({
+      component: Login,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: false,
+        rightButton: true,
+        rightButtonType: 'login'
+      }
     });
   }
 
@@ -76,7 +90,7 @@ export default class signup extends Component {
 
   render () {
     return (
-      <View style={styles.body}>
+      <View style={styles.unathenticated_body}>
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
   		    <TextInput
@@ -117,7 +131,7 @@ export default class signup extends Component {
 
         <Button
           text="Got an Account?"
-          onpress={this.props.goShowLogin}
+          onpress={this.goToLogin}
           button_styles={styles.transparent_button}
           button_text_styles={styles.transparent_button_text} />
       </View>

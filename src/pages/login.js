@@ -7,9 +7,10 @@ import {
   TextInput,
   View,
   Image,
-  AsyncStorage
+  ActivityIndicator
 } from 'react-native';
 
+import Signup from './signup';
 import Button from '../components/button';
 import styles from '../styles/basestyles.js';
 
@@ -17,31 +18,51 @@ export default class login extends Component {
 
   constructor(props){
     super(props);
-
     // bind function to login.js scope
     this.login = this.login.bind(this);
+    this.goToSignup = this.goToSignup.bind(this);
   }
 
   componentWillMount() {
     this.setState({
       email: '',
-      password: ''
+      password: '',
+      animating: false
     });
   }
 
-  login() {
+  componentDidMount () {
+    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
+    let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
+    let passProps = currentScene.passProps;
+    passProps.onRightButtonPress = this.login;
+  }
 
+  goToSignup () {
+    this.props.navigator.replace({
+      component: Signup,
+      passProps: {
+        navHeaderTitle: 'Create Account',
+        leftButton: false,
+        rightButton: false
+      }
+    });
+  }
+
+
+  login() {
     var firebaseApp = this.props.firebaseApp;
     var fbAuth = firebaseApp.auth();
 
     fbAuth.signInWithEmailAndPassword(this.state.email, this.state.password).catch((error) => {
+      // TODO: handle errors here
       alert('Login Failed. Please try again');
     });
   }
 
   render(){
     return (
-      <View style={styles.body}>
+      <View style={styles.unathenticated_body}>
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
           <TextInput
@@ -73,16 +94,17 @@ export default class login extends Component {
             }}
           />
         </View>
+
         <Button
-          text="Login"
-          onpress={this.login}
-          button_styles={styles.primary_button}
-          button_text_styles={styles.primary_button_text} />
+          text="Forgot password?"
+          onpress={this.goToSignup}
+          button_styles={styles.semi_transparent_button}
+          button_text_styles={styles.semi_transparent_button_text} />
         <Button
-          text="New here?"
-          onpress={this.props.onShowSignup}
-          button_styles={styles.transparent_button}
-          button_text_styles={styles.transparent_button_text} />
+          text="New user? Create an account."
+          onpress={this.goToSignup}
+          button_styles={styles.semi_transparent_button_second}
+          button_text_styles={styles.semi_transparent_button_text} />
       </View>
     );
   }

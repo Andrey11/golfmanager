@@ -94,7 +94,14 @@ export default class appContainer extends Component {
       if(!user.emailVerified) {
         this.onShowSettings();
       } else {
-        this.onShowUserMain();
+        // this.onShowUserMain();
+        this.props.navigator.push({
+          component: UserMain,
+          passProps: {
+            firebaseApp: this.props.firebaseApp,
+            navigator: this.props.navigator
+          }
+        });
       }
     } else {
       this.onShowLogin();
@@ -121,6 +128,12 @@ export default class appContainer extends Component {
               case "Login":
                 return <Login firebaseApp={this.props.firebaseApp} onShowSignup={this.onShowSignup} />;
               case "UserMain":
+                // return this.props.navigator.push({
+                //   component: UserMain,
+                //   passProps: {
+                //     firebaseApp: this.props.firebaseApp
+                //   }
+                // });
                 return <UserMain firebaseApp={this.props.firebaseApp} />;
               default:
                 return <SplashScreen />;

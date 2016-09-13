@@ -13,7 +13,7 @@ export default class iconButton extends Component {
 
   render () {
     return (
-      <TouchableHighlight onPress={this.props.onButtonPressed}>
+      <TouchableHighlight onPress={() => { this.props.onButtonPressed() }}>
         <Image style={styles.icon_button} source={this.props.icon} />
       </TouchableHighlight>
     );

@@ -10,47 +10,106 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  // Text,
-  // View,
+  Text,
+  TouchableHighlight,
   Navigator,
-  // AsyncStorage
+  Image
 } from 'react-native';
 
-// import Signup from './src/pages/signup';
-// import Login from './src/pages/login';
-// import Account from './src/pages/account';
-import StartPage from './src/pages/appContainer';
+import AuthControl from './src/pages/authControl';
+import Button from './src/components/button';
+import IconButton from './src/components/iconButton';
 
-// import Header from './src/components/header';
 import styles from './src/styles/basestyles.js';
 
 const firebaseApp = Firebase.initializeApp(FirebaseKeys.getFirebaseConfig());
 
 class golfmanager extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      component: StartPage
-    };
-  }
-
   render() {
     return (
       <Navigator
-        initialRoute={{component: this.state.component}}
-        configureScene={() => {
-          return Navigator.SceneConfigs.FloatFromRight;
-        }}
-        renderScene={(route, navigator) => {
-          if(route.component){
-            return React.createElement(route.component, { navigator, firebaseApp });
+        initialRoute={{
+          component: AuthControl,
+          passProps: {
+            navHeaderTitle: '',
+            leftButton: false,
+            rightButton: false
           }
         }}
+        configureScene={(route) => {
+          if (route && route.passProps && route.passProps.sceneType) {
+            // 'SETTINGS' : {
+              return Navigator.SceneConfigs.VerticalDownSwipeJump;
+            //}
+          } else {
+            return Navigator.SceneConfigs.PushFromRight;
+          }
+        }}
+        renderScene={(route, navigator) => {
+          let bgImageSource = require('./src/images/golf_bg_1.jpg');
+
+          if (route.passProps && route.passProps.bgImageSource) {
+            bgImageSource = route.passProps.bgImageSource;
+          }
+
+          return (
+            <Image style={styles.background_image} source={bgImageSource}>
+              <route.component navigator={navigator} firebaseApp={firebaseApp} {...route.passProps} />
+            </Image>
+          );
+
+        }}
+        navigationBar={
+          <Navigator.NavigationBar style={styles.navBar} routeMapper={NavigationBarRouteMapper} />
+        }
       />
     );
   }
 }
 
 AppRegistry.registerComponent('golfmanager', () => golfmanager);
+
+// TODO: This really shout live somewhere else, so where?
+var NavigationBarRouteMapper = {
+  LeftButton (route, navigator, index, navState) {
+    if(route.passProps.leftButton) {
+      return (
+        <IconButton
+          icon={require('./src/images/ic_arrow_back.png')}
+          onButtonPressed={() => { navigator.pop() }}>
+        </IconButton>
+      );
+
+      }
+    else {
+      return null;
+    }
+  },
+  RightButton (route, navigator, index, navState) {
+    if (route.passProps.rightButton) {
+      if (route.passProps.rightButtonType) {
+        return (
+          <Button
+            text="LOGIN"
+            onpress={() => { route.passProps.onRightButtonPress() }}
+            button_styles={styles.login_button}
+            button_text_styles={styles.login_button_text} />
+        );
+      } else {
+        return (
+          <IconButton
+            icon={require('./src/images/ic_settings.png')}
+            onButtonPressed={() => { route.passProps.onRightButtonPress() }}>
+          </IconButton>
+        );
+
+      }
+    } else {
+      return null;
+    }
+  },
+  Title (route, navigator, index, navState) {
+    return <Text style={ styles.navTitle }>{route.passProps.navHeaderTitle}</Text>
+  }
+};

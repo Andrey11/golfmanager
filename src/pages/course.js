@@ -20,7 +20,7 @@ import CourseTypePicker from '../components/courseTypePicker';
 
 import styles from '../styles/basestyles.js';
 
-export default class usermain extends Component {
+export default class course extends Component {
 
 	constructor (props) {
     super(props);
@@ -67,9 +67,9 @@ export default class usermain extends Component {
     let firebaseApp = this.props.firebaseApp;
     let coursesRef = firebaseApp.database().ref('courses');
 
-    let courseDisplayName = this.state.courseName + ',' +
-                            this.state.city + ',' +
-                            this.state.province + ',' +
+    let courseDisplayName = this.state.courseName + ' ,' +
+                            this.state.city + ' ,' +
+                            this.state.province + ' ,' +
                             this.state.country;
 
     let courseKey = coursesRef.push().key;
@@ -79,7 +79,7 @@ export default class usermain extends Component {
     courseUpdateData['/courses/' + courseKey] = {
       courseName: this.state.courseName,
       courseDisplayName: courseDisplayName,
-      courseType: this.state.courseType,
+      courseType: this.state.courseTypeIndex,
       address: {
         line1: this.state.line1,
         line2: this.state.line2,
@@ -88,10 +88,10 @@ export default class usermain extends Component {
         postal_code: this.state.postal_code,
         country: this.state.country
       }
-    });
+    };
 
-    courseUpdateData['courses/all/' + courseDisplayName] = courseKey;
-    courseUpdateData['courses/' + this.state.courseTypeIndex + '/' + courseDisplayName] = courseKey;
+    courseUpdateData['courses/names/all/' + courseDisplayName] = courseKey;
+    courseUpdateData['courses/names/' + this.state.courseTypeIndex + '/' + courseDisplayName] = courseKey;
 
 
     firebaseApp.database().ref().update(courseUpdateData);
@@ -250,4 +250,4 @@ export default class usermain extends Component {
 }
 
 
-AppRegistry.registerComponent('usermain', () => usermain);
+AppRegistry.registerComponent('course', () => course);
