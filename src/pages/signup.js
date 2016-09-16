@@ -37,7 +37,7 @@ export default class signup extends Component {
         navHeaderTitle: '',
         leftButton: false,
         rightButton: true,
-        rightButtonType: 'login'
+        rightButtonName: 'LOGIN'
       }
     });
   }

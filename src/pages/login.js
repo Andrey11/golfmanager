@@ -11,24 +11,24 @@ import {
 } from 'react-native';
 
 import Signup from './signup';
+import ResetPassword from './resetPassword';
 import Button from '../components/button';
 import styles from '../styles/basestyles.js';
 
 export default class login extends Component {
 
-  constructor(props){
+  constructor (props) {
     super(props);
-    // bind function to login.js scope
-    this.login = this.login.bind(this);
-    this.goToSignup = this.goToSignup.bind(this);
-  }
 
-  componentWillMount() {
-    this.setState({
+    this.state = {
       email: '',
       password: '',
       animating: false
-    });
+    };
+
+    this.login = this.login.bind(this);
+    this.goToSignup = this.goToSignup.bind(this);
+    this.goToResetPassword = this.goToResetPassword.bind(this);
   }
 
   componentDidMount () {
@@ -49,8 +49,20 @@ export default class login extends Component {
     });
   }
 
+  goToResetPassword () {
+    this.props.navigator.replace({
+      component: ResetPassword,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: false,
+        rightButton: true,
+        rightButtonName: 'RESET PASSWORD'
+      }
+    });
+  }
 
-  login() {
+
+  login () {
     var firebaseApp = this.props.firebaseApp;
     var fbAuth = firebaseApp.auth();
 
@@ -60,7 +72,7 @@ export default class login extends Component {
     });
   }
 
-  render(){
+  render () {
     return (
       <View style={styles.unathenticated_body}>
         <View style={styles.text_field_with_icon}>
@@ -97,7 +109,7 @@ export default class login extends Component {
 
         <Button
           text="Forgot password?"
-          onpress={this.goToSignup}
+          onpress={this.goToResetPassword}
           button_styles={styles.semi_transparent_button}
           button_text_styles={styles.semi_transparent_button_text} />
         <Button

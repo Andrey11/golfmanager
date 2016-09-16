@@ -88,10 +88,10 @@ var NavigationBarRouteMapper = {
   },
   RightButton (route, navigator, index, navState) {
     if (route.passProps.rightButton) {
-      if (route.passProps.rightButtonType) {
+      if (route.passProps.rightButtonName) {
         return (
           <Button
-            text="LOGIN"
+            text={route.passProps.rightButtonName}
             onpress={() => { route.passProps.onRightButtonPress() }}
             button_styles={styles.login_button}
             button_text_styles={styles.login_button_text} />
