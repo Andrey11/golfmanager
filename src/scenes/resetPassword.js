@@ -60,9 +60,10 @@ export default class resetPassword extends Component {
     this.props.navigator.replace({
       component: Signup,
       passProps: {
-        navHeaderTitle: 'Create Account',
+        navHeaderTitle: '',
         leftButton: false,
-        rightButton: false
+        rightButton: true,
+        rightButtonName: 'SIGNUP'
       }
     });
   }
@@ -140,15 +141,24 @@ export default class resetPassword extends Component {
   _renderMessage () {
     if (this.state.resetErrorEmailInvalid) {
       return (
-        <Text>{this.state.resetErrorEmailInvalidText}</Text>
+        <View style={styles.error_notification}>
+          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
+          <Text numberOfLines={5} style={styles.notification_text}>{this.state.resetErrorEmailInvalidText}</Text>
+        </View>
       );
     } else if (this.state.resetErrorUserNotFound) {
       return (
-        <Text>{this.state.resetErrorUserNotFoundText}</Text>
+        <View style={styles.error_notification}>
+          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
+          <Text numberOfLines={5} style={styles.notification_text}>{this.state.resetErrorUserNotFoundText}</Text>
+        </View>
       );
     } else if (this.state.resetSuccess) {
       return (
-        <Text>{this.state.resetSuccessText}</Text>
+        <View style={styles.success_notification}>
+          <Image style={styles.icon_notification} source={require('../images/ic_check_circle.png')} />
+          <Text numberOfLines={5} style={styles.notification_text}>{this.state.resetSuccessText}</Text>
+        </View>
       );
     } else {
       return null;

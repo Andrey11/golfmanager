@@ -18,35 +18,48 @@ export default class settings extends Component {
   constructor (props) {
     super(props);
 
+    this.state = {
+      displayName: '',
+      email: '',
+      firstname: '',
+      lastname: '',
+      accountInfoHeader: 'User information',
+      emailVerificationHeader: 'Email verification',
+    };
+
     // bind function to settings.js scope
     this.logout = this.logout.bind(this);
     this.verifyEmail = this.verifyEmail.bind(this);
     this.updateUserInfo = this.updateUserInfo.bind(this);
-    this.isUpdateButtonEnabled = this.isUpdateButtonEnabled.bind(this);
+    this.updateDatabaseInfo = this.updateDatabaseInfo.bind(this);
+    this.setUserInfo = this.setUserInfo.bind(this);
   }
 
-  componentWillMount () {
+  componentDidMount () {
+    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
+    let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
+    let passProps = currentScene.passProps;
+    passProps.onRightButtonPress = this.updateUserInfo;
+
     let firebaseApp = this.props.firebaseApp;
     let user = firebaseApp.auth().currentUser;
     let userDisplayName = user.displayName || '';
+    let userInfoRef = firebaseApp.database().ref('users/' + user.uid);
+
+    userInfoRef.once('value').then((snapshot) => this.setUserInfo(snapshot, user));
+  }
+
+  setUserInfo (snapshot, user) {
+    let userInfo = snapshot.val();
 
     this.setState({
-      displayName: userDisplayName,
-      oldDisplayName: userDisplayName,
+      displayName: user.displayName,
       email: user.email,
-      firstname: '',
-      oldFirstname: '',
-      lastname: '',
-      oldLastname: '',
+      firstname: userInfo.firstname,
+      lastname: userInfo.lastname,
       accountInfoHeader: 'User information',
       emailVerificationHeader: 'Email verification',
     });
-  }
-
-  isUpdateButtonEnabled () {
-    return  this.state.displayName !== this.state.newDisplayName ||
-            this.state.firstname !== this.state.newFirstname ||
-            this.state.newLastname !== this.state.newLastname;
   }
 
   verifyEmail () {
@@ -58,9 +71,24 @@ export default class settings extends Component {
     let firebaseApp = this.props.firebaseApp;
     let user = firebaseApp.auth().currentUser;
 
-    user.updateProfile({displayName: this.state.displayName}).then(() => {
-      debugger;
-    });
+    user.updateProfile({displayName: this.state.displayName})
+    .then(() => this.updateDatabaseInfo());
+  }
+
+  updateDatabaseInfo () {
+    let firebaseApp = this.props.firebaseApp;
+    let user = firebaseApp.auth().currentUser;
+    let userRef = firebaseApp.database().ref('users/' + user.uid);
+
+    if (userRef) {
+      userRef.update({
+        displayName: user.displayName,
+        firstname: this.state.firstname,
+        lastname: this.state.lastname
+      });
+    }
+
+    this.props.navigator.pop();
   }
 
   logout () {
@@ -125,13 +153,6 @@ export default class settings extends Component {
             onChangeText={(text) => this.setState({lastname: text})}
           />
         </View>
-        <Button
-          text="Update Info"
-          enabled={this.isUpdateButtonEnabled}
-          onpress={this.updateUserInfo}
-          button_styles={styles.primary_button}
-          button_text_styles={styles.primary_button_text} />
-
 
         <Text>{this.state.emailVerificationHeader}</Text>
         <View style={styles.text_field_with_icon}>

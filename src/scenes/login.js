@@ -42,9 +42,10 @@ export default class login extends Component {
     this.props.navigator.replace({
       component: Signup,
       passProps: {
-        navHeaderTitle: 'Create Account',
+        navHeaderTitle: '',
         leftButton: false,
-        rightButton: false
+        rightButton: true,
+        rightButtonName: 'SIGNUP'
       }
     });
   }

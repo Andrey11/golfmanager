@@ -9,6 +9,17 @@ module.exports = StyleSheet.create({
     flex: 1
   },
 
+  // Global background image style
+  background_image: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // Navigation styles
   navBar: {
     height: 60,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -17,13 +28,93 @@ module.exports = StyleSheet.create({
   },
 
   navTitle: {
-    fontSize: 16
+    fontSize: 16,
+    paddingTop: 5,
   },
+
+
+  // START OF     select course scene
+  select_course_body: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    marginTop: 60,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+
+  selectable_course_item: {
+    paddingLeft: 10,
+    paddingRight: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 3,
+    borderWidth: 1 / PixelRatio.get()
+  },
+  // END OF       select course scene
 
   centering: {
     alignItems: 'center',
     justifyContent: 'center',
     padding: 8,
+  },
+
+  error_notification: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 5,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(215, 0, 0, 0.2)',
+    borderColor: 'rgba(125, 0, 0, 0.5)',
+    borderRadius: 3,
+    borderWidth: 1,
+    alignItems: 'center',
+    padding: 5,
+  },
+
+  success_notification: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 5,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 145, 27, 0.2)',
+    borderColor: 'rgba(0, 94, 20, 0.5)',
+    borderRadius: 3,
+    borderWidth: 1,
+    alignItems: 'center',
+    padding: 5,
+  },
+
+  notification_text: {
+    flex: 1,
+    flexWrap: 'wrap',
+    marginLeft: 10,
+  },
+
+  icon_notification: {
+    width: 24,
+    height: 24,
+    marginLeft: 5,
+    marginRight: 1,
+    opacity: 0.5
+  },
+
+  add_round_body: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginTop: 60,
+  },
+
+  add_round_button: {
+    backgroundColor: 'rgba(0, 145, 27, 1)',
+    borderColor: 'rgba(0, 145, 27, 1)',
+    borderRadius: 45,
+    borderWidth: 1,
+    margin: 10,
+    padding: 20,
   },
 
   start_page__body: {
@@ -74,16 +165,6 @@ module.exports = StyleSheet.create({
     width: 344,
   },
 
-  background_image: {
-    flex: 1,
-    width: undefined,
-    height: undefined,
-    backgroundColor: 'transparent',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-
   scroll_body: {
     height: 500
   },
@@ -92,6 +173,37 @@ module.exports = StyleSheet.create({
     flex: 1,
     flexDirection: 'column'
   },
+
+  // START OF     search field component
+  search_field_outter_wrapper: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 5,
+    paddingRight: 5,
+    height: 50,
+    backgroundColor: 'rgba(191, 191, 191, 0.8)'
+  },
+
+  search_field_inner_wrapper: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    borderWidth: 1 / PixelRatio.get()
+  },
+
+  search_field_text_input: {
+    fontSize: 14,
+    width: 320,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderWidth: 0
+  },
+  // END OF     search field component
 
   text_field_with_icon: {
     marginTop: 5,
@@ -113,6 +225,7 @@ module.exports = StyleSheet.create({
     paddingRight: 10,
     borderWidth: 0
   },
+
   icon_button: {
     width: 24,
     height: 24,
@@ -189,5 +302,11 @@ module.exports = StyleSheet.create({
   image: {
     width: 100,
     height: 100
-  }
+  },
+
+  
+
+
+
+
 });

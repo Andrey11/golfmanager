@@ -16,10 +16,12 @@ import {
 import GiftedSpinner from 'react-native-gifted-spinner';
 
 import Button from '../components/button';
+import IconButton from '../components/iconButton';
 import TeeBoxParScore from '../components/teeBoxParScore';
 import CourseTypePicker from '../components/courseTypePicker';
 import Course from './course';
 import Settings from './settings';
+import Round from './round';
 
 import styles from '../styles/basestyles.js';
 
@@ -33,8 +35,8 @@ export default class centralHub extends Component {
       modalVisible: false
     };
 
-    this.onRightButtonPress = this.onRightButtonPress.bind(this);
-    this.onModalClosed = this.onModalClosed.bind(this);
+    this.showSettings = this.showSettings.bind(this);
+    this.addRound = this.addRound.bind(this);
 	}
 
   componentWillMount () {
@@ -45,7 +47,7 @@ export default class centralHub extends Component {
     let currentRoutesArray = this.props.navigator.getCurrentRoutes();
     let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
     let passProps = currentScene.passProps;
-    passProps.onRightButtonPress = this.onRightButtonPress;
+    passProps.onRightButtonPress = this.showSettings;
 
     InteractionManager.runAfterInteractions(() => {
       this.setState({renderPlaceholderOnly: false});
@@ -60,15 +62,11 @@ export default class centralHub extends Component {
     this.setState({modalVisible: visible});
   }
 
-  onModalClosed () {
-    debugger;
-  }
-
   onCourseTypePickerChange (index) {
     this.setState({courseTypeIndex: index});
   }
 
-  onRightButtonPress () {
+  showSettings () {
     let bgImageSource = require('../images/golf_bg_9.png');
 
     this.props.navigator.push({
@@ -76,9 +74,22 @@ export default class centralHub extends Component {
       passProps: {
         navHeaderTitle: 'User Settings',
         leftButton: true,
-        rightButton: false,
+        rightButton: true,
         sceneType: 'SETTINGS',
+        rightButtonName: 'SAVE SETTINGS',
         bgImageSource: bgImageSource
+      }
+    });
+  }
+
+  addRound () {
+    this.props.navigator.push({
+      component: Round,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: true,
+        rightButton: true,
+        rightButtonName: 'SAVE ROUND'
       }
     });
   }
@@ -90,7 +101,12 @@ export default class centralHub extends Component {
 
     return (
       <View>
-        <Text>ANDREY IS HERE</Text>
+
+          <IconButton
+            icon={require('../images/ic_golf_course.png')}
+            onButtonPressed={this.addRound}
+            buttonStyle={styles.add_round_button}  />
+
       </View>
     );
   }
