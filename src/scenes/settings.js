@@ -98,22 +98,6 @@ export default class settings extends Component {
   }
 
   render () {
-    //TODO:
-    /* 1. Account info
-            Display name
-            First name
-            Last name
-            City
-            Country
-
-            Change password
-
-            Verification of email feature
-
-            Logout option
-
-    */
-
     return (
       <View style={styles.settings_body}>
         <Text>{this.state.accountInfoHeader}</Text>

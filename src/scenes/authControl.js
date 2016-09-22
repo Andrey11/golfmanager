@@ -58,7 +58,7 @@ export default class authControl extends Component {
           navHeaderTitle: '',
           leftButton: false,
           rightButton: true,
-          rightButtonName: 'LOGIN'
+          rightButtonName: 'LOGIN',
         }
       }
 

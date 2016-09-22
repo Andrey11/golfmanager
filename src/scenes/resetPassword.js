@@ -73,29 +73,34 @@ export default class resetPassword extends Component {
     var firebaseApp = this.props.firebaseApp;
     var fbAuth = firebaseApp.auth();
 
-    fbAuth.sendPasswordResetEmail(this.state.email).then(() => {
-      this.setState({
-        resetErrorEmailInvalid: false,
-        resetErrorUserNotFound: false,
-        resetSuccess: true,
-        email: ''
-      });
+    fbAuth.sendPasswordResetEmail(this.state.email)
+    .then(() => this.onResetPasswordSent())
+    .catch((error) => this.onResetPasswordError(error));
+  }
 
-    }).catch((error) => {
-      var isResetErrorEmailInvalid = false;
-      var isResetErrorUserNotFound = false;
+  onResetPasswordSent () {
+    this.setState({
+      resetErrorEmailInvalid: false,
+      resetErrorUserNotFound: false,
+      resetSuccess: true,
+      email: ''
+    });
+  }
 
-      if (error && error.code == 'auth/invalid-email') {
-        isResetErrorEmailInvalid = true;
-      } else if (error && error.code == 'auth/user-not-found') {
-        isResetErrorUserNotFound = true;
-      }
+  onResetPasswordError (error) {
+    var isResetErrorEmailInvalid = false;
+    var isResetErrorUserNotFound = false;
 
-      this.setState({
-        resetErrorEmailInvalid: isResetErrorEmailInvalid,
-        resetErrorUserNotFound: isResetErrorUserNotFound,
-        resetSuccess: false
-      });
+    if (error && error.code == 'auth/invalid-email') {
+      isResetErrorEmailInvalid = true;
+    } else if (error && error.code == 'auth/user-not-found') {
+      isResetErrorUserNotFound = true;
+    }
+
+    this.setState({
+      resetErrorEmailInvalid: isResetErrorEmailInvalid,
+      resetErrorUserNotFound: isResetErrorUserNotFound,
+      resetSuccess: false
     });
   }
 

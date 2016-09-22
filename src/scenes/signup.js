@@ -61,33 +61,34 @@ export default class signup extends Component {
 
     fbAuth.createUserWithEmailAndPassword(this.state.email, this.state.password)
     .then((user) => this.addUserToGolfmanagerDatabase(user))
-    .catch((error) => {
-      var isErrorEmailInvalid = false;
-      var isErrorUserAlreadyInUse = false;
-      var isErrorOperationNotAllowed = false;
-      var isErrorPasswordWeak = false;
+    .catch((error) => this.onSignupError(error));
+  }
 
-      if (error && error.code == 'auth/invalid-email') {
-        isErrorEmailInvalid = true;
-      } else if (error && error.code == 'auth/email-already-in-use') {
-        isErrorUserAlreadyInUse = true;
-      } else if (error && error.code == 'auth/operation-not-allowed') {
-        isErrorOperationNotAllowed = true;
-      } else if (error && error.code == 'auth/weak-password') {
-        isErrorPasswordWeak = true;
-      }
+  onSignupError (error) {
+    var isErrorEmailInvalid = false;
+    var isErrorUserAlreadyInUse = false;
+    var isErrorOperationNotAllowed = false;
+    var isErrorPasswordWeak = false;
 
-      this.setState({
-        errorEmailInvalid: isErrorEmailInvalid,
-        errorUserAlreadyInUse: isErrorUserAlreadyInUse,
-        errorOperationNotAllowed: isErrorOperationNotAllowed,
-        errorPasswordWeak: isErrorPasswordWeak
-      });
+    if (error && error.code == 'auth/invalid-email') {
+      isErrorEmailInvalid = true;
+    } else if (error && error.code == 'auth/email-already-in-use') {
+      isErrorUserAlreadyInUse = true;
+    } else if (error && error.code == 'auth/operation-not-allowed') {
+      isErrorOperationNotAllowed = true;
+    } else if (error && error.code == 'auth/weak-password') {
+      isErrorPasswordWeak = true;
+    }
+
+    this.setState({
+      errorEmailInvalid: isErrorEmailInvalid,
+      errorUserAlreadyInUse: isErrorUserAlreadyInUse,
+      errorOperationNotAllowed: isErrorOperationNotAllowed,
+      errorPasswordWeak: isErrorPasswordWeak
     });
   }
 
   addUserToGolfmanagerDatabase (user) {
-
     let firebaseApp = this.props.firebaseApp;
     let userDatabaseRef = firebaseApp.database().ref('users');
 
@@ -165,37 +166,26 @@ export default class signup extends Component {
   }
 
   _renderMessage () {
+    var errorText = null;
+
     if (this.state.errorEmailInvalid) {
-      return (
-        <View style={styles.error_notification}>
-          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={styles.notification_text}>{this.state.errorEmailInvalidText}</Text>
-        </View>
-      );
+      errorText = this.state.errorEmailInvalidText;
     } else if (this.state.errorUserAlreadyInUse) {
-      return (
-        <View style={styles.error_notification}>
-          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={styles.notification_text}>{this.state.errorUserAlreadyInUseText}</Text>
-        </View>
-      );
+      errorText = this.state.errorUserAlreadyInUseText;
     } else if (this.state.errorOperationNotAllowed) {
-      return (
-        <View style={styles.error_notification}>
-          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={styles.notification_text}>{this.state.errorOperationNotAllowedText}</Text>
-        </View>
-      );
+      errorText = this.state.errorOperationNotAllowedText;
     } else if (this.state.errorPasswordWeak) {
-      return (
-        <View style={styles.error_notification}>
-          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={styles.notification_text}>{this.state.errorPasswordWeakText}</Text>
-        </View>
-      );
+      errorText = this.state.errorPasswordWeakText;
     } else {
       return null;
     }
+
+    return (
+      <View style={styles.error_notification}>
+        <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
+        <Text numberOfLines={5} style={styles.notification_text}>{errorText}</Text>
+      </View>
+    );
   }
 }
 
