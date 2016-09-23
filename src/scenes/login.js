@@ -10,6 +10,8 @@ import {
   ActivityIndicator
 } from 'react-native';
 
+import * as RightButtonMapper from '../navigation/rightButtonMapper';
+
 import Signup from './signup';
 import ResetPassword from './resetPassword';
 import Button from '../components/button';
@@ -39,10 +41,7 @@ export default class login extends Component {
   }
 
   componentDidMount () {
-    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
-    let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
-    let passProps = currentScene.passProps;
-    passProps.onRightButtonPress = this.login;
+    RightButtonMapper.bindButton(this.props.navigator, this.login);
   }
 
   goToSignup () {

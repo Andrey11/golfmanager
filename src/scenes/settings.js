@@ -9,6 +9,8 @@ import {
   Image,
   Modal,
 } from 'react-native';
+
+import * as RightButtonMapper from '../navigation/rightButtonMapper';
 import Button from '../components/button';
 
 import styles from '../styles/basestyles.js';
@@ -36,10 +38,8 @@ export default class settings extends Component {
   }
 
   componentDidMount () {
-    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
-    let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
-    let passProps = currentScene.passProps;
-    passProps.onRightButtonPress = this.updateUserInfo;
+
+    RightButtonMapper.bindButton(this.props.navigator, this.updateUserInfo);
 
     let firebaseApp = this.props.firebaseApp;
     let user = firebaseApp.auth().currentUser;

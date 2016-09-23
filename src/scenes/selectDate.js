@@ -9,6 +9,8 @@ import {
   StyleSheet
 } from 'react-native';
 
+import * as RightButtonMapper from '../navigation/rightButtonMapper';
+
 import DatePicker from '../components/datePicker';
 
 export default class selectDate extends Component {
@@ -23,11 +25,7 @@ export default class selectDate extends Component {
 	}
 
   componentDidMount () {
-    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
-    let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
-    let passProps = currentScene.passProps;
-    passProps.onRightButtonPress = this.onSetDate;
-
+    RightButtonMapper.bindButton(this.props.navigator, this.onSetDate);
     this.setState({currentDate: this.props.currentDate});
   }
 

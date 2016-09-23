@@ -13,6 +13,8 @@ import {
   Modal
 } from 'react-native';
 
+import * as RightButtonMapper from '../navigation/rightButtonMapper';
+
 import Button from '../components/button';
 import TeeBoxParScore from '../components/teeBoxParScore';
 import CourseTypePicker from '../components/courseTypePicker';
@@ -48,10 +50,7 @@ export default class round extends Component {
 	}
 
   componentDidMount () {
-    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
-    let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
-    let passProps = currentScene.passProps;
-    passProps.onRightButtonPress = this.addRound;
+    RightButtonMapper.bindButton(this.props.navigator, this.addRound);
 
     let currentUser = this.props.firebaseApp.auth().currentUser;
     let currentUserName = currentUser.displayName || currentUser.email;
@@ -182,7 +181,7 @@ export default class round extends Component {
           />
         </View>
 
-        
+
 
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_person.png')} />

@@ -13,6 +13,8 @@ import {
   Modal
 } from 'react-native';
 
+import * as RightButtonMapper from '../navigation/rightButtonMapper';
+
 import GiftedSpinner from 'react-native-gifted-spinner';
 
 import Button from '../components/button';
@@ -39,15 +41,13 @@ export default class centralHub extends Component {
     this.addRound = this.addRound.bind(this);
 	}
 
-  componentWillMount () {
-
-  }
-
   componentDidMount () {
-    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
-    let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
-    let passProps = currentScene.passProps;
-    passProps.onRightButtonPress = this.showSettings;
+    // let currentRoutesArray = this.props.navigator.getCurrentRoutes();
+    // let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
+    // let passProps = currentScene.passProps;
+    // passProps.onRightButtonPress = this.showSettings;
+
+    RightButtonMapper.bindButton(this.props.navigator, this.showSettings);
 
     InteractionManager.runAfterInteractions(() => {
       this.setState({renderPlaceholderOnly: false});

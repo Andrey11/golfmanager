@@ -1,11 +1,7 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
- 'use strict';
+'use strict';
 import * as FirebaseKeys from './config/firebaseKeys';
 import * as Firebase from 'firebase';
+import * as NavBar from './src/navigation/navigationBar';
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -61,7 +57,7 @@ class golfmanager extends Component {
 
         }}
         navigationBar={
-          <Navigator.NavigationBar style={styles.navBar} routeMapper={NavigationBarRouteMapper} />
+          <Navigator.NavigationBar style={styles.navBar} routeMapper={NavBar.navigationBarRouteMapper} />
         }
       />
     );
@@ -69,45 +65,3 @@ class golfmanager extends Component {
 }
 
 AppRegistry.registerComponent('golfmanager', () => golfmanager);
-
-// TODO: This really shout live somewhere else, so where?
-var NavigationBarRouteMapper = {
-  LeftButton (route, navigator, index, navState) {
-    if(route.passProps.leftButton) {
-      return (
-        <IconButton
-          icon={require('./src/images/ic_arrow_back.png')}
-          onButtonPressed={() => { navigator.pop() }}>
-        </IconButton>
-      );
-
-    } else {
-      return null;
-    }
-  },
-  RightButton (route, navigator, index, navState) {
-    if (route.passProps.rightButton) {
-      if (route.passProps.rightButtonName) {
-        return (
-          <Button
-            text={route.passProps.rightButtonName}
-            onpress={() => route.passProps.onRightButtonPress()}
-            button_styles={styles.login_button}
-            button_text_styles={styles.login_button_text} />
-        );
-      } else {
-        return (
-          <IconButton
-            icon={require('./src/images/ic_settings.png')}
-            onButtonPressed={() => route.passProps.onRightButtonPress()}>
-          </IconButton>
-        );
-      }
-    } else {
-      return null;
-    }
-  },
-  Title (route, navigator, index, navState) {
-    return <Text style={ styles.navTitle }>{route.passProps.navHeaderTitle}</Text>
-  }
-};
