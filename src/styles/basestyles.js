@@ -223,7 +223,8 @@ module.exports = StyleSheet.create({
     width: 300,
     paddingLeft: 10,
     paddingRight: 10,
-    borderWidth: 0
+    borderWidth: 0,
+    fontFamily: 'ArialRoundedMTBold',
   },
 
   icon_button: {
@@ -304,7 +305,7 @@ module.exports = StyleSheet.create({
     height: 100
   },
 
-  
+
 
 
 
