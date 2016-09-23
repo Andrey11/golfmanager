@@ -30,8 +30,9 @@ export default class authControl extends Component {
   }
 
   onAuthStateChanged (user) {
-    let route = {};
-    let currentRoutesArray = this.props.navigator.getCurrentRoutes();
+    var route = {};
+    var routeStack = [];
+    var currentRoutesArray = this.props.navigator.getCurrentRoutes();
     let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
     let currentSceneName = currentScene.component.name;
 
@@ -60,26 +61,24 @@ export default class authControl extends Component {
           rightButton: true,
           rightButtonName: 'LOGIN',
         }
-      }
+      };
 
       if (currentSceneName == 'settings') {
-        this.props.navigator.replaceAtIndex(route, 1, ()=>{
-          this.props.navigator.popToRoute(route);
-        });
+        routeStack.push(currentRoutesArray[0]);
+        routeStack.push(route);
+        this.props.navigator.immediatelyResetRouteStack(routeStack);
       } else {
         this.props.navigator.push(route);
       }
     }
   }
 
-  render() {
+  render () {
     return (
-
         <View style={styles.start_page__body}>
           <Text style={styles.start_page__text}>Loading</Text>
           <GiftedSpinner />
         </View>
-
     );
   }
 }

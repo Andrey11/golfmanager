@@ -72,7 +72,7 @@ export default class centralHub extends Component {
     this.props.navigator.push({
       component: Settings,
       passProps: {
-        navHeaderTitle: 'User Settings',
+        navHeaderTitle: '',
         leftButton: true,
         rightButton: true,
         sceneType: 'SETTINGS',

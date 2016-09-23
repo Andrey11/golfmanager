@@ -81,8 +81,7 @@ var NavigationBarRouteMapper = {
         </IconButton>
       );
 
-      }
-    else {
+    } else {
       return null;
     }
   },
@@ -92,7 +91,7 @@ var NavigationBarRouteMapper = {
         return (
           <Button
             text={route.passProps.rightButtonName}
-            onpress={() => { route.passProps.onRightButtonPress() }}
+            onpress={() => route.passProps.onRightButtonPress()}
             button_styles={styles.login_button}
             button_text_styles={styles.login_button_text} />
         );
@@ -100,10 +99,9 @@ var NavigationBarRouteMapper = {
         return (
           <IconButton
             icon={require('./src/images/ic_settings.png')}
-            onButtonPressed={() => { route.passProps.onRightButtonPress() }}>
+            onButtonPressed={() => route.passProps.onRightButtonPress()}>
           </IconButton>
         );
-
       }
     } else {
       return null;
