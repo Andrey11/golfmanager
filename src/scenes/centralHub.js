@@ -33,8 +33,7 @@ export default class centralHub extends Component {
     super(props);
 
     this.state = {
-      renderPlaceholderOnly: true,
-      modalVisible: false
+      renderPlaceholderOnly: true
     };
 
     this.showSettings = this.showSettings.bind(this);
@@ -42,11 +41,6 @@ export default class centralHub extends Component {
 	}
 
   componentDidMount () {
-    // let currentRoutesArray = this.props.navigator.getCurrentRoutes();
-    // let currentScene = currentRoutesArray[currentRoutesArray.length - 1];
-    // let passProps = currentScene.passProps;
-    // passProps.onRightButtonPress = this.showSettings;
-
     RightButtonMapper.bindButton(this.props.navigator, this.showSettings);
 
     InteractionManager.runAfterInteractions(() => {
@@ -58,10 +52,6 @@ export default class centralHub extends Component {
 
   }
 
-  setModalVisible(visible) {
-    this.setState({modalVisible: visible});
-  }
-
   onCourseTypePickerChange (index) {
     this.setState({courseTypeIndex: index});
   }
@@ -71,13 +61,13 @@ export default class centralHub extends Component {
 
     this.props.navigator.push({
       component: Settings,
+      sceneBackgroundImage: bgImageSource,
       passProps: {
         navHeaderTitle: '',
         leftButton: true,
         rightButton: true,
         sceneType: 'SETTINGS',
-        rightButtonName: 'SAVE SETTINGS',
-        bgImageSource: bgImageSource
+        rightButtonName: 'SAVE SETTINGS'
       }
     });
   }
