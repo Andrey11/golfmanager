@@ -13,6 +13,7 @@ import {
 
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
 import Button from '../components/button';
+import UsernameField from '../components/usernameField';
 
 import styles from '../styles/basestyles.js';
 
@@ -20,6 +21,8 @@ export default class settings extends Component {
 
   constructor (props) {
     super(props);
+
+    this.usernameFieldData = null;
 
     this.state = {
       username: '',
@@ -32,6 +35,7 @@ export default class settings extends Component {
       errorUsernameIsRequired: false,
       accountInfoHeader: 'User information',
       emailVerificationHeader: 'Email verification',
+      error: false
     };
 
     // bind function to settings.js scope
@@ -39,21 +43,29 @@ export default class settings extends Component {
     this.verifyEmail = this.verifyEmail.bind(this);
     this.verifyUsernameAvailable = this.verifyUsernameAvailable.bind(this);
     this.updateUserInfo = this.updateUserInfo.bind(this);
+    this.loadUserInfo = this.loadUserInfo.bind(this);
+    this.setUserInfo = this.setUserInfo.bind(this);
     this.updateNicknamesColumns = this.updateNicknamesColumns.bind(this);
     this.updateDatabaseInfo = this.updateDatabaseInfo.bind(this);
-    this.setUserInfo = this.setUserInfo.bind(this);
+
+    // handlers for usernameField component
+    this.onUsernameFieldUpdate = this.onUsernameFieldUpdate.bind(this);
+    this.onUsernameFieldSubmitEditing = this.onUsernameFieldSubmitEditing.bind(this);
   }
 
   componentDidMount () {
-
     RightButtonMapper.bindButton(this.props.navigator, this.updateUserInfo);
+    this.loadUserInfo();
+  }
 
+  loadUserInfo () {
     let firebaseApp = this.props.firebaseApp;
     let user = firebaseApp.auth().currentUser;
     let userDisplayName = user.displayName || '';
     let userInfoRef = firebaseApp.database().ref('users/' + user.uid);
 
-    userInfoRef.once('value').then((snapshot) => this.setUserInfo(snapshot, user));
+    userInfoRef.once('value')
+    .then((snapshot) => this.setUserInfo(snapshot, user));
   }
 
   setUserInfo (snapshot, user) {
@@ -159,33 +171,31 @@ export default class settings extends Component {
     fbAuth.signOut();
   }
 
+  onUsernameFieldUpdate (usernameFieldData) {
+    this.usernameFieldData = usernameFieldData;
+    this.setState({error: this.usernameFieldData.error});
+  }
+
+  onUsernameFieldSubmitEditing () {
+    this.refs.firstnameTextField.focus();
+  }
+
   render () {
     return (
       <View style={styles.settings_body}>
         <Text>{this.state.accountInfoHeader}</Text>
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
-          <TextInput
-            ref="usernameTextField"
-            style={styles.textinput_with_two_icons}
-            underlineColorAndroid='rgba(0,0,0,0)'
-            placeholder={"Username"}
-            autoCorrect={false}
-            autoFocus={true}
-            value={this.state.username}
-            onBlur={this.verifyUsernameAvailable}
-            onChangeText={(text) => this.setState({
-              username: text,
-              usernameVerfied: false,
-              errorUsernameIsTaken: false,
-              errorUsernameIsRequired: false
-            })}
-            onSubmitEditing={(event) => {
-              this.refs.firstnameTextField.focus();
-            }}
-          />
-          {this._renderStatusNotification()}
-        </View>
+
+        <UsernameField
+          firebaseApp={this.props.firebaseApp}
+          username={this.state.username}
+          onBlur={this.onUsernameFieldUpdate}
+          isAutoFocus={false}
+          onChangeText={() => this.setState({error: false})}
+          onSubmitEditing={this.onUsernameFieldSubmitEditing}
+        />
+
+        {this._checkForErrorsInUsernameField()}
+
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput
@@ -232,6 +242,22 @@ export default class settings extends Component {
           onpress={this.logout}
           button_styles={styles.primary_button}
           button_text_styles={styles.primary_button_text} />
+      </View>
+    );
+  }
+
+  _checkForErrorsInUsernameField () {
+    if (this.state.error && this.usernameFieldData && this.usernameFieldData.error) {
+      return this._renderErrorNotification(this.usernameFieldData.errorText);
+    }
+    return null;
+  }
+
+  _renderErrorNotification (errorText) {
+    return (
+      <View style={styles.error_notification}>
+        <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
+        <Text numberOfLines={5} style={styles.notification_text}>{errorText}</Text>
       </View>
     );
   }
