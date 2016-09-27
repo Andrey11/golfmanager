@@ -36,7 +36,7 @@ class golfmanager extends Component {
     };
   }
 
-  render() {
+  render () {
     return (
       <Navigator
         initialRoute={{component: this.state.component}}

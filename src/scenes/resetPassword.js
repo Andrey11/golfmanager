@@ -30,7 +30,7 @@ export default class resetPassword extends Component {
       resetSuccess: false,
       resetErrorEmailInvalidText: 'Email address you provided is invalid',
       resetErrorUserNotFoundText: 'Email address does not exist',
-      resetSuccessText: 'Password reset email has been sent, please check your inbox for instructions on how to reset your password'
+      resetSuccessText: 'Password reset email has been sent, please check your email for a link to create a new password'
     };
 
     this.resetPassword = this.resetPassword.bind(this);

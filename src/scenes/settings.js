@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import {
   AppRegistry,
+  ActivityIndicator,
   StyleSheet,
   Text,
   TextInput,
@@ -21,10 +22,14 @@ export default class settings extends Component {
     super(props);
 
     this.state = {
-      displayName: '',
+      username: '',
       email: '',
       firstname: '',
       lastname: '',
+      serverCommunicating: false,
+      usernameVerfied: false,
+      errorUsernameIsTaken: false,
+      errorUsernameIsRequired: false,
       accountInfoHeader: 'User information',
       emailVerificationHeader: 'Email verification',
     };
@@ -32,7 +37,9 @@ export default class settings extends Component {
     // bind function to settings.js scope
     this.logout = this.logout.bind(this);
     this.verifyEmail = this.verifyEmail.bind(this);
+    this.verifyUsernameAvailable = this.verifyUsernameAvailable.bind(this);
     this.updateUserInfo = this.updateUserInfo.bind(this);
+    this.updateNicknamesColumns = this.updateNicknamesColumns.bind(this);
     this.updateDatabaseInfo = this.updateDatabaseInfo.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
   }
@@ -53,7 +60,7 @@ export default class settings extends Component {
     let userInfo = snapshot.val();
 
     this.setState({
-      displayName: user.displayName,
+      username: user.displayName,
       email: user.email,
       firstname: userInfo.firstname,
       lastname: userInfo.lastname,
@@ -71,24 +78,79 @@ export default class settings extends Component {
     let firebaseApp = this.props.firebaseApp;
     let user = firebaseApp.auth().currentUser;
 
-    user.updateProfile({displayName: this.state.displayName})
-    .then(() => this.updateDatabaseInfo());
+    if (user.displayName === this.state.username) {
+      this.updateDatabaseInfo();
+    } else {
+      user.updateProfile({displayName: this.state.username})
+      .then(() => this.updateNicknamesColumns())
+      .then(() => this.updateDatabaseInfo());
+    }
+  }
+
+  updateNicknamesColumns () {
+    let firebaseApp = this.props.firebaseApp;
+    let user = firebaseApp.auth().currentUser;
+    let updates = {};
+
+    updates['/usernames/' + user.uid] = user.displayName.toLowerCase();
+    return firebaseApp.database().ref().update(updates);
   }
 
   updateDatabaseInfo () {
     let firebaseApp = this.props.firebaseApp;
     let user = firebaseApp.auth().currentUser;
-    let userRef = firebaseApp.database().ref('users/' + user.uid);
+    let currentDate = new Date().getTime() / 1000;
+    let updates = {
+      displayName: user.displayName,
+      firstname: this.state.firstname,
+      lastname: this.state.lastname,
+      email: user.email,
+      address: {
+        line1: '',
+        line2: '',
+        city: '',
+        province: '',
+        postal_code: '',
+        country: '',
+        phone: ''
+      },
+      modifiedOn: currentDate
+    };
 
-    if (userRef) {
-      userRef.update({
-        displayName: user.displayName,
-        firstname: this.state.firstname,
-        lastname: this.state.lastname
-      });
+    firebaseApp.database().ref('/users/' + user.uid).update(updates)
+    .then(() => {this.props.navigator.pop()});
+  }
+
+  verifyUsernameAvailable () {
+    let firebaseApp = this.props.firebaseApp;
+    let user = firebaseApp.auth().currentUser;
+
+    if (user.displayName === this.state.username) {
+      return;
     }
 
-    this.props.navigator.pop();
+    let username = this.state.username.toLowerCase();
+    this.setState({serverCommunicating: true});
+
+    if (username.length === 0) {
+      this.setState({
+        errorUsernameIsTaken: false,
+        usernameVerfied: false,
+        serverCommunicating: false,
+        errorUsernameIsRequired: true
+      });
+    } else {
+      let usernamesRef = firebaseApp.database().ref('usernames');
+      usernamesRef.orderByValue().equalTo(username).once('value')
+      .then((snapshot) => {
+        this.setState({
+          errorUsernameIsTaken: snapshot.exists(),
+          usernameVerfied: !snapshot.exists(),
+          errorUsernameIsRequired: false,
+          serverCommunicating: false
+        });
+      });
+    }
   }
 
   logout () {
@@ -104,18 +166,30 @@ export default class settings extends Component {
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput
-            style={styles.textinput}
-            keyboardType="default"
-            placeholder={"Display name"}
-            autoCapitalize="none"
+            ref="usernameTextField"
+            style={styles.textinput_with_two_icons}
+            underlineColorAndroid='rgba(0,0,0,0)'
+            placeholder={"Username"}
             autoCorrect={false}
-            value={this.state.displayName}
-            onChangeText={(text) => this.setState({displayName: text})}
+            autoFocus={true}
+            value={this.state.username}
+            onBlur={this.verifyUsernameAvailable}
+            onChangeText={(text) => this.setState({
+              username: text,
+              usernameVerfied: false,
+              errorUsernameIsTaken: false,
+              errorUsernameIsRequired: false
+            })}
+            onSubmitEditing={(event) => {
+              this.refs.firstnameTextField.focus();
+            }}
           />
+          {this._renderStatusNotification()}
         </View>
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput
+            ref="firstnameTextField"
             style={styles.textinput}
             keyboardType="default"
             placeholder={"First name"}
@@ -161,7 +235,6 @@ export default class settings extends Component {
       </View>
     );
   }
-
 }
 
 AppRegistry.registerComponent('settings', () => settings);

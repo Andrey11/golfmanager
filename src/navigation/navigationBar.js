@@ -16,7 +16,10 @@ export var navigationBarRouteMapper = {
     if(route.passProps.leftButton) {
       return (
         <IconButton
-          icon={require('../images/ic_arrow_back.png')}
+          iconSource={require('../images/ic_arrow_back.png')}
+          touchableHighlightStyle={styles.nav_left_icon_button}
+          underlayColor={'rgba(255, 255, 255, 0.3)'}
+          imageStyle={styles.nav_icon}
           onButtonPressed={() => { navigator.pop() }}>
         </IconButton>
       );
@@ -32,13 +35,16 @@ export var navigationBarRouteMapper = {
           <Button
             text={route.passProps.rightButtonName}
             onpress={() => route.passProps.onRightButtonPress()}
-            button_styles={styles.login_button}
-            button_text_styles={styles.login_button_text} />
+            button_styles={styles.nav_text_button}
+            button_text_styles={styles.nav_button_text} />
         );
       } else {
         return (
           <IconButton
-            icon={require('../images/ic_settings.png')}
+            iconSource={require('../images/ic_settings.png')}
+            touchableHighlightStyle={styles.nav_right_icon_button}
+            underlayColor={'rgba(255, 255, 255, 0.3)'}
+            imageStyle={styles.nav_icon}
             onButtonPressed={() => route.passProps.onRightButtonPress()}>
           </IconButton>
         );

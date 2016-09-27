@@ -42,7 +42,7 @@ class golfmanager extends Component {
       <Navigator
         initialRoute={{
           component: AuthControl,
-          sceneType: 'DEFAULT'
+          sceneType: 'DEFAULT',
           passProps: {
             navHeaderTitle: '',
             leftButton: false,

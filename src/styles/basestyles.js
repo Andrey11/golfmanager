@@ -19,7 +19,7 @@ module.exports = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // Navigation styles
+  // START OF       Navigation styles
   navBar: {
     height: 60,
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -28,9 +28,43 @@ module.exports = StyleSheet.create({
   },
 
   navTitle: {
-    fontSize: 16,
+    fontSize: 20,
     paddingTop: 5,
+    fontFamily: 'ArialRoundedMTBold',
   },
+
+  nav_text_button: {
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    borderColor: 'rgba(0, 77, 27, 1)',
+    borderRadius: 3,
+    borderWidth: 1,
+    padding: 7,
+    marginRight: 5
+  },
+
+  nav_button_text: {
+    color: 'rgba(0, 77, 27, 1)',
+    textAlign: 'center',
+    fontFamily: 'ArialRoundedMTBold',
+  },
+
+  nav_left_icon_button: {
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    paddingLeft: 7,
+    paddingTop: 2,
+  },
+
+  nav_right_icon_button: {
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    paddingRight: 7,
+    paddingTop: 2,
+  },
+
+  nav_icon: {
+    width: 30,
+    height: 30
+  },
+  // END OF       Navigation styles
 
 
   // START OF     select course scene
@@ -55,18 +89,14 @@ module.exports = StyleSheet.create({
   },
   // END OF       select course scene
 
-  centering: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8,
-  },
 
+  // START OF     Notification dialogs
   error_notification: {
     marginLeft: 15,
     marginRight: 15,
     marginTop: 5,
     flexDirection: 'row',
-    backgroundColor: 'rgba(215, 0, 0, 0.2)',
+    backgroundColor: 'rgba(215, 0, 0, 0.7)',
     borderColor: 'rgba(125, 0, 0, 0.5)',
     borderRadius: 3,
     borderWidth: 1,
@@ -79,8 +109,8 @@ module.exports = StyleSheet.create({
     marginRight: 15,
     marginTop: 5,
     flexDirection: 'row',
-    backgroundColor: 'rgba(0, 145, 27, 0.2)',
-    borderColor: 'rgba(0, 94, 20, 0.5)',
+    backgroundColor: 'rgba(0, 145, 27, 0.5)',
+    borderColor: 'rgba(0, 145, 27, 1)',
     borderRadius: 3,
     borderWidth: 1,
     alignItems: 'center',
@@ -91,6 +121,8 @@ module.exports = StyleSheet.create({
     flex: 1,
     flexWrap: 'wrap',
     marginLeft: 10,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontFamily: 'ArialRoundedMTBold',
   },
 
   icon_notification: {
@@ -98,8 +130,9 @@ module.exports = StyleSheet.create({
     height: 24,
     marginLeft: 5,
     marginRight: 1,
-    opacity: 0.5
+    tintColor: 'rgba(255, 255, 255, 0.9)',
   },
+  // END OF       Notification dialogs
 
   add_round_body: {
     flex: 1,
@@ -218,6 +251,15 @@ module.exports = StyleSheet.create({
     borderWidth: 1 / PixelRatio.get()
   },
 
+  textinput_with_two_icons: {
+    fontSize: 14,
+    width: 276,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderWidth: 0,
+    fontFamily: 'ArialRoundedMTBold',
+  },
+
   textinput: {
     fontSize: 14,
     width: 300,
@@ -227,12 +269,43 @@ module.exports = StyleSheet.create({
     fontFamily: 'ArialRoundedMTBold',
   },
 
+  icon_hidden: {
+    width: 24,
+    height: 24,
+    paddingLeft: 10,
+    paddingRight: 10,
+    opacity: 0.0,
+  },
+
+  icon_button_green: {
+    width: 24,
+    height: 24,
+    paddingLeft: 10,
+    paddingRight: 10,
+    opacity: 0.7,
+    tintColor: 'rgba(0, 145, 27, 1)',
+  },
+
+  icon_button_red: {
+    width: 24,
+    height: 24,
+    paddingLeft: 10,
+    paddingRight: 10,
+    opacity: 0.7,
+    tintColor: 'rgba(215, 0, 0, 1)',
+  },
+
   icon_button: {
     width: 24,
     height: 24,
     paddingLeft: 10,
     paddingRight: 10,
-    opacity: 0.5
+    opacity: 0.7
+  },
+
+  activity_indicator: {
+    paddingLeft: 2,
+    paddingRight: 2,
   },
 
   transparent_button: {
@@ -271,20 +344,7 @@ module.exports = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
     fontSize: 16,
     textAlign: 'center',
-  },
-
-  login_button: {
-    backgroundColor: 'rgba(255, 255, 255, 0.0)',
-    borderColor: 'rgba(0, 77, 27, 1)',
-    borderRadius: 3,
-    borderWidth: 1,
-    padding: 7,
-    marginRight: 5
-  },
-
-  login_button_text: {
-    color: 'rgba(0, 77, 27, 1)',
-    textAlign: 'center',
+    fontFamily: 'ArialRoundedMTBold',
   },
 
   primary_button: {
@@ -298,8 +358,10 @@ module.exports = StyleSheet.create({
   primary_button_text: {
     color: '#FFF',
     textAlign: 'center',
-    fontSize: 18
+    fontSize: 18,
+    fontFamily: 'ArialRoundedMTBold',
   },
+
   image: {
     width: 100,
     height: 100

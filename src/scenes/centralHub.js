@@ -57,11 +57,11 @@ export default class centralHub extends Component {
   }
 
   showSettings () {
-    let bgImageSource = require('../images/golf_bg_9.png');
+    // let bgImageSource = require('../images/golf_bg_9.png');
 
     this.props.navigator.push({
       component: Settings,
-      sceneBackgroundImage: bgImageSource,
+      // sceneBackgroundImage: bgImageSource,
       passProps: {
         navHeaderTitle: '',
         leftButton: true,

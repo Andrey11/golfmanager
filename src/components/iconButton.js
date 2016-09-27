@@ -14,10 +14,10 @@ export default class iconButton extends Component {
   render () {
     return (
       <TouchableHighlight
-        style={this.props.buttonStyle}
-        underlayColor={'rgba(255, 255, 255, 0.0)'}
+        style={this.props.touchableHighlightStyle}
+        underlayColor={this.props.underlayColor}
         onPress={() => { this.props.onButtonPressed() }}>
-        <Image style={styles.icon_button} source={this.props.icon} />
+        <Image style={this.props.imageStyle} source={this.props.iconSource} />
       </TouchableHighlight>
     );
   }

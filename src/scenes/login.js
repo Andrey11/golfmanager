@@ -68,7 +68,6 @@ export default class login extends Component {
     });
   }
 
-
   login () {
     var firebaseApp = this.props.firebaseApp;
     var fbAuth = firebaseApp.auth();
@@ -107,13 +106,13 @@ export default class login extends Component {
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
           <TextInput
+            ref="emailTextField"
             style={styles.textinput}
             underlineColorAndroid='rgba(0,0,0,0)'
             keyboardType="email-address"
             placeholder={"Email Address"}
             autoCapitalize="none"
             autoCorrect={false}
-            autoFocus={true}
             value={this.state.email}
             onChangeText={(text) => this.setState({
               email: text,
@@ -137,9 +136,7 @@ export default class login extends Component {
             value={this.state.password}
             secureTextEntry={true}
             placeholder={"Password"}
-            onSubmitEditing={(event) => {
-              this.login;
-            }}
+            onSubmitEditing={(event) => this.login()}
           />
         </View>
 
