@@ -21,9 +21,11 @@ import Button from '../components/button';
 import IconButton from '../components/iconButton';
 import TeeBoxParScore from '../components/teeBoxParScore';
 import CourseTypePicker from '../components/courseTypePicker';
+
 import Course from './course';
 import Settings from './settings';
 import Round from './round';
+import AddFriend from './addFriend';
 
 import styles from '../styles/basestyles.js';
 
@@ -38,6 +40,7 @@ export default class centralHub extends Component {
 
     this.showSettings = this.showSettings.bind(this);
     this.addRound = this.addRound.bind(this);
+    this.addFriend = this.addFriend.bind(this);
 	}
 
   componentDidMount () {
@@ -84,6 +87,21 @@ export default class centralHub extends Component {
     });
   }
 
+  addCourse () {
+
+  }
+
+  addFriend () {
+    this.props.navigator.push({
+      component: AddFriend,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: true,
+        rightButton: false,
+      }
+    });
+  }
+
   render () {
     if (this.state.renderPlaceholderOnly) {
       return this._renderPlaceholderView();
@@ -93,9 +111,22 @@ export default class centralHub extends Component {
       <View>
 
           <IconButton
-            icon={require('../images/ic_golf_course.png')}
+            iconSource={require('../images/ic_golf_course.png')}
+            underlayColor={'rgba(0, 145, 27, 0.8)'}
             onButtonPressed={this.addRound}
-            buttonStyle={styles.add_round_button}  />
+            touchableHighlightStyle={styles.add_round_button}  />
+
+          <IconButton
+            iconSource={require('../images/ic_person.png')}
+            underlayColor={'rgba(0, 145, 27, 0.8)'}
+            onButtonPressed={this.addFriend}
+            touchableHighlightStyle={styles.add_round_button}  />
+
+          <IconButton
+            iconSource={require('../images/ic_golf_course.png')}
+            underlayColor={'rgba(0, 145, 27, 0.8)'}
+            onButtonPressed={this.addCourse}
+            touchableHighlightStyle={styles.add_round_button}  />
 
       </View>
     );

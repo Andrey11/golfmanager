@@ -25,6 +25,7 @@ export default class resetPassword extends Component {
     // Inital state
     this.state = {
       email: '',
+      connecting: false,
       resetErrorEmailInvalid: false,
       resetErrorUserNotFound: false,
       resetSuccess: false,
@@ -72,6 +73,8 @@ export default class resetPassword extends Component {
     var firebaseApp = this.props.firebaseApp;
     var fbAuth = firebaseApp.auth();
 
+    this.setState({connecting: true});
+
     fbAuth.sendPasswordResetEmail(this.state.email)
     .then(() => this.onResetPasswordSent())
     .catch((error) => this.onResetPasswordError(error));
@@ -79,6 +82,7 @@ export default class resetPassword extends Component {
 
   onResetPasswordSent () {
     this.setState({
+      connecting: false,
       resetErrorEmailInvalid: false,
       resetErrorUserNotFound: false,
       resetSuccess: true,
@@ -97,6 +101,7 @@ export default class resetPassword extends Component {
     }
 
     this.setState({
+      connecting: false,
       resetErrorEmailInvalid: isResetErrorEmailInvalid,
       resetErrorUserNotFound: isResetErrorUserNotFound,
       resetSuccess: false
@@ -127,6 +132,11 @@ export default class resetPassword extends Component {
         </View>
 
         {this._renderMessage()}
+
+        <ActivityIndicator
+          style={styles.connecting_indicator}
+          color={'rgba(0, 0, 0, 0.9)'}
+          animating={this.state.connecting} />
 
         <Button
           text="Return to login"

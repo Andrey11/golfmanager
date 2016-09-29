@@ -25,6 +25,7 @@ export default class signup extends Component {
       username: '',
       email: '',
       password: '',
+      connecting: false,
       serverCommunicating: false,
       creatingAccount: false,
       usernameVerfied: false,
@@ -69,7 +70,8 @@ export default class signup extends Component {
     let firebaseApp = this.props.firebaseApp;
     let username = this.state.username.toLowerCase();
 
-    this.setState({serverCommunicating: true});
+    this.setState({
+      serverCommunicating: true});
 
     if (username.length === 0) {
       this.setState({
@@ -104,6 +106,7 @@ export default class signup extends Component {
       return;
     }
 
+    this.setState({connecting: true});
     this.state.creatingAccount = true;
 
     // TODO: Should we display a small modal dialog saying
@@ -135,7 +138,8 @@ export default class signup extends Component {
       errorUserAlreadyInUse: isErrorUserAlreadyInUse,
       errorOperationNotAllowed: isErrorOperationNotAllowed,
       errorPasswordWeak: isErrorPasswordWeak,
-      creatingAccount: false
+      creatingAccount: false,
+      connecting: false,
     });
   }
 
@@ -247,6 +251,11 @@ export default class signup extends Component {
         </View>
 
         {this._renderMessage()}
+
+        <ActivityIndicator
+          style={styles.connecting_indicator}
+          color={'rgba(0, 0, 0, 0.9)'}
+          animating={this.state.connecting} />
 
         <Button
           text="Got an Account?"

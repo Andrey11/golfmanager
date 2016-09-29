@@ -30,19 +30,15 @@ export default class selectGolfer extends Component {
 	}
 
   componentDidMount () {
-    // InteractionManager.runAfterInteractions(() => {
-    //   this.setState({renderPlaceholderOnly: false});
-    // });
+    let firebase = this.props.firebaseApp;
+    var userId = firebase.auth().currentUser.uid;
 
-    var firebaseApp = this.props.firebaseApp;
-    var userId = firebaseApp.auth().currentUser.uid;
-    let friendsRef = firebaseApp.database().ref('users/' + userId + '/friends');
-    friendsRef.once("value").then((snapshot) => this.setFriends(snapshot));
+    firebase.database().ref('users/' + userId + '/friends').once("value")
+    .then((snapshot) => this.setFriends(snapshot));
   }
 
   setFriends (snapshot) {
-
-    var snapshotDisplayData = this.createSnapshotDisplayData(snapshot, null);
+    var snapshotDisplayData = this.createSnapshotDisplayData(snapshot);
 
     this.setState({
       dataLoaded: true,
@@ -51,7 +47,7 @@ export default class selectGolfer extends Component {
     });
   }
 
-  createSnapshotDisplayData (snapshot, filter) {
+  createSnapshotDisplayData (snapshot) {
     var snapshotDisplayData = [];
 
     snapshot.forEach(function (snapshotChild) {

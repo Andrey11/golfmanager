@@ -9,6 +9,14 @@ module.exports = StyleSheet.create({
     flex: 1
   },
 
+  margin_right_5: {
+    marginRight: 5,
+  },
+
+  connecting_indicator: {
+    paddingTop: 10,
+  },
+
   // Global background image style
   background_image: {
     flex: 1,
@@ -89,6 +97,38 @@ module.exports = StyleSheet.create({
   },
   // END OF       select course scene
 
+  // START OF     iconTextButton component
+  icon_text_button_layout: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: 3,
+  },
+
+  // END OF       iconTextButton scene
+
+  // START OF     friendItem component
+  friend_item: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+
+  icon_text_button: {
+    backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    borderColor: 'rgba(0, 77, 27, 1)',
+    borderRadius: 3,
+    borderWidth: 1,
+  },
+
+  friend_item_text: {
+    fontSize: 14,
+    fontFamily: 'ArialRoundedMTBold',
+  },
+
+
+  // END OF       select course scene
 
   // START OF     Notification dialogs
   error_notification: {

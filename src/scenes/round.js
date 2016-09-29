@@ -20,6 +20,7 @@ import TeeBoxParScore from '../components/teeBoxParScore';
 import CourseTypePicker from '../components/courseTypePicker';
 import IconButton from '../components/iconButton';
 
+import SelectGolfer from './addFriend';
 import SelectCourse from './selectCourse';
 import SelectDate from './selectDate';
 
@@ -41,11 +42,13 @@ export default class round extends Component {
 
     this.addRound = this.addRound.bind(this);
     this.selectCourse = this.selectCourse.bind(this);
+    this.selectGolfer = this.selectGolfer.bind(this);
     this.selectDate = this.selectDate.bind(this);
 
     this.getFormattedDate = this.getFormattedDate.bind(this);
     this.onDateSelected = this.onDateSelected.bind(this);
     this.onCourseSelected = this.onCourseSelected.bind(this);
+    this.onGolferSelected = this.onGolferSelected.bind(this);
 
 	}
 
@@ -129,6 +132,23 @@ export default class round extends Component {
     });
   }
 
+  selectGolfer () {
+    this.props.navigator.push({
+      component: SelectGolfer,
+      passProps: {
+        navHeaderTitle: 'Select Player',
+        leftButton: true,
+        rightButton: false,
+        actionType: 'selectGolfer',
+        onGolferSelected: this.onGolferSelected
+      }
+    });
+  }
+
+  onGolferSelected () {
+    
+  }
+
   render () {
     if (this.state.renderPlaceholderOnly) {
       return this._renderPlaceholderView();
@@ -149,9 +169,11 @@ export default class round extends Component {
             value={this.getFormattedDate()}
           />
           <IconButton
-            icon={require('../images/ic_navigate_next.png')}
+            iconSource={require('../images/ic_navigate_next.png')}
+            underlayColor={'rgba(255, 255, 255, 0.9)'}
             onButtonPressed={this.selectDate} />
         </View>
+
 
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
@@ -165,7 +187,8 @@ export default class round extends Component {
             value={this.state.courseName}
           />
           <IconButton
-            icon={require('../images/ic_navigate_next.png')}
+            iconSource={require('../images/ic_navigate_next.png')}
+            underlayColor={'rgba(255, 255, 255, 0.9)'}
             onButtonPressed={this.selectCourse} />
         </View>
 
@@ -181,29 +204,37 @@ export default class round extends Component {
           />
         </View>
 
+        {this._renderAddPlayerOption()}
 
 
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_person.png')} />
-          <TextInput
-            style={styles.textinput}
-            keyboardType="default"
-            placeholder={"Add another player"}
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={false}
-          />
-          <IconButton
-            icon={require('../images/ic_add_circle.png')}
-            onButtonPressed={this.selectCourse} />
-        </View>
+
 
 
       </View>
     );
   }
 
-  _renderPlaceholderView() {
+  _renderAddPlayerOption () {
+    return (
+      <View style={styles.text_field_with_icon}>
+        <Image style={styles.icon_button} source={require('../images/ic_person.png')} />
+        <TextInput
+          style={styles.textinput}
+          keyboardType="default"
+          placeholder={"Add another player"}
+          autoCapitalize="none"
+          autoCorrect={false}
+          editable={false}
+        />
+        <IconButton
+          iconSource={require('../images/ic_add_circle.png')}
+          underlayColor={'rgba(255, 255, 255, 0.9)'}
+          onButtonPressed={this.selectGolfer} />
+      </View>
+    );
+  }
+
+  _renderPlaceholderView () {
     return (
       <View>
         <Text>Loading...</Text>

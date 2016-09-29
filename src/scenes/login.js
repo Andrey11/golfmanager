@@ -25,6 +25,7 @@ export default class login extends Component {
     this.state = {
       email: '',
       password: '',
+      connecting: false,
       errorEmailInvalid: false,
       errorUserDisabled: false,
       errorUserNotFound: false,
@@ -72,6 +73,8 @@ export default class login extends Component {
     var firebaseApp = this.props.firebaseApp;
     var fbAuth = firebaseApp.auth();
 
+    this.setState({login:true});
+
     fbAuth.signInWithEmailAndPassword(this.state.email, this.state.password)
     .catch((error) => this.onLoginError(error));
   }
@@ -93,6 +96,7 @@ export default class login extends Component {
     }
 
     this.setState({
+      connecting: false,
       errorEmailInvalid: isErrorEmailInvalid,
       errorUserDisabled: isErrorUserDisabled,
       errorUserNotFound: isErrorUserNotFound,
@@ -141,6 +145,11 @@ export default class login extends Component {
         </View>
 
         {this._renderMessage()}
+
+        <ActivityIndicator
+          style={styles.connecting_indicator}
+          color={'rgba(0, 0, 0, 0.9)'}
+          animating={this.state.connecting} />
 
         <Button
           text="Forgot password?"
