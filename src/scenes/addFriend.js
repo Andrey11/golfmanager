@@ -11,6 +11,8 @@ import {
   TouchableHighlight
 } from 'react-native';
 
+import { FriendStatusTypes, FriendActionTypes } from '../const/const';
+
 import FriendItem from '../components/friendItem';
 import SearchField from '../components/searchField';
 
@@ -24,26 +26,56 @@ export default class addFriend extends Component {
     this.state = {
       dataLoaded: false,
       filter: null,
-      noMatches: 'Could not find the person you are looking for. You may invite this person by clicking invite friend button.'
+      noMatches: 'Could not find the person you are looking for.'
     };
+
+    // TODO: Add ability to invite friends (possibly via email address from contact address book)
+    // noMatches: 'Could not find the person you are looking for. You may invite this person by clicking invite friend button.'
+
+    this.loadAvailableUsers = this.loadAvailableUsers.bind(this);
+    this.loadUserFriends = this.loadUserFriends.bind(this);
+    this.loadUserFriendMetaData = this.loadUserFriendMetaData.bind(this);
 
     this.onAddFriend = this.onAddFriend.bind(this);
     this.onConfirmRequest = this.onConfirmRequest.bind(this);
     this.onGolferSelected = this.onGolferSelected.bind(this);
+
     this.showUsernames = this.showUsernames.bind(this);
     this.createSnapshotDisplayData = this.createSnapshotDisplayData.bind(this);
     this.onChangeSearchText = this.onChangeSearchText.bind(this);
 	}
 
   componentDidMount () {
-    let firebase = this.props.firebaseApp;
-    firebase.database().ref('users').orderByKey().on('value', this.showUsernames);
+    if (FriendActionTypes.ADD_GOLFER_TO_ROUND) {
+      this.loadUserFriends();
+    } else {
+      this.loadAvailableUsers();
+    }
   }
 
   componentWillUnmount () {
     let firebase = this.props.firebaseApp;
-    firebase.database().ref('users').off('value');
+
+    if (FriendActionTypes.ADD_GOLFER_TO_ROUND) {
+      let currentUser = firebase.auth().currentUser;
+      this.loadUserFriends();
+    } else {
+      firebase.database().ref('users/' + currentUser.uid + '/friends').off('value');
+    }
   }
+
+  loadAvailableUsers () {
+    let firebase = this.props.firebaseApp;
+    firebase.database().ref('users').orderByKey().on('value', this.showUsernames);
+  }
+
+  loadUserFriends () {
+    let firebase = this.props.firebaseApp;
+    let currentUser = firebase.auth().currentUser;
+    firebase.database().ref('users/' + currentUser.uid + '/friends').orderByKey().on('value', this.loadUserFriendMetaData);
+  }
+
+  loadUserFriendMetaData
 
   onAddFriend (username, userUID) {
     let firebase = this.props.firebaseApp;
@@ -104,11 +136,11 @@ export default class addFriend extends Component {
       let username = userData.displayName;
       let key = snapshotChild.getKey();
       let friends = userData.friends || null;
-      let friendStatus = friends[currentUser.uid] || 'available';
+      let friendStatus = friends[currentUser.uid] || FriendStatusTypes.AVAILABLE;
       let userUID = key;
 
       if (!filter || (filter && username.indexOf(filter) !== -1)) {
-        if (currentUser.uid !== userUID && friendStatus === 'approved') {
+        if (currentUser.uid !== userUID && friendStatus === FriendStatusTypes.APPROVED) {
           snapshotDisplayItem.username = username;
           snapshotDisplayItem.key = key;
           snapshotDisplayItem.userUID = userUID;
@@ -137,21 +169,9 @@ export default class addFriend extends Component {
     );
   }
 
-  _sortByUsername (a, b) {
-    var nameA = a.props.username.toUpperCase(); // ignore upper and lowercase
-    var nameB = b.props.username.toUpperCase(); // ignore upper and lowercase
-    if (nameA < nameB) {
-      return -1;
-    }
-    if (nameA > nameB) {
-      return 1;
-    }
-    return 0;
-  }
-
   _renderUserItems () {
     let userData = this.state.currentDisplayData;
-    var childComponents = [];
+    let childComponents = [];
 
     for(let userDataItem of userData) {
       let userItem = <FriendItem key={userDataItem.key}
@@ -170,11 +190,11 @@ export default class addFriend extends Component {
       childComponents.sort(this._sortByUsername);
       return childComponents;
     } else {
-      return this._createEmptyCourseDisplay();
+      return this._renderEmptyCourseDisplay();
     }
   }
 
-  _createEmptyCourseDisplay () {
+  _renderEmptyCourseDisplay () {
     return (
       <View>
         <Text>{this.state.noMatches}</Text>
@@ -188,6 +208,18 @@ export default class addFriend extends Component {
         <Text>Loading...</Text>
       </View>
     );
+  }
+
+  _sortByUsername (a, b) {
+    var nameA = a.props.username.toUpperCase(); // ignore upper and lowercase
+    var nameB = b.props.username.toUpperCase(); // ignore upper and lowercase
+    if (nameA < nameB) {
+      return -1;
+    }
+    if (nameA > nameB) {
+      return 1;
+    }
+    return 0;
   }
 }
 

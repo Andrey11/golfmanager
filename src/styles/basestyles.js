@@ -84,7 +84,7 @@ module.exports = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
 
-  selectable_course_item: {
+  selectable_item: {
     paddingLeft: 10,
     paddingRight: 10,
     alignItems: 'center',

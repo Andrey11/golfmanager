@@ -83,6 +83,7 @@ export default class centralHub extends Component {
         leftButton: true,
         rightButton: true,
         rightButtonName: 'SAVE ROUND'
+        actionType: FriendActionTypes.ADD_NEW_FRIEND,
       }
     });
   }

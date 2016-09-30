@@ -8,7 +8,7 @@ import {
   Text,
   View
 } from 'react-native';
-
+import { FriendStatusTypes, FriendActionTypes } from '../const/const';
 import IconTextButton from './iconTextButton';
 
 import styles from '../styles/basestyles.js';
@@ -16,7 +16,7 @@ import styles from '../styles/basestyles.js';
 export default class friendItem extends Component {
 
   onItemPressed () {
-    if (this.props.actionType) {
+    if (this.props.actionType === FriendActionTypes.ADD_GOLFER_TO_ROUND) {
       this.props.onGolferSelected(this.props.username, this.props.userUID);
     }
   }
@@ -25,7 +25,7 @@ export default class friendItem extends Component {
     return (
       <TouchableHighlight
         underlayColor={'rgba(255, 255, 255, 0.8)'}
-        style={styles.selectable_course_item}
+        style={styles.selectable_item}
         onPress={() => this.onItemPressed()}>
         <View style={styles.friend_item}>
           <Text>{this.props.username}</Text>
@@ -36,17 +36,11 @@ export default class friendItem extends Component {
   }
 
   _renderActionField () {
-    const AVAILABLE = 'available';
-    const PENDING = 'pending';
-    const APPROVED = 'approved';
-    const REQUESTED = 'requested';
-    const BLOCKED = 'blocked';
-
-    if (this.props.actionType) {
+    if (this.props.actionType === FriendActionTypes.ADD_GOLFER_TO_ROUND) {
       return null;
     }
 
-    if (this.props.friendStatus === AVAILABLE) {
+    if (this.props.friendStatus === FriendStatusTypes.AVAILABLE) {
       return (
         <IconTextButton
           touchableHighlightStyle={styles.icon_text_button}
@@ -58,7 +52,7 @@ export default class friendItem extends Component {
           buttonText={'Add Friend'}>
         </IconTextButton>
       );
-    } else if (this.props.friendStatus === PENDING) {
+    } else if (this.props.friendStatus === FriendStatusTypes.PENDING) {
       return (
         <IconTextButton
           touchableHighlightStyle={styles.icon_text_button}
@@ -70,19 +64,19 @@ export default class friendItem extends Component {
           buttonText={'Confirm'}>
         </IconTextButton>
       );
-    } else if (this.props.friendStatus === REQUESTED) {
+    } else if (this.props.friendStatus === FriendStatusTypes.REQUESTED) {
       return (
         <View>
           <Text>{'REQUESTED'}</Text>
         </View>
       );
-    } else if (this.props.friendStatus === APPROVED) {
+    } else if (this.props.friendStatus === FriendStatusTypes.APPROVED) {
       return (
         <View>
           <Text>{'APPROVED'}</Text>
         </View>
       );
-    } else if (this.props.friendStatus === BLOCKED) {
+    } else if (this.props.friendStatus === FriendStatusTypes.BLOCKED) {
       return (
         <View>
           <Text>{'BLOCKED'}</Text>

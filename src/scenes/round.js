@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
+import { FriendActionTypes } from '../const/const';
 
 import Button from '../components/button';
 import TeeBoxParScore from '../components/teeBoxParScore';
@@ -139,14 +140,14 @@ export default class round extends Component {
         navHeaderTitle: 'Select Player',
         leftButton: true,
         rightButton: false,
-        actionType: 'selectGolfer',
+        actionType: FriendActionTypes.ADD_GOLFER_TO_ROUND,
         onGolferSelected: this.onGolferSelected
       }
     });
   }
 
   onGolferSelected () {
-    
+
   }
 
   render () {
