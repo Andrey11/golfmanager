@@ -13,6 +13,7 @@ import {
   Modal
 } from 'react-native';
 
+import { FriendActionTypes } from '../consts/const';
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
 
 import GiftedSpinner from 'react-native-gifted-spinner';
@@ -25,7 +26,7 @@ import CourseTypePicker from '../components/courseTypePicker';
 import Course from './course';
 import Settings from './settings';
 import Round from './round';
-import AddFriend from './addFriend';
+import AddFriend from './friends';
 
 import styles from '../styles/basestyles.js';
 
@@ -82,8 +83,8 @@ export default class centralHub extends Component {
         navHeaderTitle: '',
         leftButton: true,
         rightButton: true,
-        rightButtonName: 'SAVE ROUND'
-        actionType: FriendActionTypes.ADD_NEW_FRIEND,
+        rightButtonName: 'SAVE ROUND',
+        actionType: FriendActionTypes.ADD_GOLFER_TO_ROUND,
       }
     });
   }
@@ -99,6 +100,7 @@ export default class centralHub extends Component {
         navHeaderTitle: '',
         leftButton: true,
         rightButton: false,
+        actionType: FriendActionTypes.ADD_NEW_FRIEND,
       }
     });
   }

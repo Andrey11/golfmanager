@@ -11,14 +11,14 @@ import {
   TouchableHighlight
 } from 'react-native';
 
-import { FriendStatusTypes, FriendActionTypes } from '../const/const';
+import { FriendStatusTypes, FriendActionTypes } from '../consts/const';
 
 import FriendItem from '../components/friendItem';
 import SearchField from '../components/searchField';
 
 import styles from '../styles/basestyles.js';
 
-export default class addFriend extends Component {
+export default class friends extends Component {
 
 	constructor (props) {
     super(props);
@@ -35,47 +35,91 @@ export default class addFriend extends Component {
     this.loadAvailableUsers = this.loadAvailableUsers.bind(this);
     this.loadUserFriends = this.loadUserFriends.bind(this);
     this.loadUserFriendMetaData = this.loadUserFriendMetaData.bind(this);
+    this.filterUserFriendsMetaData = this.filterUserFriendsMetaData.bind(this);
 
     this.onAddFriend = this.onAddFriend.bind(this);
     this.onConfirmRequest = this.onConfirmRequest.bind(this);
     this.onGolferSelected = this.onGolferSelected.bind(this);
 
     this.showUsernames = this.showUsernames.bind(this);
-    this.createSnapshotDisplayData = this.createSnapshotDisplayData.bind(this);
+    this._createSnapshotDisplayData = this._createSnapshotDisplayData.bind(this);
     this.onChangeSearchText = this.onChangeSearchText.bind(this);
 	}
 
   componentDidMount () {
-    if (FriendActionTypes.ADD_GOLFER_TO_ROUND) {
+    if (this.props.actionType === FriendActionTypes.ADD_GOLFER_TO_ROUND) {
       this.loadUserFriends();
-    } else {
+    } else if (this.props.actionType === FriendActionTypes.ADD_NEW_FRIEND) {
       this.loadAvailableUsers();
     }
   }
 
   componentWillUnmount () {
     let firebase = this.props.firebaseApp;
+    let currentUser = firebase.auth().currentUser;
 
-    if (FriendActionTypes.ADD_GOLFER_TO_ROUND) {
-      let currentUser = firebase.auth().currentUser;
-      this.loadUserFriends();
-    } else {
-      firebase.database().ref('users/' + currentUser.uid + '/friends').off('value');
+    if (this.props.actionType === FriendActionTypes.ADD_NEW_FRIEND) {
+      firebase.database().ref('users').off('value');
     }
   }
 
   loadAvailableUsers () {
     let firebase = this.props.firebaseApp;
-    firebase.database().ref('users').orderByKey().on('value', this.showUsernames);
+    firebase.database().ref('users').on('value', this.showUsernames);
   }
 
   loadUserFriends () {
     let firebase = this.props.firebaseApp;
     let currentUser = firebase.auth().currentUser;
-    firebase.database().ref('users/' + currentUser.uid + '/friends').orderByKey().on('value', this.loadUserFriendMetaData);
+    firebase.database().ref('users/' + currentUser.uid + '/friends').once('value', this.loadUserFriendMetaData);
   }
 
-  loadUserFriendMetaData
+  loadUserFriendMetaData (friendsSnapshot) {
+    let firebase = this.props.firebaseApp;
+    let friendsObj = friendsSnapshot.val();
+    let friendsObjSize = Object.keys(friendsObj).length;
+    let friendsList = [];
+
+    for(var friendUID in friendsObj) {
+      if (friendsObj.hasOwnProperty(friendUID)) {
+        firebase.database().ref('users/' + friendUID).once('value')
+        .then((friendSnapshot) => {
+          let friendData = friendSnapshot.val();
+          friendsList.push({
+            username: friendData.displayName,
+            key: friendSnapshot.getKey(),
+            userUID: friendSnapshot.getKey(),
+            friendStatus: FriendStatusTypes.APPROVED
+          });
+
+          if (friendsList.length === friendsObjSize) {
+            this.setState({
+              dataLoaded: true,
+              snapshot: friendsList,
+              currentDisplayData: friendsList
+            });
+          }
+        });
+      }
+    }
+  }
+
+  filterUserFriendsMetaData () {
+    let friendData = this.state.snapshot;
+    let filter = this.state.filter;
+    let friendsList = [];
+
+    for(var key in friendData) {
+      if (friendData.hasOwnProperty(key)) {
+        let username = friendData[key].username;
+        if (username.indexOf(filter) !== -1) {
+          friendsList.push(friendData[key]);
+        }
+      }
+    }
+
+    this.setState({currentDisplayData: friendsList});
+  }
 
   onAddFriend (username, userUID) {
     let firebase = this.props.firebaseApp;
@@ -100,13 +144,13 @@ export default class addFriend extends Component {
   }
 
   onGolferSelected (username, userUID) {
-    if (this.props.actionType) {
+    if (this.props.actionType === FriendActionTypes.ADD_GOLFER_TO_ROUND) {
       this.props.onGolferSelected(username, userUID);
     }
   }
 
   showUsernames (snapshot) {
-    var snapshotDisplayData = this.createSnapshotDisplayData(snapshot);
+    var snapshotDisplayData = this._createSnapshotDisplayData(snapshot);
 
     this.setState({
       dataLoaded: true,
@@ -117,11 +161,31 @@ export default class addFriend extends Component {
 
   onChangeSearchText (text) {
     this.state.filter = text;
-    var snapshotDisplayData = this.createSnapshotDisplayData(this.state.snapshotData);
-    this.setState({currentDisplayData: snapshotDisplayData});
+
+    if (this.props.actionType === FriendActionTypes.ADD_GOLFER_TO_ROUND) {
+      this.filterUserFriendsMetaData();
+    } else if (this.props.actionType === FriendActionTypes.ADD_NEW_FRIEND) {
+      var snapshotDisplayData = this._createSnapshotDisplayData(this.state.snapshotData);
+      this.setState({currentDisplayData: snapshotDisplayData});
+    }
   }
 
-  createSnapshotDisplayData (snapshot) {
+  render () {
+    if (!this.state.dataLoaded) {
+      return this._renderPlaceholderView();
+    }
+
+    return (
+      <View style={styles.select_course_body}>
+        <SearchField placeholderText={'Search by username'} onChangeSearchText={this.onChangeSearchText} />
+        <ScrollView>
+          {this._renderUserItems()}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  _createSnapshotDisplayData (snapshot) {
     let filter = this.state.filter;
     let snapshotDisplayData = [];
     let firebase = this.props.firebaseApp;
@@ -136,11 +200,15 @@ export default class addFriend extends Component {
       let username = userData.displayName;
       let key = snapshotChild.getKey();
       let friends = userData.friends || null;
-      let friendStatus = friends[currentUser.uid] || FriendStatusTypes.AVAILABLE;
+      let friendStatus = FriendStatusTypes.AVAILABLE;
       let userUID = key;
 
+      if (friends && friends[currentUser.uid]) {
+        friendStatus = friends[currentUser.uid]
+      }
+
       if (!filter || (filter && username.indexOf(filter) !== -1)) {
-        if (currentUser.uid !== userUID && friendStatus === FriendStatusTypes.APPROVED) {
+        if (currentUser.uid !== userUID) {
           snapshotDisplayItem.username = username;
           snapshotDisplayItem.key = key;
           snapshotDisplayItem.userUID = userUID;
@@ -151,22 +219,6 @@ export default class addFriend extends Component {
     });
 
     return snapshotDisplayData;
-  }
-
-  render () {
-    if (!this.state.dataLoaded) {
-      return this._renderPlaceholderView();
-    }
-
-    return (
-      <View style={styles.select_course_body}>
-        <SearchField placeholderText={'Search by username'} onChangeSearchText={this.onChangeSearchText} />
-        <ScrollView>
-          {this._renderUserItems()}
-        </ScrollView>
-        <SearchField />
-      </View>
-    );
   }
 
   _renderUserItems () {
@@ -224,4 +276,4 @@ export default class addFriend extends Component {
 }
 
 
-AppRegistry.registerComponent('addFriend', () => addFriend);
+AppRegistry.registerComponent('friends', () => friends);

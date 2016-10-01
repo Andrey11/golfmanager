@@ -14,14 +14,14 @@ import {
 } from 'react-native';
 
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
-import { FriendActionTypes } from '../const/const';
+import { FriendActionTypes } from '../consts/const';
 
 import Button from '../components/button';
 import TeeBoxParScore from '../components/teeBoxParScore';
 import CourseTypePicker from '../components/courseTypePicker';
 import IconButton from '../components/iconButton';
 
-import SelectGolfer from './addFriend';
+import SelectGolfer from './friends';
 import SelectCourse from './selectCourse';
 import SelectDate from './selectDate';
 
