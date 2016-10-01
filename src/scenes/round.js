@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
-import { FriendActionTypes } from '../consts/const';
+import { FriendActionTypes, MonthNames } from '../consts/const';
 
 import Button from '../components/button';
 import TeeBoxParScore from '../components/teeBoxParScore';
@@ -33,12 +33,20 @@ export default class round extends Component {
   constructor (props) {
     super(props);
 
+    let creationDate = new Date();
+
     this.state = {
       renderPlaceholderOnly: true,
       courseName: '',
       courseId: '',
       date: null,
-      currentUserName: '',
+      player1: false,
+      player2: false,
+      player3: false,
+      player4: false,
+      creator: null,
+      dataCreated: creationDate,
+      dateModified: creationDate,
     };
 
     this.addRound = this.addRound.bind(this);
@@ -51,20 +59,24 @@ export default class round extends Component {
     this.onCourseSelected = this.onCourseSelected.bind(this);
     this.onGolferSelected = this.onGolferSelected.bind(this);
 
+    this._getAlreadyAddedGolfers = this._getAlreadyAddedGolfers.bind(this);
+
 	}
 
   componentDidMount () {
     RightButtonMapper.bindButton(this.props.navigator, this.addRound);
 
     let currentUser = this.props.firebaseApp.auth().currentUser;
-    let currentUserName = currentUser.displayName || currentUser.email;
-    let currentUserId = currentUser.uid;
+    let username = currentUser.displayName;
+    let userUID = currentUser.uid;
 
     InteractionManager.runAfterInteractions(() => {
       this.setState({
         renderPlaceholderOnly: false,
-        currentUserName: currentUserName,
-        currentUserId: currentUserId
+        player1: {
+          username: username,
+          userUID: userUID
+        }
       });
     });
   }
@@ -84,7 +96,7 @@ export default class round extends Component {
         leftButton: true,
         rightButton: true,
         rightButtonName: 'SET DATE',
-        currentDate: new Date(),
+        currentDate: this.state.date || new Date(),
         onDateSelected: this.onDateSelected
       }
     });
@@ -96,9 +108,6 @@ export default class round extends Component {
   }
 
   getFormattedDate () {
-    const MONTH_NAMES = ["January", "February", "March",  "April", "May", "June",
-                         "July", "August", "September", "October", "November", "December"];
-
     if(this.state.date === null) {
       return '';
     }
@@ -106,7 +115,7 @@ export default class round extends Component {
     let date = this.state.date;
     date.setUTCSeconds(0);
     let day = date.getDate();
-    let month = MONTH_NAMES[date.getMonth()];
+    let month = MonthNames[date.getMonth()];
     let year = date.getFullYear();
     let time = date.toLocaleTimeString();
 
@@ -141,12 +150,37 @@ export default class round extends Component {
         leftButton: true,
         rightButton: false,
         actionType: FriendActionTypes.ADD_GOLFER_TO_ROUND,
-        onGolferSelected: this.onGolferSelected
+        onGolferSelected: this.onGolferSelected,
+        alreadyAdded: this._getAlreadyAddedGolfers()
       }
     });
   }
 
-  onGolferSelected () {
+  onGolferSelected (username, userUID) {
+    this.props.navigator.pop();
+
+    if (!this.state.player2) {
+      this.setState({
+        player2: {
+          username: username,
+          userUID: userUID
+        }
+      });
+    } else if (!this.state.player3) {
+      this.setState({
+        player3: {
+          username: username,
+          userUID: userUID
+        }
+      });
+    } else if (!this.state.player4) {
+      this.setState({
+        player4: {
+          username: username,
+          userUID: userUID
+        }
+      });
+    }
 
   }
 
@@ -193,29 +227,51 @@ export default class round extends Component {
             onButtonPressed={this.selectCourse} />
         </View>
 
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_person.png')} />
-          <TextInput
-            style={styles.textinput}
-            keyboardType="default"
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={false}
-            value={this.state.currentUserName}
-          />
-        </View>
+        {this._renderPlayers()}
 
         {this._renderAddPlayerOption()}
-
-
-
-
 
       </View>
     );
   }
 
+  _renderPlayers () {
+    let players = [];
+    for (let i=1; i<5; i++) {
+      let playerIndex = 'player' + i;
+      if (this.state[playerIndex]) {
+        players.push(this._renderPlayer(this.state[playerIndex].username, playerIndex));
+      }
+    }
+
+    if (players.length > 0) {
+      return players;
+    } else {
+      return null;
+    }
+  }
+
+  _renderPlayer (username, uniqueKey) {
+    return (
+      <View style={styles.text_field_with_icon} key={uniqueKey}>
+        <Image style={styles.icon_button} source={require('../images/ic_person.png')} />
+        <TextInput
+          style={styles.textinput}
+          keyboardType="default"
+          autoCapitalize="none"
+          autoCorrect={false}
+          editable={false}
+          value={username}
+        />
+      </View>
+    );
+  }
+
   _renderAddPlayerOption () {
+    if (this.state.player1 && this.state.player2 && this.state.player3 && this.state.player4) {
+      return null;
+    }
+
     return (
       <View style={styles.text_field_with_icon}>
         <Image style={styles.icon_button} source={require('../images/ic_person.png')} />
@@ -241,6 +297,17 @@ export default class round extends Component {
         <Text>Loading...</Text>
       </View>
     );
+  }
+
+  _getAlreadyAddedGolfers () {
+    let alreadyAdded = {};
+    for(let i=2; i<5; i++) {
+      let playerIndex = 'player' + i;
+      if (this.state[playerIndex]) {
+        alreadyAdded[this.state[playerIndex].userUID] = true;
+      }
+    }
+    return alreadyAdded;
   }
 }
 

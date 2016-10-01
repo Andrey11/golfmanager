@@ -97,7 +97,7 @@ export default class centralHub extends Component {
     this.props.navigator.push({
       component: AddFriend,
       passProps: {
-        navHeaderTitle: '',
+        navHeaderTitle: 'Add Friend',
         leftButton: true,
         rightButton: false,
         actionType: FriendActionTypes.ADD_NEW_FRIEND,

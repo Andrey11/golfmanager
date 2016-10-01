@@ -130,7 +130,7 @@ export default class selectCourse extends Component {
     //TODO: Display a button to add a new course
 
     return (
-      <View style={styles.select_course_body}>
+      <View style={[styles.scene_offset_top, styles.select_course_body]}>
         <SearchField placeholderText={'Search courses'} onChangeSearchText={this.onChangeSearchText} />
         <ScrollView>
           {this.getCourseItems()}

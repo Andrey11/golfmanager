@@ -6,15 +6,11 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
-  TouchableHighlight,
   Navigator,
   Image
 } from 'react-native';
 
 import AuthControl from './src/scenes/authControl';
-import Button from './src/components/button';
-import IconButton from './src/components/iconButton';
 
 import styles from './src/styles/basestyles.js';
 

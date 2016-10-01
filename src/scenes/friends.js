@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import {
   AppRegistry,
+  ActivityIndicator,
   Text,
   View,
   ScrollView,
@@ -79,20 +80,24 @@ export default class friends extends Component {
     let friendsObj = friendsSnapshot.val();
     let friendsObjSize = Object.keys(friendsObj).length;
     let friendsList = [];
+    let excludeList = this.props.alreadyAdded;
+    let excludeListSize = Object.keys(excludeList).length;
 
     for(var friendUID in friendsObj) {
       if (friendsObj.hasOwnProperty(friendUID)) {
         firebase.database().ref('users/' + friendUID).once('value')
         .then((friendSnapshot) => {
           let friendData = friendSnapshot.val();
-          friendsList.push({
-            username: friendData.displayName,
-            key: friendSnapshot.getKey(),
-            userUID: friendSnapshot.getKey(),
-            friendStatus: FriendStatusTypes.APPROVED
-          });
+          if (!excludeList[friendSnapshot.getKey()]) {
+            friendsList.push({
+              username: friendData.displayName,
+              key: friendSnapshot.getKey(),
+              userUID: friendSnapshot.getKey(),
+              friendStatus: FriendStatusTypes.APPROVED
+            });
+          }
 
-          if (friendsList.length === friendsObjSize) {
+          if (friendsList.length === (friendsObjSize - excludeListSize)) {
             this.setState({
               dataLoaded: true,
               snapshot: friendsList,
@@ -112,7 +117,7 @@ export default class friends extends Component {
     for(var key in friendData) {
       if (friendData.hasOwnProperty(key)) {
         let username = friendData[key].username;
-        if (username.indexOf(filter) !== -1) {
+        if (username.indexOf(filter) !== -1 && !this.props.alreadyAdded[key]) {
           friendsList.push(friendData[key]);
         }
       }
@@ -176,7 +181,7 @@ export default class friends extends Component {
     }
 
     return (
-      <View style={styles.select_course_body}>
+      <View style={[styles.scene_offset_top, styles.select_course_body]}>
         <SearchField placeholderText={'Search by username'} onChangeSearchText={this.onChangeSearchText} />
         <ScrollView>
           {this._renderUserItems()}
@@ -257,7 +262,10 @@ export default class friends extends Component {
   _renderPlaceholderView () {
     return (
       <View>
-        <Text>Loading...</Text>
+        <ActivityIndicator
+          style={styles.connecting_indicator}
+          color={'rgba(0, 0, 0, 0.9)'}
+          animating={true} />
       </View>
     );
   }

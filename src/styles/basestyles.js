@@ -13,6 +13,15 @@ module.exports = StyleSheet.create({
     marginRight: 5,
   },
 
+  scene_offset_top: {
+    marginTop: 60,
+  },
+
+  basic_text: {
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 14,
+  },
+
   connecting_indicator: {
     paddingTop: 10,
   },
@@ -80,7 +89,6 @@ module.exports = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    marginTop: 60,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
 
@@ -270,6 +278,7 @@ module.exports = StyleSheet.create({
   },
 
   search_field_text_input: {
+    fontFamily: 'ArialRoundedMTBold',
     fontSize: 14,
     width: 320,
     paddingLeft: 10,

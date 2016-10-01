@@ -28,7 +28,7 @@ export default class friendItem extends Component {
         style={styles.selectable_item}
         onPress={() => this.onItemPressed()}>
         <View style={styles.friend_item}>
-          <Text>{this.props.username}</Text>
+          <Text style={styles.basic_text}>{this.props.username}</Text>
           {this._renderActionField()}
         </View>
       </TouchableHighlight>
@@ -67,19 +67,19 @@ export default class friendItem extends Component {
     } else if (this.props.friendStatus === FriendStatusTypes.REQUESTED) {
       return (
         <View>
-          <Text>{'REQUESTED'}</Text>
+          <Text style={styles.basic_text}>{'REQUESTED'}</Text>
         </View>
       );
     } else if (this.props.friendStatus === FriendStatusTypes.APPROVED) {
       return (
         <View>
-          <Text>{'APPROVED'}</Text>
+          <Text style={styles.basic_text}>{'APPROVED'}</Text>
         </View>
       );
     } else if (this.props.friendStatus === FriendStatusTypes.BLOCKED) {
       return (
         <View>
-          <Text>{'BLOCKED'}</Text>
+          <Text style={styles.basic_text}>{'BLOCKED'}</Text>
         </View>
       );
     } else {
