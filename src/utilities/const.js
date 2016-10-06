@@ -12,3 +12,23 @@ export const FriendStatusTypes = {
   REQUESTED: 'requested',
   BLOCKED: 'blocked',
 };
+
+export const TeeBoxTypes = {
+  GREEN: 'GREEN',
+  RED: 'RED',
+  WHITE: 'WHITE',
+  BLUE: 'BLUE',
+  BLACK: 'BLACK',
+  GOLD: 'GOLD',
+  YELLOW: 'YELLOW',
+  SILVER: 'SILVER',
+  PURPLE: 'PURPLE',
+  CUSTOM: 'CUSTOM'
+};
+
+export const CourseTypes = {
+  FULL: 'Full',
+  EXECUTIVE: 'Executive',
+  PITCH_AND_PUTT: 'Pitch & Putt',
+  MINI: 'Mini'
+};

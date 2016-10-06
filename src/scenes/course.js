@@ -12,8 +12,9 @@ import {
   TouchableHighlight,
   Modal
 } from 'react-native';
-
+import { CourseTypes } from '../utilities/const';
 import Button from '../components/button';
+import IconButton from '../components/iconButton';
 import TeeBoxParScore from '../components/teeBoxParScore';
 import CourseTypePicker from '../components/courseTypePicker';
 
@@ -25,19 +26,11 @@ export default class course extends Component {
 	constructor (props) {
     super(props);
 
-    this.state = {renderPlaceholderOnly: true};
-
-    this.onAddCourse = this.onAddCourse.bind(this);
-    this.onModalClosed = this.onModalClosed.bind(this);
-    this.setModalVisible = this.setModalVisible.bind(this);
-    this.onCourseTypePickerChange = this.onCourseTypePickerChange.bind(this);
-	}
-
-  componentWillMount () {
-    this.setState({
+    this.state = {
+      renderPlaceholderOnly: true,
       courseName: '',
       courseTypeIndex: 0,
-      courseTypeValues: ['Full', 'Executive', 'Pitch & Putt', 'Mini'],
+      courseTypeValues: [CourseTypes.FULL, CourseTypes.EXECUTIVE, CourseTypes.PITCH_AND_PUTT, CourseTypes.MINI],
       courseDisplayName: '',
       line1: '',
       line2: '',
@@ -50,8 +43,13 @@ export default class course extends Component {
       restaurant_phone: '',
       url: '',
       modalVisible: false
-    });
-  }
+    };
+
+    this.onAddCourse = this.onAddCourse.bind(this);
+    this.onModalClosed = this.onModalClosed.bind(this);
+    this.setModalVisible = this.setModalVisible.bind(this);
+    this.onCourseTypePickerChange = this.onCourseTypePickerChange.bind(this);
+	}
 
   componentDidMount () {
     InteractionManager.runAfterInteractions(() => {
@@ -109,6 +107,14 @@ export default class course extends Component {
     this.setState({courseTypeIndex: index});
   }
 
+  addAddress () {
+
+  }
+
+  addTeeBox () {
+    
+  }
+
   render () {
     if (this.state.renderPlaceholderOnly) {
       return this._renderPlaceholderView();
@@ -120,14 +126,12 @@ export default class course extends Component {
         <TeeBoxParScore onRequestClose={this.onModalClosed} />
 
         <ScrollView style={styles.scroll_body}>
-          <Text>{'Add new golf course'}</Text>
           <View style={styles.text_field_with_icon}>
             <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
             <TextInput
               style={styles.textinput}
               keyboardType="default"
               placeholder={"Golf course name"}
-              autoFocus={true}
               onChangeText={(text) => this.setState({courseName: text})}
             />
           </View>
@@ -139,97 +143,40 @@ export default class course extends Component {
             defaultValue={this.state.courseTypeIndex}>
           </CourseTypePicker>
 
-          <Text>{'Address:'}</Text>
           <View style={styles.text_field_with_icon}>
             <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
             <TextInput
               style={styles.textinput}
               keyboardType="default"
-              placeholder={"Address line 1"}
-              onChangeText={(text) => this.setState({line1: text})}
+              placeholder={"Address"}
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={false}
+              value={'Address:'}
             />
+            <IconButton
+              iconSource={require('../images/ic_add_circle.png')}
+              underlayColor={'rgba(255, 255, 255, 0.9)'}
+              onButtonPressed={this.addAddress} />
           </View>
+
           <View style={styles.text_field_with_icon}>
             <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
             <TextInput
               style={styles.textinput}
               keyboardType="default"
-              placeholder={"Address line 2"}
-              onChangeText={(text) => this.setState({line2: text})}
+              placeholder={"Add tee box"}
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={false}
+              value={''}
             />
+            <IconButton
+              iconSource={require('../images/ic_add_circle.png')}
+              underlayColor={'rgba(255, 255, 255, 0.9)'}
+              onButtonPressed={this.addAddress} />
           </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="default"
-              placeholder={"City"}
-              onChangeText={(text) => this.setState({city: text})}
-            />
-          </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="default"
-              placeholder={"Province / State"}
-              onChangeText={(text) => this.setState({province: text})}
-            />
-          </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="default"
-              placeholder={"Postal / Zip code"}
-              onChangeText={(text) => this.setState({postal_code: text})}
-            />
-          </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="default"
-              placeholder={"Country"}
-              onChangeText={(text) => this.setState({country: text})}
-            />
-          </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="phone-pad"
-              placeholder={"Pro shop phone"}
-              onChangeText={(text) => this.setState({pro_shop_phone: text})}
-            />
-          </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="phone-pad"
-              placeholder={"Club house phone"}
-              onChangeText={(text) => this.setState({club_house_phone: text})}
-            />
-          </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="phone-pad"
-              placeholder={"Restaurant phone"}
-              onChangeText={(text) => this.setState({restaurant_phone: text})}
-            />
-          </View>
-          <View style={styles.text_field_with_icon}>
-            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-            <TextInput
-              style={styles.textinput}
-              keyboardType="default"
-              placeholder={"Golf course website url"}
-              onChangeText={(text) => this.setState({url: text})}
-            />
-          </View>
+
         </ScrollView>
         <Button
           text="Add course"

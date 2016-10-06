@@ -223,8 +223,8 @@ module.exports = StyleSheet.create({
   },
 
   settings_body: {
-    marginTop: 50,
     flex: 1,
+    marginTop: 60,
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
@@ -237,6 +237,7 @@ module.exports = StyleSheet.create({
 
   body: {
     flex: 1,
+    marginTop: 60,
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
@@ -247,7 +248,7 @@ module.exports = StyleSheet.create({
   },
 
   scroll_body: {
-    height: 500
+    flex: 1
   },
 
   picker_android: {

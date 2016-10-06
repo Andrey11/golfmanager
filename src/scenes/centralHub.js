@@ -42,6 +42,7 @@ export default class centralHub extends Component {
     this.showSettings = this.showSettings.bind(this);
     this.addRound = this.addRound.bind(this);
     this.addFriend = this.addFriend.bind(this);
+    this.addCourse = this.addCourse.bind(this);
 	}
 
   componentDidMount () {
@@ -90,7 +91,15 @@ export default class centralHub extends Component {
   }
 
   addCourse () {
-
+    this.props.navigator.push({
+      component: Course,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: true,
+        rightButton: true,
+        rightButtonName: 'SAVE COURSE'
+      }
+    });
   }
 
   addFriend () {
@@ -116,7 +125,7 @@ export default class centralHub extends Component {
           <IconButton
             iconSource={require('../images/ic_golf_course.png')}
             underlayColor={'rgba(0, 145, 27, 0.8)'}
-            onButtonPressed={this.addRound}
+            onButtonPressed={this.addCourse}
             touchableHighlightStyle={styles.add_round_button}  />
 
           <IconButton
@@ -126,9 +135,9 @@ export default class centralHub extends Component {
             touchableHighlightStyle={styles.add_round_button}  />
 
           <IconButton
-            iconSource={require('../images/ic_golf_course.png')}
+            iconSource={require('../images/ic_group_work.png')}
             underlayColor={'rgba(0, 145, 27, 0.8)'}
-            onButtonPressed={this.addCourse}
+            onButtonPressed={this.addRound}
             touchableHighlightStyle={styles.add_round_button}  />
 
       </View>
