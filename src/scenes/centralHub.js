@@ -13,7 +13,7 @@ import {
   Modal
 } from 'react-native';
 
-import { FriendActionTypes } from '../consts/const';
+import { FriendActionTypes } from '../utilities/const';
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
 
 import GiftedSpinner from 'react-native-gifted-spinner';

@@ -12,18 +12,3 @@ export const FriendStatusTypes = {
   REQUESTED: 'requested',
   BLOCKED: 'blocked',
 };
-
-export const MonthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-];

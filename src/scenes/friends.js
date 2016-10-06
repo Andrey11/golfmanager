@@ -12,7 +12,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 
-import { FriendStatusTypes, FriendActionTypes } from '../consts/const';
+import { FriendStatusTypes, FriendActionTypes } from '../utilities/const';
 
 import FriendItem from '../components/friendItem';
 import SearchField from '../components/searchField';
@@ -88,6 +88,7 @@ export default class friends extends Component {
         firebase.database().ref('users/' + friendUID).once('value')
         .then((friendSnapshot) => {
           let friendData = friendSnapshot.val();
+          // TODO: Only display approved friends
           if (!excludeList[friendSnapshot.getKey()]) {
             friendsList.push({
               username: friendData.displayName,

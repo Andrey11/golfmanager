@@ -14,7 +14,8 @@ import {
 } from 'react-native';
 
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
-import { FriendActionTypes, MonthNames } from '../consts/const';
+import { FriendActionTypes } from '../utilities/const';
+import * as DateUtil from '../utilities/dates';
 
 import Button from '../components/button';
 import TeeBoxParScore from '../components/teeBoxParScore';
@@ -33,13 +34,15 @@ export default class round extends Component {
   constructor (props) {
     super(props);
 
+    this.MAX_PLAYERS = 4;
+
     let creationDate = new Date();
 
     this.state = {
       renderPlaceholderOnly: true,
       courseName: '',
       courseId: '',
-      date: null,
+      date: creationDate,
       player1: false,
       player2: false,
       player3: false,
@@ -52,9 +55,9 @@ export default class round extends Component {
     this.addRound = this.addRound.bind(this);
     this.selectCourse = this.selectCourse.bind(this);
     this.selectGolfer = this.selectGolfer.bind(this);
+    this.removeGolfer = this.removeGolfer.bind(this);
     this.selectDate = this.selectDate.bind(this);
 
-    this.getFormattedDate = this.getFormattedDate.bind(this);
     this.onDateSelected = this.onDateSelected.bind(this);
     this.onCourseSelected = this.onCourseSelected.bind(this);
     this.onGolferSelected = this.onGolferSelected.bind(this);
@@ -107,21 +110,6 @@ export default class round extends Component {
     this.setState({date: date});
   }
 
-  getFormattedDate () {
-    if(this.state.date === null) {
-      return '';
-    }
-
-    let date = this.state.date;
-    date.setUTCSeconds(0);
-    let day = date.getDate();
-    let month = MonthNames[date.getMonth()];
-    let year = date.getFullYear();
-    let time = date.toLocaleTimeString();
-
-    return month + ' ' + day + ' ' + year + ' ' + time;
-  }
-
   selectCourse () {
     this.props.navigator.push({
       component: SelectCourse,
@@ -159,29 +147,40 @@ export default class round extends Component {
   onGolferSelected (username, userUID) {
     this.props.navigator.pop();
 
+    let state = {};
+    let stateParam = {
+      username: username,
+      userUID: userUID
+    };
+
     if (!this.state.player2) {
-      this.setState({
-        player2: {
-          username: username,
-          userUID: userUID
-        }
-      });
+      state['player2'] = stateParam;
     } else if (!this.state.player3) {
-      this.setState({
-        player3: {
-          username: username,
-          userUID: userUID
-        }
-      });
+      state['player3'] = stateParam;
     } else if (!this.state.player4) {
-      this.setState({
-        player4: {
-          username: username,
-          userUID: userUID
-        }
-      });
+      state['player4'] = stateParam;
     }
 
+    this.setState(state);
+  }
+
+  removeGolfer (params) {
+    let playerIndex = params.playerIndex;
+    let index = params.index;
+    let state = {};
+
+    state[playerIndex] = false;
+
+    for (let i=index; i<this.MAX_PLAYERS; i++) {
+      let currentPlayerIndex = 'player' + i;
+      let nextPlayerIndex = 'player' + (i+1);
+      if (this.state[nextPlayerIndex]) {
+        state[currentPlayerIndex] = this.state[nextPlayerIndex];
+        this.state[nextPlayerIndex] = false;
+      }
+    }
+
+    this.setState(state);
   }
 
   render () {
@@ -201,7 +200,7 @@ export default class round extends Component {
             autoCapitalize="none"
             autoCorrect={false}
             editable={false}
-            value={this.getFormattedDate()}
+            value={DateUtil.getFormattedDate(this.state.date)}
           />
           <IconButton
             iconSource={require('../images/ic_navigate_next.png')}
@@ -240,7 +239,7 @@ export default class round extends Component {
     for (let i=1; i<5; i++) {
       let playerIndex = 'player' + i;
       if (this.state[playerIndex]) {
-        players.push(this._renderPlayer(this.state[playerIndex].username, playerIndex));
+        players.push(this._renderPlayer(this.state[playerIndex].username, playerIndex, i));
       }
     }
 
@@ -251,7 +250,7 @@ export default class round extends Component {
     }
   }
 
-  _renderPlayer (username, uniqueKey) {
+  _renderPlayer (username, uniqueKey, index) {
     return (
       <View style={styles.text_field_with_icon} key={uniqueKey}>
         <Image style={styles.icon_button} source={require('../images/ic_person.png')} />
@@ -263,8 +262,23 @@ export default class round extends Component {
           editable={false}
           value={username}
         />
+        {this._renderRemovePlayerOption(uniqueKey, index)}
       </View>
     );
+  }
+
+  _renderRemovePlayerOption (uniqueKey, index) {
+    if (uniqueKey !== 'player1') {
+      return (
+        <IconButton
+          iconSource={require('../images/ic_remove_circle.png')}
+          underlayColor={'rgba(255, 255, 255, 0.9)'}
+          pressedParam={{playerIndex: uniqueKey, index: index}}
+          onButtonPressed={this.removeGolfer} />
+      );
+    } else {
+      return null;
+    }
   }
 
   _renderAddPlayerOption () {

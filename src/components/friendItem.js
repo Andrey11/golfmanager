@@ -8,8 +8,9 @@ import {
   Text,
   View
 } from 'react-native';
-import { FriendStatusTypes, FriendActionTypes } from '../consts/const';
+import { FriendStatusTypes, FriendActionTypes } from '../utilities/const';
 import IconTextButton from './iconTextButton';
+
 
 import styles from '../styles/basestyles.js';
 
