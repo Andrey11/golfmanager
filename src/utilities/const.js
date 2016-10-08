@@ -20,10 +20,6 @@ export const TeeBoxTypes = {
   BLUE: 'BLUE',
   BLACK: 'BLACK',
   GOLD: 'GOLD',
-  YELLOW: 'YELLOW',
-  SILVER: 'SILVER',
-  PURPLE: 'PURPLE',
-  CUSTOM: 'CUSTOM'
 };
 
 export const CourseTypes = {

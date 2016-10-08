@@ -9,6 +9,11 @@ module.exports = StyleSheet.create({
     flex: 1
   },
 
+  body_width_stretched: {
+    flex:1,
+    alignSelf: 'stretch',
+  },
+
   margin_right_5: {
     marginRight: 5,
   },
@@ -237,7 +242,6 @@ module.exports = StyleSheet.create({
 
   body: {
     flex: 1,
-    marginTop: 60,
     alignItems: 'center',
     backgroundColor: 'transparent',
   },

@@ -25,7 +25,7 @@ export default class datePicker extends Component {
 
 AppRegistry.registerComponent('datePicker', () => datePicker);
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   wrapper: {
     flex: 1
   }
