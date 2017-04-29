@@ -9,11 +9,13 @@ import {
   Image,
   InteractionManager,
   Picker,
-  TouchableHighlight
+  TouchableHighlight,
+  StyleSheet
 } from 'react-native';
 
 import HoleItem from '../components/holeItem';
-import styles from '../styles/basestyles.js';
+import HoleItemFull from '../components/holeItemFull';
+import base_css from '../styles/basestyles.js';
 
 export default class teeBox extends Component {
 
@@ -88,9 +90,35 @@ export default class teeBox extends Component {
 
   render () {
     return (
-      <View style={[styles.scene_offset_top, styles.body_width_stretched]}>
+      <View style={[base_css.scene_offset_top, base_css.body_width_stretched]}>
 
         { this._renderTeeBoxStats() }
+
+        <View style={private_css.table_header_wrapper}>
+
+          <View style={private_css.column_wrapper}>
+            <Text style={base_css.tee_box_header_text}>{'Hole'}</Text>
+          </View>
+          <View style={[private_css.column_wrapper, base_css.bg_color_green]}>
+            <Text style={base_css.tee_box_header_text}>{'Par'}</Text>
+          </View>
+          <View style={[private_css.column_wrapper, base_css.bg_color_gold]}>
+            <Text style={base_css.tee_box_header_text}>{'Gold'}</Text>
+          </View>
+          <View style={[private_css.column_wrapper, base_css.bg_color_black ]}>
+            <Text style={base_css.tee_box_header_text}>{'Black'}</Text>
+          </View>
+          <View style={[private_css.column_wrapper, base_css.bg_color_blue ]}>
+            <Text style={base_css.tee_box_header_text}>{'Blue'}</Text>
+          </View>
+          <View style={[private_css.column_wrapper, base_css.bg_color_white ]}>
+            <Text style={base_css.tee_box_header_text}>{'White'}</Text>
+          </View>
+          <View style={[private_css.column_wrapper, base_css.bg_color_red ]}>
+            <Text style={base_css.tee_box_header_text}>{'Red'}</Text>
+          </View>
+
+        </View>
 
         <ScrollView>
           {this._renderParItems()}
@@ -112,7 +140,7 @@ export default class teeBox extends Component {
       distanceText = this.state['distancePar' + i];
 
       holeItems.push(
-        <HoleItem
+        <HoleItemFull
           key={i}
           hole={i.toString()}
           holeText={holeText}
@@ -128,8 +156,8 @@ export default class teeBox extends Component {
   }
 
   _renderTeeBoxStats () {
-    let parScore = 0;
-    let totalDistance = 0;
+    let parScore = this._getTotalNumberByItemName('par');
+    let totalDistance = this._getTotalNumberByItemName('distancePar');
 
     return (
       <View>
@@ -144,6 +172,42 @@ export default class teeBox extends Component {
   }
 
 
+  _getTotalNumberByItemName (itemName) {
+    let total = 0;
+    for(let i=1; i<=18; i++) {
+      total += parseInt(this.state[itemName + i]);
+    }
+    return total;
+  }
+
+
 }
 
 AppRegistry.registerComponent('teeBox', () => teeBox);
+
+const private_css = StyleSheet.create({
+
+  table_header_wrapper: {
+    marginRight: 0,
+    marginLeft: 0,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+    borderColor: 'rgba(0, 0, 0, 0.5)',
+    borderWidth: 1,
+    padding: 2,
+  },
+
+  column_wrapper: {
+    height: 30,
+    width: 50,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    borderColor: 'rgba(0, 0, 0, 0.3)',
+    borderWidth: 1,
+    borderRadius: 2,
+  }
+
+});

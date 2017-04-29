@@ -27,6 +27,11 @@ module.exports = StyleSheet.create({
     fontSize: 14,
   },
 
+  tee_box_header_text: {
+    fontFamily: 'ArialRoundedMTBold',
+    fontSize: 12,
+  },
+
   connecting_indicator: {
     paddingTop: 10,
   },
@@ -422,6 +427,40 @@ module.exports = StyleSheet.create({
   },
 
 
+  // START OF     background colors
+  bg_color_gold: {
+    backgroundColor: 'rgba(247, 239, 0, 1)',
+  },
+
+  bg_color_black: {
+    backgroundColor: 'rgba(0, 0, 0, 1)',
+  },
+
+  bg_color_blue: {
+    backgroundColor: 'rgba(0, 23, 171, 1)',
+  },
+
+  bg_color_white: {
+    backgroundColor: 'rgba(255, 255, 255, 1)',
+  },
+
+  bg_color_red: {
+    backgroundColor: 'rgba(222, 0, 26, 1)',
+  },
+
+  bg_color_green: {
+    backgroundColor: 'rgba(0, 77, 27, 1)',
+  },
+  // END OF     background colors
+
+  // START OF   border colors
+  br_color_black: {
+    borderColor: 'rgba(0, 0, 0, 1)',
+  },
+
+  br_color_white: {
+    borderColor: 'rgba(255, 255, 255, 1)',
+  },
 
 
 

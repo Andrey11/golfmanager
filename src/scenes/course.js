@@ -46,7 +46,7 @@ export default class course extends Component {
       url: '',
       modalVisible: false,
       teeBoxes: {
-        
+
       }
 
     };
@@ -155,6 +155,23 @@ export default class course extends Component {
             />
           </View>
 
+          <View style={styles.text_field_with_icon}>
+            <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
+            <TextInput
+              style={styles.textinput}
+              keyboardType="default"
+              placeholder={"Add address"}
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={false}
+              value={''}
+            />
+            <IconButton
+              iconSource={require('../images/ic_add_location.png')}
+              underlayColor={'rgba(255, 255, 255, 0.9)'}
+              onButtonPressed={this.addAddress} />
+          </View>
+
           <Text>{'Select course type:'}</Text>
           <CourseTypePicker
             courseTypeValues={this.state.courseTypeValues}
@@ -167,19 +184,16 @@ export default class course extends Component {
             <TextInput
               style={styles.textinput}
               keyboardType="default"
-              placeholder={"Address"}
+              placeholder={'Add par and tee boxes information'}
               autoCapitalize="none"
               autoCorrect={false}
               editable={false}
-              value={'Address:'}
-            />
+              value={''} />
             <IconButton
               iconSource={require('../images/ic_add_circle.png')}
               underlayColor={'rgba(255, 255, 255, 0.9)'}
-              onButtonPressed={this.addAddress} />
+              onButtonPressed={this.addTeeBox} />
           </View>
-
-          { this._renderAddTeeBoxFields() }
 
           <View style={styles.text_field_with_icon}>
             <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
@@ -223,38 +237,6 @@ export default class course extends Component {
           button_text_styles={styles.primary_button_text} />
       </View>
     );
-  }
-
-  _renderAddTeeBoxFields () {
-    let teeBoxes = this.state.teeBoxValues;
-    let teeBoxesList = [];
-
-    for (let i=0; i<teeBoxes.length; i++) {
-      let teeBoxColor = teeBoxes[i].toLowerCase();
-
-      teeBoxesList.push(
-        <View key={i} style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
-          <TextInput
-            style={styles.textinput}
-            keyboardType="default"
-            placeholder={'Add ' + teeBoxColor + ' tee box'}
-            autoCapitalize="none"
-            autoCorrect={false}
-            editable={false}
-            value={''}
-          />
-          <IconButton
-            iconSource={require('../images/ic_add_circle.png')}
-            underlayColor={'rgba(255, 255, 255, 0.9)'}
-            pressedParam={teeBoxColor}
-            onButtonPressed={this.addTeeBox} />
-        </View>
-      );
-    }
-
-    return teeBoxesList;
-
   }
 
   _renderPlaceholderView () {

@@ -14,7 +14,6 @@ export const FriendStatusTypes = {
 };
 
 export const TeeBoxTypes = {
-  GREEN: 'GREEN',
   RED: 'RED',
   WHITE: 'WHITE',
   BLUE: 'BLUE',
