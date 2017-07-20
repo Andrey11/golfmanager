@@ -9,7 +9,15 @@ A detailed explanation could be found at
 [React Native - Getting Started](http://facebook.github.io/react-native/releases/0.33/docs/getting-started.html)
 
 After you check out this project, and install necessary dependencies, you can run the app as follows
+
+### iOS
 ```
-cd GolfManager
-react-native run-ios 
+cd golfmanager
+react-native run-ios
+```
+
+### Android
+```
+cd golfmanager
+react-native run-android
 ```

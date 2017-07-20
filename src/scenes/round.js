@@ -23,7 +23,7 @@ import CourseTypePicker from '../components/courseTypePicker';
 import IconButton from '../components/iconButton';
 
 import SelectGolfer from './friends';
-import SelectCourse from './selectCourse';
+import CourseList from './courseList';
 import SelectDate from './selectDate';
 
 
@@ -112,7 +112,7 @@ export default class round extends Component {
 
   selectCourse () {
     this.props.navigator.push({
-      component: SelectCourse,
+      component: CourseList,
       passProps: {
         navHeaderTitle: 'Select Course',
         leftButton: true,

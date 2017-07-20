@@ -23,8 +23,9 @@ import IconButton from '../components/iconButton';
 import TeeBoxParScore from '../components/teeBoxParScore';
 import CourseTypePicker from '../components/courseTypePicker';
 
-import Course from './course';
-import Settings from './settings';
+// import Course from './course';
+import CourseList from './courseList';
+import SettingsView from './settingsView';
 import Round from './round';
 import AddFriend from './friends';
 
@@ -65,14 +66,14 @@ export default class centralHub extends Component {
     // let bgImageSource = require('../images/golf_bg_9.png');
 
     this.props.navigator.push({
-      component: Settings,
+      component: SettingsView,
       // sceneBackgroundImage: bgImageSource,
       passProps: {
         navHeaderTitle: '',
         leftButton: true,
         rightButton: true,
         sceneType: 'SETTINGS',
-        rightButtonName: 'SAVE SETTINGS'
+        rightButtonName: 'EDIT'
       }
     });
   }
@@ -92,12 +93,12 @@ export default class centralHub extends Component {
 
   addCourse () {
     this.props.navigator.push({
-      component: Course,
+      component: CourseList,
       passProps: {
-        navHeaderTitle: '',
+        navHeaderTitle: 'Courses',
         leftButton: true,
         rightButton: true,
-        rightButtonName: 'SAVE COURSE'
+        rightButtonName: 'ADD COURSE',
       }
     });
   }

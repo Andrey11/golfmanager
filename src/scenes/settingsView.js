@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import {
   AppRegistry,
-  ActivityIndicator,
   StyleSheet,
+  ActivityIndicator,
+  base_cssheet,
   Text,
   TextInput,
   View,
@@ -12,12 +13,13 @@ import {
 } from 'react-native';
 
 import * as RightButtonMapper from '../navigation/rightButtonMapper';
+import SettingsEdit from './settingsEdit';
 import Button from '../components/button';
 import UsernameField from '../components/usernameField';
 
-import styles from '../styles/basestyles.js';
+import base_css from '../styles/basestyles.js';
 
-export default class settings extends Component {
+export default class settingsView extends Component {
 
   constructor (props) {
     super(props);
@@ -30,11 +32,10 @@ export default class settings extends Component {
       firstname: '',
       lastname: '',
       serverCommunicating: false,
+      userInfoLoaded: false,
       usernameVerfied: false,
       errorUsernameIsTaken: false,
       errorUsernameIsRequired: false,
-      accountInfoHeader: 'User information',
-      emailVerificationHeader: 'Email verification',
       error: false
     };
 
@@ -42,7 +43,7 @@ export default class settings extends Component {
     this.logout = this.logout.bind(this);
     this.verifyEmail = this.verifyEmail.bind(this);
     this.verifyUsernameAvailable = this.verifyUsernameAvailable.bind(this);
-    this.updateUserInfo = this.updateUserInfo.bind(this);
+    this.editUserSettings = this.editUserSettings.bind(this);
     this.loadUserInfo = this.loadUserInfo.bind(this);
     this.setUserInfo = this.setUserInfo.bind(this);
     this.updateNicknamesColumns = this.updateNicknamesColumns.bind(this);
@@ -54,7 +55,7 @@ export default class settings extends Component {
   }
 
   componentDidMount () {
-    RightButtonMapper.bindButton(this.props.navigator, this.updateUserInfo);
+    RightButtonMapper.bindButton(this.props.navigator, this.editUserSettings);
     this.loadUserInfo();
   }
 
@@ -76,8 +77,7 @@ export default class settings extends Component {
       email: user.email,
       firstname: userInfo.firstname,
       lastname: userInfo.lastname,
-      accountInfoHeader: 'User information',
-      emailVerificationHeader: 'Email verification',
+      userInfoLoaded: true
     });
   }
 
@@ -86,17 +86,24 @@ export default class settings extends Component {
     // user.sendEmailVerification();
   }
 
-  updateUserInfo () {
-    let firebaseApp = this.props.firebaseApp;
-    let user = firebaseApp.auth().currentUser;
-
-    if (user.displayName === this.state.username) {
-      this.updateDatabaseInfo();
-    } else {
-      user.updateProfile({displayName: this.state.username})
-      .then(() => this.updateNicknamesColumns())
-      .then(() => this.updateDatabaseInfo());
+  editUserSettings () {
+    if (!this.state.userInfoLoaded) {
+      return;
     }
+
+    this.props.navigator.push({
+      component: SettingsEdit,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: true,
+        rightButton: true,
+        rightButtonName: 'DONE',
+        username: this.state.username,
+        email: this.state.email,
+        firstname: this.state.firstname,
+        lastname: this.state.lastname,
+      }
+    });
   }
 
   updateNicknamesColumns () {
@@ -182,8 +189,7 @@ export default class settings extends Component {
 
   render () {
     return (
-      <View style={styles.settings_body}>
-        <Text>{this.state.accountInfoHeader}</Text>
+      <View style={base_css.settings_body}>
 
         <UsernameField
           firebaseApp={this.props.firebaseApp}
@@ -196,11 +202,11 @@ export default class settings extends Component {
 
         {this._checkForErrorsInUsernameField()}
 
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
+        <View style={base_css.text_field_with_icon}>
+          <Image style={base_css.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput
             ref="firstnameTextField"
-            style={styles.textinput}
+            style={base_css.textinput}
             keyboardType="default"
             placeholder={"First name"}
             autoCapitalize="none"
@@ -209,10 +215,10 @@ export default class settings extends Component {
             onChangeText={(text) => this.setState({firstname: text})}
           />
         </View>
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
+        <View style={base_css.text_field_with_icon}>
+          <Image style={base_css.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput
-            style={styles.textinput}
+            style={base_css.textinput}
             keyboardType="default"
             placeholder={"Last name"}
             autoCapitalize="none"
@@ -222,11 +228,11 @@ export default class settings extends Component {
           />
         </View>
 
-        <Text>{this.state.emailVerificationHeader}</Text>
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
+        
+        <View style={base_css.text_field_with_icon}>
+          <Image style={base_css.icon_button} source={require('../images/ic_email.png')} />
           <TextInput
-            style={styles.textinput}
+            style={base_css.textinput}
             keyboardType="email-address"
             placeholder={"Email Address"}
             autoCapitalize="none"
@@ -240,8 +246,8 @@ export default class settings extends Component {
         <Button
           text="Logout"
           onpress={this.logout}
-          button_styles={styles.primary_button}
-          button_text_styles={styles.primary_button_text} />
+          button_styles={base_css.primary_button}
+          button_text_styles={base_css.primary_button_text} />
       </View>
     );
   }
@@ -255,12 +261,26 @@ export default class settings extends Component {
 
   _renderErrorNotification (errorText) {
     return (
-      <View style={styles.error_notification}>
-        <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-        <Text numberOfLines={5} style={styles.notification_text}>{errorText}</Text>
+      <View style={base_css.error_notification}>
+        <Image style={base_css.icon_notification} source={require('../images/ic_error.png')} />
+        <Text numberOfLines={5} style={base_css.notification_text}>{errorText}</Text>
       </View>
     );
   }
 }
 
-AppRegistry.registerComponent('settings', () => settings);
+AppRegistry.registerComponent('settingsView', () => settingsView);
+
+
+const private_css = StyleSheet.create({
+  add_round_button: {
+    backgroundColor: 'rgba(0, 145, 27, 1)',
+    borderColor: 'rgba(0, 145, 27, 1)',
+    borderRadius: 45,
+    borderWidth: 1,
+    margin: 10,
+    padding: 20,
+  },
+
+
+});

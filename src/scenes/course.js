@@ -19,7 +19,6 @@ import TeeBoxParScore from '../components/teeBoxParScore';
 import TeeBox from './teeBox';
 import CourseTypePicker from '../components/courseTypePicker';
 
-
 import styles from '../styles/basestyles.js';
 
 export default class course extends Component {
@@ -96,8 +95,7 @@ export default class course extends Component {
     };
 
     courseUpdateData['courses/names/all/' + courseDisplayName] = courseKey;
-    courseUpdateData['courses/names/' + this.state.courseTypeIndex + '/' + courseDisplayName] = courseKey;
-
+    courseUpdateData['courses/types/' + this.state.courseTypeIndex + '/' + courseDisplayName] = courseKey;
 
     firebaseApp.database().ref().update(courseUpdateData);
   }
@@ -191,7 +189,7 @@ export default class course extends Component {
               value={''} />
             <IconButton
               iconSource={require('../images/ic_add_circle.png')}
-              underlayColor={'rgba(255, 255, 255, 0.9)'}
+              underlayColor={'rgba(255, 255, 255, 0.0)'}
               onButtonPressed={this.addTeeBox} />
           </View>
 

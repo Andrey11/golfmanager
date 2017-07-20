@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 import CentralHub from './centralHub';
-import Settings from './settings';
 import Login from './login';
 
 import GiftedSpinner from 'react-native-gifted-spinner';
@@ -40,7 +39,7 @@ export default class authControl extends Component {
       route = {
         component: CentralHub,
         passProps: {
-          navHeaderTitle: 'Central Hub',
+          navHeaderTitle: 'Home',
           leftButton: false,
           rightButton: true
         }
@@ -63,7 +62,7 @@ export default class authControl extends Component {
         }
       };
 
-      if (currentSceneName == 'settings') {
+      if (currentSceneName == 'settingsView') {
         routeStack.push(currentRoutesArray[0]);
         routeStack.push(route);
         this.props.navigator.immediatelyResetRouteStack(routeStack);

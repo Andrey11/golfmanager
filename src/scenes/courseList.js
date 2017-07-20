@@ -8,25 +8,36 @@ import {
   Image,
   InteractionManager,
   Picker,
-  TouchableHighlight
+  TouchableHighlight,
+  StyleSheet
 } from 'react-native';
+
+import CourseView from './course';
+import CourseEdit from './course';
 
 import CourseItem from '../components/courseItem';
 import SearchField from '../components/searchField';
+import IconButton from '../components/iconButton';
 
-import styles from '../styles/basestyles.js';
+import base_css from '../styles/basestyles.js';
 
-export default class selectCourse extends Component {
+export default class courseList extends Component {
 
 	constructor (props) {
     super(props);
+
+    this.onViewCourseButtonPressed = this.onViewCourseButtonPressed.bind(this);
+    this.onEditCourseButtonPressed = this.onEditCourseButtonPressed.bind(this);
 
     this.getCourseItems = this.getCourseItems.bind(this);
     this.setCourseItems = this.setCourseItems.bind(this);
     this.createSnapshotDisplayData = this.createSnapshotDisplayData.bind(this);
     this.onChangeSearchText = this.onChangeSearchText.bind(this);
+    this.onAddCourse = this.onAddCourse.bind(this);
 
-    this.state = {renderPlaceholderOnly: true, dataLoaded: false};
+    this.state = {
+      renderPlaceholderOnly: true,
+      dataLoaded: false};
 	}
 
   // componentWillMount () {
@@ -58,6 +69,31 @@ export default class selectCourse extends Component {
     let coursesRef = firebaseApp.database().ref('courses/all');
     coursesRef.once("value").then((snapshot) => this.setCourseItems(snapshot));
   }
+
+  onViewCourseButtonPressed () {
+    this.props.navigator.push({
+      component: CourseView,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: true,
+        rightButton: true,
+        rightButtonName: 'EDIT COURSE',
+      }
+    });
+  }
+
+  onEditCourseButtonPressed () {
+    this.props.navigator.push({
+      component: CourseEdit,
+      passProps: {
+        navHeaderTitle: '',
+        leftButton: true,
+        rightButton: true,
+        rightButtonName: 'SAVE COURSE'
+      }
+    });
+  }
+
 
   setCourseItems (snapshot) {
 
@@ -101,6 +137,8 @@ export default class selectCourse extends Component {
       let courseItemCmp = <CourseItem key={courseDataItem.key}
                             onCourseSelected={courseSelectedFn}
                             courseId={courseDataItem.courseId}
+                            onViewCourseButtonPressed={this.onViewCourseButtonPressed}
+                            onEditCourseButtonPressed={this.onEditCourseButtonPressed}
                             courseName={courseDataItem.courseName} />;
 
       childComponents.push(courseItemCmp);
@@ -119,6 +157,10 @@ export default class selectCourse extends Component {
     this.setState({currentDisplayData: snapshotDisplayData});
   }
 
+  onAddCourse () {
+
+  }
+
   render () {
     if (!this.state.dataLoaded) {
       return this._renderPlaceholderView();
@@ -130,12 +172,16 @@ export default class selectCourse extends Component {
     //TODO: Display a button to add a new course
 
     return (
-      <View style={[styles.scene_offset_top, styles.select_course_body]}>
+      <View style={[base_css.scene_offset_top, base_css.select_course_body]}>
         <SearchField placeholderText={'Search courses'} onChangeSearchText={this.onChangeSearchText} />
         <ScrollView>
           {this.getCourseItems()}
         </ScrollView>
-        <SearchField />
+        <IconButton
+          iconSource={require('../images/ic_golf_course.png')}
+          underlayColor={'rgba(0, 145, 27, 0.8)'}
+          onButtonPressed={this.onAddCourse}
+          touchableHighlightStyle={private_css.add_round_button}  />
       </View>
     );
   }
@@ -157,5 +203,17 @@ export default class selectCourse extends Component {
   }
 }
 
+AppRegistry.registerComponent('courseList', () => courseList);
 
-AppRegistry.registerComponent('selectCourse', () => selectCourse);
+const private_css = StyleSheet.create({
+  add_round_button: {
+    backgroundColor: 'rgba(0, 145, 27, 1)',
+    borderColor: 'rgba(0, 145, 27, 1)',
+    borderRadius: 45,
+    borderWidth: 1,
+    margin: 10,
+    padding: 20,
+  },
+
+
+});
