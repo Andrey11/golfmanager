@@ -6,11 +6,13 @@ import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Navigator,
+  NavigatorIOS,
   Image
 } from 'react-native';
 
-import AuthControl from './src/scenes/authControl';
+// import AuthControl from './src/scenes/authControl';
+
+import Tester from './src/scenes/tester';
 
 import styles from './src/styles/basestyles.js';
 
@@ -35,39 +37,39 @@ class golfmanager extends Component {
 
   render() {
     return (
-      <Navigator
+      <NavigatorIOS
         initialRoute={{
-          component: AuthControl,
-          sceneType: 'DEFAULT',
+          component: Tester,
+          title: 'Here goes nothing'
           passProps: {
-            navHeaderTitle: '',
-            leftButton: false,
-            rightButton: false
+              foo: 'bar'
           }
         }}
-        configureScene={(route) => {
-          if (route && route.passProps) {
-            if (route.passProps.sceneType === 'UP_SWIPE') {
-              return Navigator.SceneConfigs.VerticalUpSwipeJump;
-            } else if (route.passProps.sceneType === 'DOWN_SWIPE') {
-              return Navigator.SceneConfigs.VerticalDownSwipeJump;
-            }
-            // DEFAULT
-            return Navigator.SceneConfigs.PushFromRight;
-          }
-        }}
-        renderScene={(route, navigator) => {
-          let bgImageSource = route.sceneBackgroundImage || require('./src/images/golf_bg_1.jpg');
-          return (
-            <Image style={styles.background_image} source={bgImageSource}>
-              <route.component navigator={navigator} firebaseApp={firebaseApp} {...route.passProps} />
-            </Image>
-          );
 
-        }}
-        navigationBar={
-          <Navigator.NavigationBar style={styles.navBar} routeMapper={NavBar.navigationBarRouteMapper} />
-        }
+
+        // configureScene={(route) => {
+        //   if (route && route.passProps) {
+        //     if (route.passProps.sceneType === 'UP_SWIPE') {
+        //       return Navigator.SceneConfigs.VerticalUpSwipeJump;
+        //     } else if (route.passProps.sceneType === 'DOWN_SWIPE') {
+        //       return Navigator.SceneConfigs.VerticalDownSwipeJump;
+        //     }
+        //     // DEFAULT
+        //     return Navigator.SceneConfigs.PushFromRight;
+        //   }
+        // }}
+        // renderScene={(route, navigator) => {
+        //   let bgImageSource = route.sceneBackgroundImage || require('./src/images/golf_bg_1.jpg');
+        //   return (
+        //     <Image style={styles.background_image} source={bgImageSource}>
+        //       <route.component navigator={navigator} firebaseApp={firebaseApp} {...route.passProps} />
+        //     </Image>
+        //   );
+        //
+        // }}
+        // navigationBar={
+        //   <Navigator.NavigationBar style={styles.navBar} routeMapper={NavBar.navigationBarRouteMapper} />
+        // }
       />
     );
   }
