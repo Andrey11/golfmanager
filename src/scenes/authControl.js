@@ -10,8 +10,6 @@ import {
 import CentralHub from './centralHub';
 import Login from './login';
 
-import GiftedSpinner from 'react-native-gifted-spinner';
-
 import styles from '../styles/basestyles.js';
 
 export default class authControl extends Component {
@@ -76,7 +74,6 @@ export default class authControl extends Component {
     return (
         <View style={styles.start_page__body}>
           <Text style={styles.start_page__text}>Loading</Text>
-          <GiftedSpinner />
         </View>
     );
   }

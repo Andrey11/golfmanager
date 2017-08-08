@@ -1,45 +1,53 @@
-'use strict';
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ * @flow
+ */
 
-import * as FirebaseKeys from './config/firebaseKeys';
-import * as Firebase from 'firebase';
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Navigator,
+  Text,
+  View
 } from 'react-native';
 
-import StartPage from './src/pages/appContainer';
-
-import styles from './src/styles/basestyles.js';
-
-const firebaseApp = Firebase.initializeApp(FirebaseKeys.getFirebaseConfig());
-
-class golfmanager extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      component: StartPage
-    };
-  }
-
-  render () {
+export default class golfmanager extends Component {
+  render() {
     return (
-      <Navigator
-        initialRoute={{component: this.state.component}}
-        configureScene={() => {
-          return Navigator.SceneConfigs.FloatFromRight;
-        }}
-        renderScene={(route, navigator) => {
-          if(route.component){
-            return React.createElement(route.component, { navigator, firebaseApp });
-          }
-        }}
-      />
+      <View style={styles.container}>
+        <Text style={styles.welcome}>
+          Welcome to React Native!
+        </Text>
+        <Text style={styles.instructions}>
+          To get started, edit index.android.js
+        </Text>
+        <Text style={styles.instructions}>
+          Double tap R on your keyboard to reload,{'\n'}
+          Shake or press menu button for dev menu
+        </Text>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});
 
 AppRegistry.registerComponent('golfmanager', () => golfmanager);

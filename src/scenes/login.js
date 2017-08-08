@@ -10,7 +10,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-import * as RightButtonMapper from '../navigation/rightButtonMapper';
+// import * as RightButtonMapper from '../navigation/rightButtonMapper';
 
 import Signup from './signup';
 import ResetPassword from './resetPassword';
@@ -42,7 +42,7 @@ export default class login extends Component {
   }
 
   componentDidMount () {
-    RightButtonMapper.bindButton(this.props.navigator, this.login);
+    // RightButtonMapper.bindButton(this.props.navigator, this.login);
   }
 
   goToSignup () {
@@ -70,8 +70,8 @@ export default class login extends Component {
   }
 
   login () {
-    var firebaseApp = this.props.firebaseApp;
-    var fbAuth = firebaseApp.auth();
+    var firebase = this.props.firebase;
+    var fbAuth = firebase.auth();
 
     this.setState({login:true});
 
