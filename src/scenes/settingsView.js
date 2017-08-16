@@ -12,18 +12,45 @@ import {
   Modal,
 } from 'react-native';
 
-import * as RightButtonMapper from '../navigation/rightButtonMapper';
-import SettingsEdit from './settingsEdit';
 import Button from '../components/button';
 import UsernameField from '../components/usernameField';
+import IconButton from '../components/iconButton';
+import TextFieldWithIcon from '../components/textFieldWithIcon';
+import TextField from '../components/textField';
 
-import base_css from '../styles/basestyles.js';
+
+import basestyles from '../styles/basestyles.js';
 
 export default class settingsView extends Component {
+
+  //TODO: perform slide down action when opening settings
+  static navigationOptions = ({ navigation }) => ({
+      title: 'Settings',
+      headerLeft:
+        <IconButton
+          iconSource={require('../images/ic_arrow_back.png')}
+          touchableHighlightStyle={basestyles.nav_right_icon_button}
+          underlayColor={'rgba(255, 255, 255, 0.3)'}
+          imageStyle={basestyles.nav_icon}
+          onButtonPressed={() => navigation.goBack()}>
+        </IconButton>,
+      headerRight:
+        <IconButton
+          iconSource={require('../images/ic_check_circle.png')}
+          touchableHighlightStyle={basestyles.nav_right_icon_button}
+          underlayColor={'rgba(255, 255, 255, 0.3)'}
+          imageStyle={basestyles.nav_icon}
+          onButtonPressed={() => navigation.state.params.updateDatabaseInfo()}>
+        </IconButton>,
+
+  });
+
+
 
   constructor (props) {
     super(props);
 
+    const { params } = this.props.navigation.state;
     this.usernameFieldData = null;
 
     this.state = {
@@ -36,7 +63,7 @@ export default class settingsView extends Component {
       usernameVerfied: false,
       errorUsernameIsTaken: false,
       errorUsernameIsRequired: false,
-      error: false
+      error: false,
     };
 
     // bind function to settings.js scope
@@ -55,12 +82,13 @@ export default class settingsView extends Component {
   }
 
   componentDidMount () {
-    RightButtonMapper.bindButton(this.props.navigator, this.editUserSettings);
+    // RightButtonMapper.bindButton(this.props.navigator, this.editUserSettings);
+    this.props.navigation.setParams({ updateDatabaseInfo: this.updateDatabaseInfo });
     this.loadUserInfo();
   }
 
   loadUserInfo () {
-    let firebaseApp = this.props.firebaseApp;
+    let firebaseApp = this.props.screenProps.firebase;
     let user = firebaseApp.auth().currentUser;
     let userDisplayName = user.displayName || '';
     let userInfoRef = firebaseApp.database().ref('users/' + user.uid);
@@ -77,7 +105,13 @@ export default class settingsView extends Component {
       email: user.email,
       firstname: userInfo.firstname,
       lastname: userInfo.lastname,
-      userInfoLoaded: true
+      userInfoLoaded: true,
+      server_state: {
+        username: user.displayName,
+        email: user.email,
+        firstname: userInfo.firstname,
+        lastname: userInfo.lastname,
+      },
     });
   }
 
@@ -107,7 +141,7 @@ export default class settingsView extends Component {
   }
 
   updateNicknamesColumns () {
-    let firebaseApp = this.props.firebaseApp;
+    let firebaseApp = this.props.screenProps.firebase;
     let user = firebaseApp.auth().currentUser;
     let updates = {};
 
@@ -116,7 +150,7 @@ export default class settingsView extends Component {
   }
 
   updateDatabaseInfo () {
-    let firebaseApp = this.props.firebaseApp;
+    let firebaseApp = this.props.screenProps.firebase;
     let user = firebaseApp.auth().currentUser;
     let currentDate = new Date().getTime() / 1000;
     let updates = {
@@ -137,11 +171,11 @@ export default class settingsView extends Component {
     };
 
     firebaseApp.database().ref('/users/' + user.uid).update(updates)
-    .then(() => {this.props.navigator.pop()});
+    .then(() => {this.props.navigation.goBack()});
   }
 
   verifyUsernameAvailable () {
-    let firebaseApp = this.props.firebaseApp;
+    let firebaseApp = this.props.screenProps.firebase;
     let user = firebaseApp.auth().currentUser;
 
     if (user.displayName === this.state.username) {
@@ -173,9 +207,7 @@ export default class settingsView extends Component {
   }
 
   logout () {
-    let firebaseApp = this.props.firebaseApp;
-    let fbAuth = firebaseApp.auth();
-    fbAuth.signOut();
+    this.props.screenProps.firebase.auth().signOut();
   }
 
   onUsernameFieldUpdate (usernameFieldData) {
@@ -188,11 +220,30 @@ export default class settingsView extends Component {
   }
 
   render () {
+/*
+<View style={basestyles.text_field_with_icon}>
+  <Image style={basestyles.icon_button} source={require('../images/ic_account_box.png')} />
+  <TextInput
+    ref="firstnameTextField"
+    style={basestyles.textinput}
+    keyboardType="default"
+    placeholder={"First name"}
+    autoCapitalize="none"
+    autoCorrect={false}
+    value={this.state.firstname}
+    onChangeText={(text) => this.setState({firstname: text})}
+  />
+</View>
+*/
     return (
-      <View style={base_css.settings_body}>
+      <View style={basestyles.settings_body}>
+
+        <Image
+          style={basestyles.icon_button_large}
+          source={require('../images/ic_account_box.png')} />
 
         <UsernameField
-          firebaseApp={this.props.firebaseApp}
+          firebase={this.props.screenProps.firebase}
           username={this.state.username}
           onBlur={this.onUsernameFieldUpdate}
           isAutoFocus={false}
@@ -202,23 +253,15 @@ export default class settingsView extends Component {
 
         {this._checkForErrorsInUsernameField()}
 
-        <View style={base_css.text_field_with_icon}>
-          <Image style={base_css.icon_button} source={require('../images/ic_account_box.png')} />
+        <TextField
+          onChangeText={(text) => this.setState({firstname: text})}
+          fieldLabel='First name'
+          value={this.state.firstname} />
+
+        <View style={basestyles.text_field_with_icon}>
+          <Image style={basestyles.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput
-            ref="firstnameTextField"
-            style={base_css.textinput}
-            keyboardType="default"
-            placeholder={"First name"}
-            autoCapitalize="none"
-            autoCorrect={false}
-            value={this.state.firstname}
-            onChangeText={(text) => this.setState({firstname: text})}
-          />
-        </View>
-        <View style={base_css.text_field_with_icon}>
-          <Image style={base_css.icon_button} source={require('../images/ic_account_box.png')} />
-          <TextInput
-            style={base_css.textinput}
+            style={basestyles.textinput}
             keyboardType="default"
             placeholder={"Last name"}
             autoCapitalize="none"
@@ -228,11 +271,10 @@ export default class settingsView extends Component {
           />
         </View>
 
-        
-        <View style={base_css.text_field_with_icon}>
-          <Image style={base_css.icon_button} source={require('../images/ic_email.png')} />
+        <View style={basestyles.text_field_with_icon}>
+          <Image style={basestyles.icon_button} source={require('../images/ic_email.png')} />
           <TextInput
-            style={base_css.textinput}
+            style={basestyles.textinput}
             keyboardType="email-address"
             placeholder={"Email Address"}
             autoCapitalize="none"
@@ -246,8 +288,8 @@ export default class settingsView extends Component {
         <Button
           text="Logout"
           onpress={this.logout}
-          button_styles={base_css.primary_button}
-          button_text_styles={base_css.primary_button_text} />
+          button_styles={basestyles.primary_button}
+          button_text_styles={basestyles.primary_button_text} />
       </View>
     );
   }
@@ -261,9 +303,9 @@ export default class settingsView extends Component {
 
   _renderErrorNotification (errorText) {
     return (
-      <View style={base_css.error_notification}>
-        <Image style={base_css.icon_notification} source={require('../images/ic_error.png')} />
-        <Text numberOfLines={5} style={base_css.notification_text}>{errorText}</Text>
+      <View style={basestyles.error_notification}>
+        <Image style={basestyles.icon_notification} source={require('../images/ic_error.png')} />
+        <Text numberOfLines={5} style={basestyles.notification_text}>{errorText}</Text>
       </View>
     );
   }

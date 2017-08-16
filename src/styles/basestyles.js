@@ -4,9 +4,13 @@ import React, {
   PixelRatio
 } from 'react-native';
 
+const COLORS = {
+  grey: 'rgba(140, 140, 140, 1)'
+};
+
 module.exports = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
 
   body_width_stretched: {
@@ -38,6 +42,7 @@ module.exports = StyleSheet.create({
 
   // Global background image style
   background_image: {
+    zIndex: 1,
     flex: 1,
     width: undefined,
     height: undefined,
@@ -209,14 +214,14 @@ module.exports = StyleSheet.create({
   },
 
   start_page__body: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    height: 40,
-    width: 150,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    borderColor: '#FFFFFF',
-    borderRadius: 3
+    flex: 1,
+    backgroundColor: 'rgba(191, 191, 191, 0.1)',
+  },
+
+  teset: {
+    height: 'auto',
+    width: 'auto',
+    backgroundColor: 'rgba(191, 191, 11, 1)',
   },
 
   start_page__text: {
@@ -234,7 +239,13 @@ module.exports = StyleSheet.create({
 
   settings_body: {
     flex: 1,
-    marginTop: 60,
+    alignItems: 'center',
+    // backgroundColor: 'transparent',
+    backgroundColor: 'rgba(13, 88, 13, 1)'
+  },
+
+  base_body: {
+    flex: 1,
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
@@ -321,7 +332,7 @@ module.exports = StyleSheet.create({
 
   textinput: {
     fontSize: 14,
-    width: 300,
+    width: 200,
     paddingLeft: 10,
     paddingRight: 10,
     borderWidth: 0,
@@ -360,6 +371,12 @@ module.exports = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     opacity: 0.7
+  },
+
+  icon_button_large: {
+    width: 192,
+    height: 192,
+    padding: 10
   },
 
   activity_indicator: {

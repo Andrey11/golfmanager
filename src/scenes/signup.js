@@ -9,10 +9,7 @@ import {
   Image
 } from 'react-native';
 
-import * as RightButtonMapper from '../navigation/rightButtonMapper';
-
 import Button from '../components/button';
-import Login from './login';
 
 import styles from '../styles/basestyles.js';
 
@@ -51,23 +48,15 @@ export default class signup extends Component {
 	}
 
   componentDidMount () {
-    RightButtonMapper.bindButton(this.props.navigator, this.signup);
+
   }
 
   goToLogin () {
-    this.props.navigator.replace({
-      component: Login,
-      passProps: {
-        navHeaderTitle: '',
-        leftButton: false,
-        rightButton: true,
-        rightButtonName: 'LOGIN'
-      }
-    });
+    this.props.navigation.navigate('Login');
   }
 
   verifyUsernameAvailable () {
-    let firebaseApp = this.props.firebaseApp;
+    let firebaseApp = this.props.screenProps.firebase;
     let username = this.state.username.toLowerCase();
 
     this.setState({
@@ -95,7 +84,7 @@ export default class signup extends Component {
   }
 
   signup () {
-    let firebaseApp = this.props.firebaseApp;
+    let firebaseApp = this.props.screenProps.firebase;
     let fbAuth = firebaseApp.auth();
 
     if (this.state.creatingAccount || this.state.serverCommunicating) {
@@ -149,7 +138,7 @@ export default class signup extends Component {
   }
 
   addUserToGolfmanagerDatabase () {
-    let firebase = this.props.firebaseApp;
+    let firebase = this.props.screenProps.firebase;
     let user = firebase.auth().currentUser;
     let updates = {};
     let currentDate = new Date().getTime() / 1000;

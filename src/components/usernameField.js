@@ -13,6 +13,7 @@ import styles from '../styles/basestyles.js';
 
 export default class usernameField extends Component {
 
+
   constructor (props) {
     super(props);
 
@@ -31,8 +32,7 @@ export default class usernameField extends Component {
   }
 
   verifyUsernameAvailable () {
-    let firebaseApp = this.props.firebaseApp;
-    let user = firebaseApp.auth().currentUser;
+    let user = this.props.firebase.auth().currentUser;
 
     if (user.displayName === this.state.username) {
       this.props.onBlur(this.state);
@@ -55,7 +55,7 @@ export default class usernameField extends Component {
         username: this.state.username
       });
     } else {
-      let usernamesRef = firebaseApp.database().ref('usernames');
+      let usernamesRef = this.props.firebase.database().ref('usernames');
       usernamesRef.orderByValue().equalTo(username).once('value')
       .then((snapshot) => {
         this.setState({

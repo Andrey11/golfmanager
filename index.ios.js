@@ -5,63 +5,48 @@ import { StackNavigator } from 'react-navigation';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
   View,
-  NavigatorIOS
+  Image
 } from 'react-native';
 
-// import Test from './src/scenes/tester';
-// import AuthControl from './src/scenes/authControl';
+// Scenes
+import AuthControl from './src/scenes/authControl';
 import Login from './src/scenes/login';
+import CentralHub from './src/scenes/centralHub';
+import SettingsView from './src/scenes/settingsView';
+import ResetPassword from './src/scenes/resetPassword';
+import Signup from './src/scenes/signup';
 
-// import basestyles from './src/styles/basestyles.js';
+import basestyles from './src/styles/basestyles.js';
 
 const firebase = Firebase.initializeApp(FirebaseKeys.getFirebaseConfig());
 
-// export default class golfmanager extends Component {
-//
-//   render() {
-//     return (
-//       <NavigatorIOS
-//         style={styles.navContainer}
-//         initialRoute={{
-//           component: Login,
-//           title: 'ttt',
-//           backButtonTitle: 'Back'
-//         }}/>
-//
-//     );
-//   }
-// }
+class golfmanager extends React.Component {
 
-// var styles = StyleSheet.create({
-//   navContainer: {
-//     flex: 1
-//   },
-//   container: {
-//     flex: 1,
-//     padding: 30,
-//     marginTop: 65,
-//     alignItems: 'stretch'
-//   },
-// });
-//
-// class Tester extends Component {
-//
-//   render () {
-//     return (
-//         // <View>
-//         //   <Text>Loading</Text>
-//         // </View>
-//         <Test />
-//     );
-//   }
-// }
+  constructor(props){
+		super(props);
 
-const golfmanager = StackNavigator({
-  Home: { screen: Login },
-  // Search: { screen: Search },
-  // MessageViewer: { screen: MessageViewer }
-});
+    this._navigator = StackNavigator({
+      Home: { screen: AuthControl },
+      Login: { screen: Login },
+      ResetPassword: { screen: ResetPassword },
+      Signup: { screen: Signup },
+      CentralHub: { screen: CentralHub },
+      SettingsView: { screen: SettingsView },
+    });
+	}
+
+  render() {
+    let Navigator = this._navigator;
+
+    let props = {
+      firebase: firebase
+    };
+
+    return ( <Navigator screenProps={props} {...this.props} /> );
+  }
+}
+
+
 
 AppRegistry.registerComponent('golfmanager', () => golfmanager);

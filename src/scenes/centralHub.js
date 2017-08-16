@@ -10,13 +10,11 @@ import {
   InteractionManager,
   Picker,
   TouchableHighlight,
+  ActivityIndicator,
   Modal
 } from 'react-native';
 
 import { FriendActionTypes } from '../utilities/const';
-import * as RightButtonMapper from '../navigation/rightButtonMapper';
-
-import GiftedSpinner from 'react-native-gifted-spinner';
 
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
@@ -29,12 +27,30 @@ import SettingsView from './settingsView';
 import Round from './round';
 import AddFriend from './friends';
 
+import BackgroundImage from '../components/backgroundImage';
+
 import styles from '../styles/basestyles.js';
 
 export default class centralHub extends Component {
 
+  static navigationOptions = ({ navigation }) => ({
+      title: 'Central Hub',
+      headerStyle: styles.teset,
+      headerLeft: null,
+      headerRight:
+        <IconButton
+          iconSource={require('../images/ic_settings.png')}
+          touchableHighlightStyle={styles.nav_right_icon_button}
+          underlayColor={'rgba(255, 255, 255, 0.3)'}
+          imageStyle={styles.nav_icon}
+          onButtonPressed={() => navigation.state.params.handleSave()}>
+        </IconButton>
+  });
+
 	constructor (props) {
     super(props);
+
+    const { params } = this.props.navigation.state;
 
     this.state = {
       renderPlaceholderOnly: true
@@ -44,15 +60,30 @@ export default class centralHub extends Component {
     this.addRound = this.addRound.bind(this);
     this.addFriend = this.addFriend.bind(this);
     this.addCourse = this.addCourse.bind(this);
+
+    // this._getHeaderRightButton = this._getHeaderRightButton.bind(this);
 	}
 
   componentDidMount () {
-    RightButtonMapper.bindButton(this.props.navigator, this.showSettings);
+    // RightButtonMapper.bindButton(this.props.navigator, this.showSettings);
+    this.props.navigation.setParams({ handleSave: this.showSettings });
+
 
     InteractionManager.runAfterInteractions(() => {
       this.setState({renderPlaceholderOnly: false});
     });
   }
+
+  // static _getHeaderRightButton () {
+  //   return (
+  //     <IconButton
+  //       iconSource={require('../images/ic_settings.png')}
+  //       touchableHighlightStyle={styles.nav_right_icon_button}
+  //       underlayColor={'rgba(255, 255, 255, 0.3)'}
+  //       imageStyle={styles.nav_icon}
+  //       onButtonPressed={this.showSettings}>
+  //     </IconButton>);
+  // }
 
   onAddCourse () {
 
@@ -65,17 +96,21 @@ export default class centralHub extends Component {
   showSettings () {
     // let bgImageSource = require('../images/golf_bg_9.png');
 
-    this.props.navigator.push({
-      component: SettingsView,
-      // sceneBackgroundImage: bgImageSource,
-      passProps: {
-        navHeaderTitle: '',
-        leftButton: true,
-        rightButton: true,
-        sceneType: 'SETTINGS',
-        rightButtonName: 'EDIT'
-      }
-    });
+    let nav = this.props.navigation;
+
+    nav.navigate('SettingsView');
+
+    // this.props.navigator.push({
+    //   component: SettingsView,
+    //   // sceneBackgroundImage: bgImageSource,
+    //   passProps: {
+    //     navHeaderTitle: '',
+    //     leftButton: true,
+    //     rightButton: true,
+    //     sceneType: 'SETTINGS',
+    //     rightButtonName: 'EDIT'
+    //   }
+    // });
   }
 
   addRound () {
@@ -121,7 +156,7 @@ export default class centralHub extends Component {
     }
 
     return (
-      <View>
+      <BackgroundImage>
 
           <IconButton
             iconSource={require('../images/ic_golf_course.png')}
@@ -141,17 +176,15 @@ export default class centralHub extends Component {
             onButtonPressed={this.addRound}
             touchableHighlightStyle={styles.add_round_button}  />
 
-      </View>
+      </BackgroundImage>
     );
   }
 
   _renderPlaceholderView() {
-    // TODO: Create a proper loader
     return (
-      <View style={styles.start_page__body}>
-        <Text style={styles.start_page__text}>Loading</Text>
-        <GiftedSpinner />
-      </View>
+      <BackgroundImage>
+        <ActivityIndicator size='large' />
+      </BackgroundImage>
     );
   }
 }

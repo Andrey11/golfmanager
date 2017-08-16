@@ -10,17 +10,31 @@ import {
   ActivityIndicator
 } from 'react-native';
 
-import * as RightButtonMapper from '../navigation/rightButtonMapper';
-
-import Login from './login';
-import Signup from './signup';
+import { NavigationActions } from 'react-navigation';
 import Button from '../components/button';
-import styles from '../styles/basestyles.js';
+import IconButton from '../components/iconButton';
+
+import basestyles from '../styles/basestyles.js';
 
 export default class resetPassword extends Component {
 
+  static navigationOptions = ({ navigation }) => ({
+      title: 'Reset Password',
+      headerLeft: null,
+      headerRight:
+        <IconButton
+          iconSource={require('../images/ic_check_circle.png')}
+          touchableHighlightStyle={basestyles.nav_right_icon_button}
+          underlayColor={'rgba(255, 255, 255, 0.3)'}
+          imageStyle={basestyles.nav_icon}
+          onButtonPressed={() => navigation.state.params.resetPassword()}>
+        </IconButton>,
+  });
+
   constructor (props) {
     super(props);
+
+    const { params } = this.props.navigation.state;
 
     // Inital state
     this.state = {
@@ -36,41 +50,19 @@ export default class resetPassword extends Component {
 
     this.resetPassword = this.resetPassword.bind(this);
     this.goToLogin = this.goToLogin.bind(this);
-    this.goToSignup = this.goToSignup.bind(this);
     this._renderMessage = this._renderMessage.bind(this);
   }
 
   componentDidMount () {
-    RightButtonMapper.bindButton(this.props.navigator, this.resetPassword);
+    this.props.navigation.setParams({ resetPassword: this.resetPassword });
   }
 
   goToLogin () {
-    this.props.navigator.replace({
-      component: Login,
-      passProps: {
-        navHeaderTitle: '',
-        leftButton: false,
-        rightButton: true,
-        rightButtonName: 'LOGIN'
-      }
-    });
+    this.props.navigation.goBack();
   }
-
-  goToSignup () {
-    this.props.navigator.replace({
-      component: Signup,
-      passProps: {
-        navHeaderTitle: '',
-        leftButton: false,
-        rightButton: true,
-        rightButtonName: 'SIGNUP'
-      }
-    });
-  }
-
 
   resetPassword () {
-    var firebaseApp = this.props.firebaseApp;
+    var firebaseApp = this.props.screenProps.firebase;
     var fbAuth = firebaseApp.auth();
 
     this.setState({connecting: true});
@@ -110,11 +102,11 @@ export default class resetPassword extends Component {
 
   render () {
     return (
-      <View style={styles.unathenticated_body}>
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
+      <View style={basestyles.unathenticated_body}>
+        <View style={basestyles.text_field_with_icon}>
+          <Image style={basestyles.icon_button} source={require('../images/ic_email.png')} />
           <TextInput
-            style={styles.textinput}
+            style={basestyles.textinput}
             underlineColorAndroid='rgba(0,0,0,0)'
             keyboardType="email-address"
             placeholder={"Enter Your Email Address"}
@@ -134,20 +126,15 @@ export default class resetPassword extends Component {
         {this._renderMessage()}
 
         <ActivityIndicator
-          style={styles.connecting_indicator}
+          style={basestyles.connecting_indicator}
           color={'rgba(0, 0, 0, 0.9)'}
           animating={this.state.connecting} />
 
         <Button
           text="Return to login"
           onpress={this.goToLogin}
-          button_styles={styles.semi_transparent_button}
-          button_text_styles={styles.semi_transparent_button_text} />
-        <Button
-          text="New user? Create an account."
-          onpress={this.goToSignup}
-          button_styles={styles.semi_transparent_button_second}
-          button_text_styles={styles.semi_transparent_button_text} />
+          button_styles={basestyles.semi_transparent_button}
+          button_text_styles={basestyles.semi_transparent_button_text} />
       </View>
     );
   }
@@ -155,23 +142,23 @@ export default class resetPassword extends Component {
   _renderMessage () {
     if (this.state.resetErrorEmailInvalid) {
       return (
-        <View style={styles.error_notification}>
-          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={styles.notification_text}>{this.state.resetErrorEmailInvalidText}</Text>
+        <View style={basestyles.error_notification}>
+          <Image style={basestyles.icon_notification} source={require('../images/ic_error.png')} />
+          <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetErrorEmailInvalidText}</Text>
         </View>
       );
     } else if (this.state.resetErrorUserNotFound) {
       return (
-        <View style={styles.error_notification}>
-          <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={styles.notification_text}>{this.state.resetErrorUserNotFoundText}</Text>
+        <View style={basestyles.error_notification}>
+          <Image style={basestyles.icon_notification} source={require('../images/ic_error.png')} />
+          <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetErrorUserNotFoundText}</Text>
         </View>
       );
     } else if (this.state.resetSuccess) {
       return (
-        <View style={styles.success_notification}>
-          <Image style={styles.icon_notification} source={require('../images/ic_check_circle.png')} />
-          <Text numberOfLines={5} style={styles.notification_text}>{this.state.resetSuccessText}</Text>
+        <View style={basestyles.success_notification}>
+          <Image style={basestyles.icon_notification} source={require('../images/ic_check_circle.png')} />
+          <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetSuccessText}</Text>
         </View>
       );
     } else {

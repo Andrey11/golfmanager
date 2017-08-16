@@ -19,6 +19,12 @@ import styles from '../styles/basestyles.js';
 
 export default class login extends Component {
 
+  static navigationOptions = {
+    title: 'Login',
+    headerLeft: null,
+    headerRight: null,
+  };
+
   constructor (props) {
     super(props);
 
@@ -39,6 +45,8 @@ export default class login extends Component {
     this.login = this.login.bind(this);
     this.goToSignup = this.goToSignup.bind(this);
     this.goToResetPassword = this.goToResetPassword.bind(this);
+
+    this.firebase = this.props.screenProps.firebase;
   }
 
   componentDidMount () {
@@ -46,36 +54,19 @@ export default class login extends Component {
   }
 
   goToSignup () {
-    this.props.navigator.replace({
-      component: Signup,
-      passProps: {
-        navHeaderTitle: '',
-        leftButton: false,
-        rightButton: true,
-        rightButtonName: 'SIGNUP'
-      }
-    });
+    this.props.navigation.navigate('Signup');
   }
 
   goToResetPassword () {
-    this.props.navigator.replace({
-      component: ResetPassword,
-      passProps: {
-        navHeaderTitle: '',
-        leftButton: false,
-        rightButton: true,
-        rightButtonName: 'RESET PASSWORD'
-      }
-    });
+    this.props.navigation.navigate('ResetPassword');
   }
 
   login () {
-    var firebase = this.props.firebase;
-    var fbAuth = firebase.auth();
+    var firebaseAuth = this.firebase.auth();
 
     this.setState({login:true});
 
-    fbAuth.signInWithEmailAndPassword(this.state.email, this.state.password)
+    firebaseAuth.signInWithEmailAndPassword(this.state.email, this.state.password)
     .catch((error) => this.onLoginError(error));
   }
 
