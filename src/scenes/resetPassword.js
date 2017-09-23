@@ -13,14 +13,25 @@ import {
 import { NavigationActions } from 'react-navigation';
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
+import TextFieldWithIcon from '../components/textFieldWithIcon';
+
 
 import basestyles from '../styles/basestyles.js';
 
 export default class resetPassword extends Component {
 
   static navigationOptions = ({ navigation }) => ({
-      title: 'Reset Password',
-      headerLeft: null,
+      title: 'Reset password',
+      headerStyle: basestyles.header,
+      headerTitleStyle: basestyles.header_title,
+      headerLeft:
+        <IconButton
+          iconSource={require('../images/ic_arrow_back.png')}
+          touchableHighlightStyle={basestyles.header_left_button}
+          underlayColor={'rgba(255, 255, 255, 0)'}
+          imageStyle={[basestyles.nav_icon, basestyles.header_icon_button]}
+          onButtonPressed={() => navigation.goBack()}>
+        </IconButton>,
       headerRight:
         <IconButton
           iconSource={require('../images/ic_check_circle.png')}
@@ -43,22 +54,18 @@ export default class resetPassword extends Component {
       resetErrorEmailInvalid: false,
       resetErrorUserNotFound: false,
       resetSuccess: false,
+      resetPasswordInfo: 'Hello asdsad sadasd sadadas \n asdasdsad asdasda asdasd \n asdasdadasd',
       resetErrorEmailInvalidText: 'Email address you provided is invalid',
       resetErrorUserNotFoundText: 'Email address does not exist',
       resetSuccessText: 'Password reset email has been sent, please check your email for a link to create a new password'
     };
 
     this.resetPassword = this.resetPassword.bind(this);
-    this.goToLogin = this.goToLogin.bind(this);
     this._renderMessage = this._renderMessage.bind(this);
   }
 
   componentDidMount () {
     this.props.navigation.setParams({ resetPassword: this.resetPassword });
-  }
-
-  goToLogin () {
-    this.props.navigation.goBack();
   }
 
   resetPassword () {
@@ -99,29 +106,86 @@ export default class resetPassword extends Component {
       resetSuccess: false
     });
   }
-
+  /*  <View style={basestyles.text_field_with_icon}>
+      <View style={basestyles.image_wrapper}>
+        <Image style={basestyles.image_textfield_icon} source={require('../images/ic_email.png')} />
+      </View>
+      <TextInput
+        style={basestyles.textinput}
+        underlineColorAndroid='rgba(0,0,0,0)'
+        keyboardType="email-address"
+        placeholder={"Enter your email address"}
+        autoCapitalize="none"
+        autoCorrect={false}
+        autoFocus={true}
+        value={this.state.email}
+        onChangeText={(text) => this.setState({
+          email: text,
+          resetErrorEmailInvalid: false,
+          resetErrorUserNotFound: false,
+          resetSuccess: false
+        })}
+      />
+    </View>*/
   render () {
+    /**
+    <View style={basestyles.body}>
+      <View style={basestyles.text_field_with_icon}>
+        <Image style={basestyles.icon_button} source={require('../images/ic_email.png')} />
+        <TextInput
+          style={basestyles.textinput}
+          underlineColorAndroid='rgba(0,0,0,0)'
+          keyboardType="email-address"
+          placeholder={"Enter Your Email Address"}
+          autoCapitalize="none"
+          autoCorrect={false}
+          autoFocus={true}
+          value={this.state.email}
+          onChangeText={(text) => this.setState({
+            email: text,
+            resetErrorEmailInvalid: false,
+            resetErrorUserNotFound: false,
+            resetSuccess: false
+          })}
+        />
+      </View>
+
+      {this._renderMessage()}
+
+      <ActivityIndicator
+        style={basestyles.connecting_indicator}
+        color={'rgba(0, 0, 0, 0.9)'}
+        animating={this.state.connecting} />
+
+      <Button
+        text="Return to login"
+        onpress={this.goToLogin}
+        button_styles={basestyles.semi_transparent_button}
+        button_text_styles={basestyles.semi_transparent_button_text} />
+    </View>
+    */
     return (
-      <View style={basestyles.unathenticated_body}>
-        <View style={basestyles.text_field_with_icon}>
-          <Image style={basestyles.icon_button} source={require('../images/ic_email.png')} />
-          <TextInput
-            style={basestyles.textinput}
-            underlineColorAndroid='rgba(0,0,0,0)'
-            keyboardType="email-address"
-            placeholder={"Enter Your Email Address"}
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoFocus={true}
-            value={this.state.email}
-            onChangeText={(text) => this.setState({
-              email: text,
-              resetErrorEmailInvalid: false,
-              resetErrorUserNotFound: false,
-              resetSuccess: false
-            })}
-          />
-        </View>
+      <View style={[basestyles.unathenticated_body,
+                    basestyles.main_background_color,
+                    basestyles.side_padding
+                  ]}>
+        <Text >
+          {this.state.resetPasswordInfo}
+        </Text>
+
+        <TextFieldWithIcon
+          iconSource={require('../images/ic_email.png')}
+          textValue={this.state.email}
+          onChangeText={(text) => this.setState({
+            email: text,
+            resetErrorEmailInvalid: false,
+            resetErrorUserNotFound: false,
+            resetSuccess: false
+          })}
+          placeholderText={"Enter your email address"}
+          keyboardType="email-address"
+        />
+
 
         {this._renderMessage()}
 
@@ -129,12 +193,6 @@ export default class resetPassword extends Component {
           style={basestyles.connecting_indicator}
           color={'rgba(0, 0, 0, 0.9)'}
           animating={this.state.connecting} />
-
-        <Button
-          text="Return to login"
-          onpress={this.goToLogin}
-          button_styles={basestyles.semi_transparent_button}
-          button_text_styles={basestyles.semi_transparent_button_text} />
       </View>
     );
   }

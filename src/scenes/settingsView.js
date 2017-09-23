@@ -18,6 +18,7 @@ import IconButton from '../components/iconButton';
 import TextFieldWithIcon from '../components/textFieldWithIcon';
 import TextField from '../components/textField';
 
+import * as NavActionsUtil from '../navigation/navigationActionsUtil';
 
 import basestyles from '../styles/basestyles.js';
 
@@ -26,26 +27,26 @@ export default class settingsView extends Component {
   //TODO: perform slide down action when opening settings
   static navigationOptions = ({ navigation }) => ({
       title: 'Settings',
+      headerStyle: basestyles.header,
+      headerTitleStyle: basestyles.header_title,
       headerLeft:
         <IconButton
           iconSource={require('../images/ic_arrow_back.png')}
-          touchableHighlightStyle={basestyles.nav_right_icon_button}
-          underlayColor={'rgba(255, 255, 255, 0.3)'}
-          imageStyle={basestyles.nav_icon}
+          touchableHighlightStyle={basestyles.header_left_button}
+          underlayColor={'rgba(255, 255, 255, 0)'}
+          imageStyle={[basestyles.nav_icon, basestyles.header_icon_button]}
           onButtonPressed={() => navigation.goBack()}>
         </IconButton>,
       headerRight:
         <IconButton
-          iconSource={require('../images/ic_check_circle.png')}
-          touchableHighlightStyle={basestyles.nav_right_icon_button}
-          underlayColor={'rgba(255, 255, 255, 0.3)'}
-          imageStyle={basestyles.nav_icon}
+          iconSource={require('../images/ic_check.png')}
+          touchableHighlightStyle={basestyles.header_right_button}
+          underlayColor={'rgba(255, 255, 255, 0)'}
+          imageStyle={[basestyles.nav_icon, basestyles.header_icon_button]}
           onButtonPressed={() => navigation.state.params.updateDatabaseInfo()}>
         </IconButton>,
 
   });
-
-
 
   constructor (props) {
     super(props);
@@ -67,6 +68,7 @@ export default class settingsView extends Component {
     };
 
     // bind function to settings.js scope
+    this.onAuthStateChanged = this.onAuthStateChanged.bind(this);
     this.logout = this.logout.bind(this);
     this.verifyEmail = this.verifyEmail.bind(this);
     this.verifyUsernameAvailable = this.verifyUsernameAvailable.bind(this);
@@ -79,12 +81,22 @@ export default class settingsView extends Component {
     // handlers for usernameField component
     this.onUsernameFieldUpdate = this.onUsernameFieldUpdate.bind(this);
     this.onUsernameFieldSubmitEditing = this.onUsernameFieldSubmitEditing.bind(this);
+
+    this.firebase = this.props.screenProps.firebase;
   }
 
   componentDidMount () {
     // RightButtonMapper.bindButton(this.props.navigator, this.editUserSettings);
+    let fbAuth = this.firebase.auth();
+    fbAuth.onAuthStateChanged(this.onAuthStateChanged);
     this.props.navigation.setParams({ updateDatabaseInfo: this.updateDatabaseInfo });
     this.loadUserInfo();
+  }
+
+  onAuthStateChanged (user) {
+    if (user === null) {
+      this.props.navigation.dispatch(NavActionsUtil.unauthenticated);
+    }
   }
 
   loadUserInfo () {
@@ -236,13 +248,14 @@ export default class settingsView extends Component {
 </View>
 */
     return (
-      <View style={basestyles.settings_body}>
+      <View style={[basestyles.body,
+                    basestyles.main_background_color]}>
 
         <Image
           style={basestyles.icon_button_large}
           source={require('../images/ic_account_box.png')} />
 
-        <UsernameField
+        {/*}<UsernameField
           firebase={this.props.screenProps.firebase}
           username={this.state.username}
           onBlur={this.onUsernameFieldUpdate}
@@ -283,13 +296,13 @@ export default class settingsView extends Component {
             editable={false}
             onChangeText={(text) => this.setState({email: text})}
           />
-        </View>
+        </View>*/}
 
         <Button
           text="Logout"
           onpress={this.logout}
-          button_styles={basestyles.primary_button}
-          button_text_styles={basestyles.primary_button_text} />
+          button_styles={localstyles.button}
+          button_text_styles={localstyles.button_text} />
       </View>
     );
   }
@@ -314,7 +327,7 @@ export default class settingsView extends Component {
 AppRegistry.registerComponent('settingsView', () => settingsView);
 
 
-const private_css = StyleSheet.create({
+const localstyles = StyleSheet.create({
   add_round_button: {
     backgroundColor: 'rgba(0, 145, 27, 1)',
     borderColor: 'rgba(0, 145, 27, 1)',
@@ -322,6 +335,24 @@ const private_css = StyleSheet.create({
     borderWidth: 1,
     margin: 10,
     padding: 20,
+  },
+
+  button_text: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: '200',
+    fontFamily: 'Avenir',
+  },
+
+  button: {
+    height: 50,
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: 'rgba(55, 115, 55, 1)',
+    borderColor: 'rgba(55, 115, 55, 1)',
+    borderRadius: 3,
+    borderWidth: 1,
   },
 
 

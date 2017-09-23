@@ -175,7 +175,7 @@ export default class signup extends Component {
 
   render () {
     return (
-      <View style={styles.unathenticated_body}>
+      <View style={styles.body}>
         <View style={styles.text_field_with_icon}>
           <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput

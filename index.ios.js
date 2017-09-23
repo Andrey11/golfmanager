@@ -33,6 +33,8 @@ class golfmanager extends React.Component {
       Signup: { screen: Signup },
       CentralHub: { screen: CentralHub },
       SettingsView: { screen: SettingsView },
+    } , {
+      initialRouteName: 'Login',
     });
 	}
 

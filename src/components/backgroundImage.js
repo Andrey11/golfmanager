@@ -10,14 +10,22 @@ import {
 export default class backgroundImage extends Component {
 
   render () {
+    // return (
+    //   <View style={localstyles.component_body}>
+    //     <View style={localstyles.background_image_wrapper}>
+    //       <Image
+    //         style={localstyles.background_image}
+    //         source={require('../images/golf_bg_12.jpg')}
+    //       />
+    //     </View>
+    //     <View style={localstyles.content_body}>
+    //       {this.props.children}
+    //     </View>
+    //   </View>
+    // );
+
     return (
       <View style={localstyles.component_body}>
-        <View style={localstyles.background_image_wrapper}>
-          <Image
-            style={localstyles.background_image}
-            source={require('../images/golf_bg_12.jpg')}
-          />
-        </View>
         <View style={localstyles.content_body}>
           {this.props.children}
         </View>
@@ -29,7 +37,7 @@ export default class backgroundImage extends Component {
 const localstyles = StyleSheet.create({
   component_body: {
     flex: 1,
-    backgroundColor: 'rgba(191, 191, 191, 0.1)',
+    backgroundColor: 'rgba(82, 170, 57, 1)',
   },
 
   background_image: {

@@ -19,8 +19,8 @@ export default class authControl extends Component {
     // header: <View style={styles.teset}></View>
   });
 
-	constructor(props){
-		super(props);
+	constructor (props) {
+    super(props);
     this.onAuthStateChanged = this.onAuthStateChanged.bind(this);
     this.firebase = this.props.screenProps.firebase;
 	}

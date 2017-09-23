@@ -86,6 +86,11 @@ module.exports = StyleSheet.create({
     paddingTop: 2,
   },
 
+  // nav_right_icon_button: {
+  //   backgroundColor: 'rgba(255, 255, 255, 0.0)',
+  //   paddingRight: 7,
+  //   paddingTop: 2,
+  // },
   nav_right_icon_button: {
     backgroundColor: 'rgba(255, 255, 255, 0.0)',
     paddingRight: 7,
@@ -155,45 +160,54 @@ module.exports = StyleSheet.create({
 
   // START OF     Notification dialogs
   error_notification: {
-    marginLeft: 15,
-    marginRight: 15,
-    marginTop: 5,
+    width: '100%',
+    height: 50,
+    backgroundColor: 'rgba(208, 68, 55, 1)',
+    flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'rgba(215, 0, 0, 0.7)',
-    borderColor: 'rgba(125, 0, 0, 0.5)',
-    borderRadius: 3,
-    borderWidth: 1,
     alignItems: 'center',
-    padding: 5,
+    position: 'absolute',
+    top: 40,
   },
 
   success_notification: {
-    marginLeft: 15,
-    marginRight: 15,
-    marginTop: 5,
+    width: '100%',
+    height: 50,
     flexDirection: 'row',
     backgroundColor: 'rgba(0, 145, 27, 0.5)',
     borderColor: 'rgba(0, 145, 27, 1)',
     borderRadius: 3,
     borderWidth: 1,
     alignItems: 'center',
-    padding: 5,
+  },
+
+  icon_notification_wrapper: {
+    width: 50,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'rgba(100, 110, 111, 0.5)',
+    backgroundColor: 'rgba(215, 0, 0, 1)',
   },
 
   notification_text: {
+    fontSize: 16,
     flex: 1,
-    flexWrap: 'wrap',
-    marginLeft: 10,
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontFamily: 'ArialRoundedMTBold',
+    textAlign: 'center',
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderWidth: 0,
+    fontWeight: '300',
+    // fontFamily: 'Avenir',
+    fontFamily: 'Avenir Next Condensed Ultra Light',
+    color: 'rgba(255, 255, 255, 1)',
   },
 
   icon_notification: {
-    width: 24,
-    height: 24,
-    marginLeft: 5,
-    marginRight: 1,
-    tintColor: 'rgba(255, 255, 255, 0.9)',
+    width: 30,
+    height: 30,
+    tintColor: 'rgba(255, 255, 255, 1)',
   },
   // END OF       Notification dialogs
 
@@ -218,10 +232,33 @@ module.exports = StyleSheet.create({
     backgroundColor: 'rgba(191, 191, 191, 0.1)',
   },
 
-  teset: {
-    height: 'auto',
-    width: 'auto',
-    backgroundColor: 'rgba(191, 191, 11, 1)',
+  header: {
+    // backgroundColor: 'rgba(20, 85, 15, 1)',
+    backgroundColor: 'rgba(82, 170, 57, 1)',
+  },
+
+  header_right_button: {
+    marginRight: 5,
+    marginTop: 2,
+  },
+
+  header_left_button: {
+    marginLeft: 5,
+    marginTop: 2,
+  },
+
+  header_icon_button: {
+    tintColor: 'rgba(255, 255, 255, 1)',
+    // tintColor: 'rgba(118, 200, 100, 1)',
+  },
+
+  header_title: {
+    // fontFamily: 'ArialRoundedMTBold',
+    fontFamily: 'Avenir Light',
+    fontSize: 22,
+    fontWeight: '500',
+    color: 'rgba(255, 255, 255, 0.9)',
+    // color: 'rgba(118, 200, 100, 0.6)',
   },
 
   start_page__text: {
@@ -237,29 +274,9 @@ module.exports = StyleSheet.create({
     // opacity: 0.3
   },
 
-  settings_body: {
-    flex: 1,
-    alignItems: 'center',
-    // backgroundColor: 'transparent',
-    backgroundColor: 'rgba(13, 88, 13, 1)'
-  },
-
-  base_body: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-
-  unathenticated_body: {
-    marginTop: 150,
-    flex: 1,
-    alignItems: 'center'
-  },
-
   body: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'transparent',
   },
 
   forgot_password_style: {
@@ -308,18 +325,23 @@ module.exports = StyleSheet.create({
   },
   // END OF     search field component
 
-  text_field_with_icon: {
-    marginTop: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    alignItems: 'center',
-    flexDirection: 'row',
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    borderColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 3,
-    borderWidth: 1 / PixelRatio.get()
+
+
+  side_padding: {
+    paddingLeft: 20,
+    paddingRight: 20,
   },
+
+  image_textfield_icon: {
+    width: 30,
+    height: 30,
+    tintColor: 'rgba(255, 255, 255, 1)',
+    // paddingLeft: 10,
+    // paddingRight: 10,
+    // opacity: 0.7
+  },
+
+
 
   textinput_with_two_icons: {
     fontSize: 14,
@@ -331,12 +353,13 @@ module.exports = StyleSheet.create({
   },
 
   textinput: {
-    fontSize: 14,
-    width: 200,
+    fontSize: 18,
+    flex: 1,
     paddingLeft: 10,
     paddingRight: 10,
     borderWidth: 0,
-    fontFamily: 'ArialRoundedMTBold',
+    // fontFamily: 'ArialRoundedMTBold',
+    fontFamily: 'Avenir Light',
   },
 
   icon_hidden: {
@@ -395,14 +418,17 @@ module.exports = StyleSheet.create({
   },
 
   semi_transparent_button: {
-    marginTop: 50,
-    padding: 15,
-    width: 344,
+    // marginTop: 50,
+    // padding: 15,
+    // width: 344,
+    height: 50,
+    // flex: 1,
+    flexDirection: 'row',
     backgroundColor: 'rgba(0, 77, 27, 0.5)',
     borderColor: 'rgba(0, 77, 27, 1)',
     borderRadius: 3,
     borderWidth: 1,
-    padding: 10,
+    // padding: 10,
   },
 
   semi_transparent_button_second: {
@@ -467,6 +493,10 @@ module.exports = StyleSheet.create({
 
   bg_color_green: {
     backgroundColor: 'rgba(0, 77, 27, 1)',
+  },
+
+  main_background_color: {
+    backgroundColor: 'rgba(82, 170, 57, 1)',
   },
   // END OF     background colors
 

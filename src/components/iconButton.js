@@ -14,6 +14,7 @@ export default class iconButton extends Component {
   render () {
     return (
       <TouchableHighlight
+        activeOpacity={0.8}
         style={this.props.touchableHighlightStyle}
         underlayColor={this.props.underlayColor}
         onPress={() => { this.props.onButtonPressed(this.props.pressedParam) }}>

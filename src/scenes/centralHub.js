@@ -7,7 +7,6 @@ import {
   View,
   ScrollView,
   Image,
-  InteractionManager,
   Picker,
   TouchableHighlight,
   ActivityIndicator,
@@ -34,15 +33,16 @@ import styles from '../styles/basestyles.js';
 export default class centralHub extends Component {
 
   static navigationOptions = ({ navigation }) => ({
-      title: 'Central Hub',
-      headerStyle: styles.teset,
+      title: 'Clubhouse',
+      headerStyle: styles.header,
+      headerTitleStyle: styles.header_title,
       headerLeft: null,
       headerRight:
         <IconButton
-          iconSource={require('../images/ic_settings.png')}
-          touchableHighlightStyle={styles.nav_right_icon_button}
-          underlayColor={'rgba(255, 255, 255, 0.3)'}
-          imageStyle={styles.nav_icon}
+          iconSource={require('../images/ic_more_vert.png')}
+          touchableHighlightStyle={styles.header_right_button}
+          underlayColor={'rgba(255, 255, 255, 0)'}
+          imageStyle={[styles.nav_icon, styles.header_icon_button]}
           onButtonPressed={() => navigation.state.params.handleSave()}>
         </IconButton>
   });
@@ -52,38 +52,18 @@ export default class centralHub extends Component {
 
     const { params } = this.props.navigation.state;
 
-    this.state = {
-      renderPlaceholderOnly: true
-    };
+    this.state = {renderPlaceholderOnly: true};
 
     this.showSettings = this.showSettings.bind(this);
     this.addRound = this.addRound.bind(this);
     this.addFriend = this.addFriend.bind(this);
     this.addCourse = this.addCourse.bind(this);
-
-    // this._getHeaderRightButton = this._getHeaderRightButton.bind(this);
 	}
 
   componentDidMount () {
-    // RightButtonMapper.bindButton(this.props.navigator, this.showSettings);
     this.props.navigation.setParams({ handleSave: this.showSettings });
-
-
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({renderPlaceholderOnly: false});
-    });
+    this.setState({renderPlaceholderOnly: false});
   }
-
-  // static _getHeaderRightButton () {
-  //   return (
-  //     <IconButton
-  //       iconSource={require('../images/ic_settings.png')}
-  //       touchableHighlightStyle={styles.nav_right_icon_button}
-  //       underlayColor={'rgba(255, 255, 255, 0.3)'}
-  //       imageStyle={styles.nav_icon}
-  //       onButtonPressed={this.showSettings}>
-  //     </IconButton>);
-  // }
 
   onAddCourse () {
 
