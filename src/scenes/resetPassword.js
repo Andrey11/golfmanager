@@ -14,6 +14,7 @@ import { NavigationActions } from 'react-navigation';
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
 import TextFieldWithIcon from '../components/textFieldWithIcon';
+import Notification from '../components/notification';
 
 
 import basestyles from '../styles/basestyles.js';
@@ -21,7 +22,10 @@ import basestyles from '../styles/basestyles.js';
 export default class resetPassword extends Component {
 
   static navigationOptions = ({ navigation }) => ({
-      title: 'Reset password',
+      // title: 'Reset password',
+      headerTitle:
+        <Image style={localstyles.logo_image_header}
+          source={require('../images/app-logo.png')} />,
       headerStyle: basestyles.header,
       headerTitleStyle: basestyles.header_title,
       headerLeft:
@@ -32,14 +36,14 @@ export default class resetPassword extends Component {
           imageStyle={[basestyles.nav_icon, basestyles.header_icon_button]}
           onButtonPressed={() => navigation.goBack()}>
         </IconButton>,
-      headerRight:
-        <IconButton
-          iconSource={require('../images/ic_check_circle.png')}
-          touchableHighlightStyle={basestyles.nav_right_icon_button}
-          underlayColor={'rgba(255, 255, 255, 0.3)'}
-          imageStyle={basestyles.nav_icon}
-          onButtonPressed={() => navigation.state.params.resetPassword()}>
-        </IconButton>,
+      headerRight: null
+        // <IconButton
+        //   iconSource={require('../images/ic_check_circle.png')}
+        //   touchableHighlightStyle={basestyles.nav_right_icon_button}
+        //   underlayColor={'rgba(255, 255, 255, 0.3)'}
+        //   imageStyle={basestyles.nav_icon}
+        //   onButtonPressed={() => navigation.state.params.resetPassword()}>
+        // </IconButton>,
   });
 
   constructor (props) {
@@ -51,17 +55,28 @@ export default class resetPassword extends Component {
     this.state = {
       email: '',
       connecting: false,
+      emailErrorState: 'none',
       resetErrorEmailInvalid: false,
       resetErrorUserNotFound: false,
       resetSuccess: false,
-      resetPasswordInfo: 'Hello asdsad sadasd sadadas \n asdasdsad asdasda asdasd \n asdasdadasd',
-      resetErrorEmailInvalidText: 'Email address you provided is invalid',
+      passwordResetSent: 'Success!',
+      passwordResetInfoText: 'We sent you an email with details on how to ' +
+      'complete the password reset process, you should check your inbox for ' +
+      'further details.',
+      forgotPassword: 'Forgot your password?',
+      resetPasswordInfoText: 'No worries, simply enter the email address you ' +
+      'used to create your Golf Life account. An email will be sent to ' +
+      'you with details on how to complete the password reset process.',
+      resetErrorEmailInvalidText: 'Sorry, this email is not valid',
       resetErrorUserNotFoundText: 'Email address does not exist',
-      resetSuccessText: 'Password reset email has been sent, please check your email for a link to create a new password'
+      resetSuccessText: 'Password reset details have been sent!',
     };
 
     this.resetPassword = this.resetPassword.bind(this);
     this._renderMessage = this._renderMessage.bind(this);
+    this.closeNotification = this.closeNotification.bind(this);
+
+    this.firebase = this.props.screenProps.firebase;
   }
 
   componentDidMount () {
@@ -69,12 +84,11 @@ export default class resetPassword extends Component {
   }
 
   resetPassword () {
-    var firebaseApp = this.props.screenProps.firebase;
-    var fbAuth = firebaseApp.auth();
+    let firebaseAuthentication = this.firebase.auth();
 
     this.setState({connecting: true});
 
-    fbAuth.sendPasswordResetEmail(this.state.email)
+    firebaseAuthentication.sendPasswordResetEmail(this.state.email)
     .then(() => this.onResetPasswordSent())
     .catch((error) => this.onResetPasswordError(error));
   }
@@ -82,6 +96,8 @@ export default class resetPassword extends Component {
   onResetPasswordSent () {
     this.setState({
       connecting: false,
+      emailErrorState: 'none',
+      textFieldState: false,
       resetErrorEmailInvalid: false,
       resetErrorUserNotFound: false,
       resetSuccess: true,
@@ -101,98 +117,81 @@ export default class resetPassword extends Component {
 
     this.setState({
       connecting: false,
+      emailErrorState: 'error',
       resetErrorEmailInvalid: isResetErrorEmailInvalid,
       resetErrorUserNotFound: isResetErrorUserNotFound,
       resetSuccess: false
     });
   }
-  /*  <View style={basestyles.text_field_with_icon}>
-      <View style={basestyles.image_wrapper}>
-        <Image style={basestyles.image_textfield_icon} source={require('../images/ic_email.png')} />
-      </View>
-      <TextInput
-        style={basestyles.textinput}
-        underlineColorAndroid='rgba(0,0,0,0)'
-        keyboardType="email-address"
-        placeholder={"Enter your email address"}
-        autoCapitalize="none"
-        autoCorrect={false}
-        autoFocus={true}
-        value={this.state.email}
-        onChangeText={(text) => this.setState({
-          email: text,
-          resetErrorEmailInvalid: false,
-          resetErrorUserNotFound: false,
-          resetSuccess: false
-        })}
-      />
-    </View>*/
+
+  closeNotification () {
+    this.setState({
+      emailErrorState: 'none',
+      resetErrorEmailInvalid: false,
+      resetErrorUserNotFound: false,
+      resetSuccess: false,
+    });
+  }
+
   render () {
-    /**
-    <View style={basestyles.body}>
-      <View style={basestyles.text_field_with_icon}>
-        <Image style={basestyles.icon_button} source={require('../images/ic_email.png')} />
-        <TextInput
-          style={basestyles.textinput}
-          underlineColorAndroid='rgba(0,0,0,0)'
-          keyboardType="email-address"
-          placeholder={"Enter Your Email Address"}
-          autoCapitalize="none"
-          autoCorrect={false}
-          autoFocus={true}
-          value={this.state.email}
-          onChangeText={(text) => this.setState({
-            email: text,
-            resetErrorEmailInvalid: false,
-            resetErrorUserNotFound: false,
-            resetSuccess: false
-          })}
-        />
-      </View>
 
-      {this._renderMessage()}
-
-      <ActivityIndicator
-        style={basestyles.connecting_indicator}
-        color={'rgba(0, 0, 0, 0.9)'}
-        animating={this.state.connecting} />
-
-      <Button
-        text="Return to login"
-        onpress={this.goToLogin}
-        button_styles={basestyles.semi_transparent_button}
-        button_text_styles={basestyles.semi_transparent_button_text} />
-    </View>
-    */
     return (
-      <View style={[basestyles.unathenticated_body,
-                    basestyles.main_background_color,
-                    basestyles.side_padding
-                  ]}>
-        <Text >
-          {this.state.resetPasswordInfo}
-        </Text>
+      <View style={[basestyles.body,
+        basestyles.main_background_color,
+      ]}>
 
-        <TextFieldWithIcon
-          iconSource={require('../images/ic_email.png')}
-          textValue={this.state.email}
-          onChangeText={(text) => this.setState({
-            email: text,
-            resetErrorEmailInvalid: false,
-            resetErrorUserNotFound: false,
-            resetSuccess: false
-          })}
-          placeholderText={"Enter your email address"}
-          keyboardType="email-address"
-        />
+        <View style={basestyles.side_padding}>
 
+          <Text style={localstyles.title_text}>
+            {
+              this.state.resetSuccess ?
+              this.state.passwordResetSent :
+              this.state.forgotPassword
+            }
+          </Text>
+
+          <Text style={localstyles.description_text}>
+            {
+              this.state.resetSuccess ?
+              this.state.passwordResetInfoText :
+              this.state.resetPasswordInfoText
+            }
+          </Text>
+
+          <TextFieldWithIcon
+            iconTextFieldTypeSource={require('../images/ic_email.png')}
+            iconTextFieldStateSource={require('../images/ic_error.png')}
+            textFieldState={this.state.emailErrorState}
+            textValue={this.state.email}
+            autoFocus={false}
+            onChangeText={(text) => this.setState({
+              email: text,
+              resetErrorEmailInvalid: false,
+              resetErrorUserNotFound: false,
+              resetSuccess: false,
+              emailErrorState: 'none',
+            })}
+            placeholderText={"Enter your email address"}
+            keyboardType='email-address'
+            returnKeyType='go'
+            onSubmitEditing={this.resetPassword} />
+
+          <Button
+            text='Reset password'
+            // style={[{marginTop: 20}]}
+            disabled={this.state.connecting}
+            onpress={this.resetPassword}
+            button_styles={this.state.connecting ?
+            localstyles.login_button_disabled :
+            localstyles.login_button}
+            button_text_styles={this.state.connecting ?
+            localstyles.login_button_text_disabled :
+            localstyles.login_button_text} />
+
+        </View>
 
         {this._renderMessage()}
 
-        <ActivityIndicator
-          style={basestyles.connecting_indicator}
-          color={'rgba(0, 0, 0, 0.9)'}
-          animating={this.state.connecting} />
       </View>
     );
   }
@@ -200,29 +199,115 @@ export default class resetPassword extends Component {
   _renderMessage () {
     if (this.state.resetErrorEmailInvalid) {
       return (
-        <View style={basestyles.error_notification}>
-          <Image style={basestyles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetErrorEmailInvalidText}</Text>
-        </View>
+        // <View style={basestyles.error_notification}>
+        //   <Image style={basestyles.icon_notification} source={require('../images/ic_error.png')} />
+        //   <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetErrorEmailInvalidText}</Text>
+        // </View>
+
+        <Notification
+          notificationText={this.state.resetErrorEmailInvalidText}
+          onDismissNotification={this.closeNotification}
+          type={'error'}
+        />
       );
     } else if (this.state.resetErrorUserNotFound) {
       return (
-        <View style={basestyles.error_notification}>
-          <Image style={basestyles.icon_notification} source={require('../images/ic_error.png')} />
-          <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetErrorUserNotFoundText}</Text>
-        </View>
+        // <View style={basestyles.error_notification}>
+        //   <Image style={basestyles.icon_notification} source={require('../images/ic_error.png')} />
+        //   <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetErrorUserNotFoundText}</Text>
+        // </View>
+
+        <Notification
+          notificationText={this.state.resetErrorUserNotFoundText}
+          onDismissNotification={this.closeNotification}
+          type={'error'}
+        />
       );
     } else if (this.state.resetSuccess) {
       return (
-        <View style={basestyles.success_notification}>
-          <Image style={basestyles.icon_notification} source={require('../images/ic_check_circle.png')} />
-          <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetSuccessText}</Text>
-        </View>
+        // <View style={basestyles.success_notification}>
+        //   <Image style={basestyles.icon_notification} source={require('../images/ic_check_circle.png')} />
+        //   <Text numberOfLines={5} style={basestyles.notification_text}>{this.state.resetSuccessText}</Text>
+        // </View>
+
+        <Notification
+          notificationText={this.state.resetSuccessText}
+          onDismissNotification={this.closeNotification}
+          type={'success'}
+        />
       );
     } else {
       return null;
     }
   }
 }
+
+const localstyles = StyleSheet.create({
+
+  logo_image_header: {
+    marginTop: 5,
+    width: 303/2.5,
+    height: 92/2.5,
+  },
+
+  title_text: {
+    color: 'rgba(255, 255, 255, 1)',
+    fontWeight: '100',
+    fontFamily: 'Avenir',
+    fontSize: 24,
+    marginTop: 60,
+    paddingLeft: 20,
+  },
+
+  description_text: {
+    color: 'rgba(255, 255, 255, 1)',
+    fontWeight: '100',
+    fontFamily: 'Avenir',
+    fontSize: 16,
+    textAlign: 'justify',
+    marginTop: 20,
+    marginBottom: 40,
+    paddingRight: 20,
+    paddingLeft: 20,
+  },
+
+  login_button_text: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: '200',
+    fontFamily: 'Avenir',
+  },
+
+  login_button_text_disabled: {
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: '200',
+    fontFamily: 'Avenir',
+  },
+
+  login_button: {
+    height: 50,
+    // width: '100%',
+    // flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(55, 115, 55, 1)',
+    borderColor: 'rgba(55, 115, 55, 1)',
+    borderRadius: 3,
+    borderWidth: 1,
+  },
+
+  login_button_disabled: {
+    height: 50,
+    // width: '100%',
+    // flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(55, 115, 55, 0.5)',
+    borderColor: 'rgba(55, 115, 55, 0.5)',
+    borderRadius: 3,
+    borderWidth: 1,
+  },
+});
 
 AppRegistry.registerComponent('resetPassword', () => resetPassword);

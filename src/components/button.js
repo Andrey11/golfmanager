@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableHighlight
+  TouchableHighlight,
+  ActivityIndicator,
 } from 'react-native';
 
 export default class button extends Component {
@@ -19,7 +20,14 @@ export default class button extends Component {
           onPress={this.props.onpress}
           style={this.props.button_styles}>
           <View style={localstyles.text_wrapper}>
-              <Text style={this.props.button_text_styles}>{this.props.text}</Text>
+            <Text style={this.props.button_text_styles}>
+              {this.props.text}
+            </Text>
+            <ActivityIndicator
+              style={{position: 'absolute'}}
+              size='small'
+              color={'rgba(0, 0, 0, 1)'}
+              animating={this.props.connecting} />
           </View>
         </TouchableHighlight>
       </View>
@@ -29,7 +37,6 @@ export default class button extends Component {
 
 const localstyles = StyleSheet.create({
   button_wrapper: {
-    // width: '100%'
     flex: 1,
   },
 

@@ -1,3 +1,5 @@
+'use strict';
+
 import * as FirebaseKeys from './config/firebaseKeys';
 import * as Firebase from 'firebase';
 import React, { Component } from 'react';
@@ -6,7 +8,7 @@ import {
   AppRegistry,
   StyleSheet,
   View,
-  Image
+  Image,
 } from 'react-native';
 
 // Scenes
@@ -45,7 +47,7 @@ class golfmanager extends React.Component {
       firebase: firebase
     };
 
-    return ( <Navigator screenProps={props} {...this.props} /> );
+    return ( <Navigator screenProps={props} /> );
   }
 }
 

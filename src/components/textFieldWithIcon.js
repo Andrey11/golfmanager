@@ -5,13 +5,22 @@ import {
   StyleSheet,
   View,
   Image,
-  TextInput
+  TextInput,
+  ActivityIndicator,
 } from 'react-native';
+
+const STATUS_ICON = {
+  ERROR: 'error',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+  NONE: 'none',
+  COMMUNICATING: 'communicating',
+};
 
 export default class textFieldWithIcon extends Component {
 
   setFocus () {
-    this.refs.input_textfield.focus();
+    this.refs.textInputField.focus();
   }
 
   render () {
@@ -22,7 +31,7 @@ export default class textFieldWithIcon extends Component {
             source={this.props.iconTextFieldTypeSource} />
         </View>
         <TextInput
-          ref='input_textfield'
+          ref='textInputField'
           style={localstyles.textinput}
           underlineColorAndroid='rgba(0,0,0,0)'
           keyboardType={this.props.keyboardType}
@@ -38,13 +47,46 @@ export default class textFieldWithIcon extends Component {
           onBlur={this.props.onBlur}
           onSubmitEditing={this.props.onSubmitEditing}
         />
-        <Image style={[localstyles.icon_textfield_state,
-                       {display: this.props.textFieldState ?
-                         'flex' : 'none'}]}
-
-            source={this.props.iconTextFieldStateSource} />
+        { this._getStatusImage() }
       </View>
     );
+  }
+
+  _getStatusImage () {
+
+    switch (this.props.textFieldState) {
+      case STATUS_ICON.ERROR:
+        return (
+          <Image style={[
+            localstyles.icon_textfield_state,
+            localstyles.icon_textfield_state_color_red
+          ]}
+            source={require('../images/ic_error.png')} />
+        );
+      case STATUS_ICON.SUCCESS:
+        return (
+          <Image style={[
+            localstyles.icon_textfield_state,
+            localstyles.icon_textfield_state_color_green
+          ]}
+            source={require('../images/ic_check.png')} />
+        );
+      case STATUS_ICON.WARNING:
+        return (
+          <Image style={[localstyles.icon_textfield_state]}
+            source={require('../images/ic_error.png')} />
+        );
+      case STATUS_ICON.COMMUNICATING:
+        return (
+          <ActivityIndicator
+            style={localstyles.icon_textfield_state}
+            color={'rgba(0, 0, 0, 1)'}
+            animating={true} />
+        );
+
+      default:
+        return null;
+    }
   }
 }
 
@@ -67,7 +109,14 @@ const localstyles = StyleSheet.create({
     width: 30,
     height: 30,
     marginRight: 10,
+  },
+
+  icon_textfield_state_color_red: {
     tintColor: 'rgba(208, 68, 55, 1)',
+  },
+
+  icon_textfield_state_color_green: {
+    tintColor: 'rgba(0, 145, 27, 1)',
   },
 
   image_wrapper: {

@@ -87,10 +87,15 @@ export default class settingsView extends Component {
 
   componentDidMount () {
     // RightButtonMapper.bindButton(this.props.navigator, this.editUserSettings);
-    let fbAuth = this.firebase.auth();
-    fbAuth.onAuthStateChanged(this.onAuthStateChanged);
+    let firebaseAuthentication = this.firebase.auth();
+    this.unsubscribeOnAuthStateChanged =
+      firebaseAuthentication.onAuthStateChanged(this.onAuthStateChanged);
     this.props.navigation.setParams({ updateDatabaseInfo: this.updateDatabaseInfo });
     this.loadUserInfo();
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeOnAuthStateChanged();
   }
 
   onAuthStateChanged (user) {

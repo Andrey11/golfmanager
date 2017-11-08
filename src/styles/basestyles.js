@@ -167,18 +167,16 @@ module.exports = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'absolute',
-    top: 40,
   },
 
   success_notification: {
     width: '100%',
     height: 50,
+    backgroundColor: 'rgba(0, 145, 27, 1)',
+    flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'rgba(0, 145, 27, 0.5)',
-    borderColor: 'rgba(0, 145, 27, 1)',
-    borderRadius: 3,
-    borderWidth: 1,
     alignItems: 'center',
+    position: 'absolute',
   },
 
   icon_notification_wrapper: {
@@ -276,16 +274,23 @@ module.exports = StyleSheet.create({
 
   body: {
     flex: 1,
+    // alignItems: 'center',
+    // overflow: 'scroll',
+  },
+
+  scroll_body: {
+    flex: 1,
+    flexDirection: 'column',
+    height: '100%',
+    overflow: 'scroll',
     alignItems: 'center',
+    // justifyContent: 'center',
+
   },
 
   forgot_password_style: {
     alignItems: 'flex-start',
     width: 344,
-  },
-
-  scroll_body: {
-    flex: 1
   },
 
   picker_android: {

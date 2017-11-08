@@ -10,18 +10,19 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
+  KeyboardAvoidingView,
 } from 'react-native';
-
-// import * as RightButtonMapper from '../navigation/rightButtonMapper';
 
 import Signup from './signup';
 import ResetPassword from './resetPassword';
 import Button from '../components/button';
 import TextFieldWithIcon from '../components/textFieldWithIcon';
-
-import basestyles from '../styles/basestyles.js';
+import Notification from '../components/notification';
+import * as Validator from '../utilities/validator';
 
 import * as NavActionsUtil from '../navigation/navigationActionsUtil';
+
+import basestyles from '../styles/basestyles.js';
 
 export default class login extends Component {
 
@@ -33,6 +34,7 @@ export default class login extends Component {
     super(props);
 
     this.state = {
+      loading: true,
       email: '',
       password: '',
       descriptionText: 'Play, record, create, share.',
@@ -66,12 +68,19 @@ export default class login extends Component {
 
   componentDidMount () {
     let firebaseAuthentication = this.firebase.auth();
-    firebaseAuthentication.onAuthStateChanged(this.onAuthStateChanged);
+    this.unsubscribeOnAuthStateChanged =
+      firebaseAuthentication.onAuthStateChanged(this.onAuthStateChanged);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeOnAuthStateChanged();
   }
 
   onAuthStateChanged (user) {
     if (user !== null) {
       this.props.navigation.dispatch(NavActionsUtil.authenticated);
+    } else {
+      this.setState({loading: false});
     }
   }
 
@@ -150,7 +159,7 @@ export default class login extends Component {
         errorEmptyEmail: true,
         emailErrorState: true,
       });
-    } else if (!this._validateEmail()) {
+    } else if (!Validator.validateEmail(this.state.email)) {
       this.setState({
         errorEmailInvalid: true,
         emailErrorState: true,
@@ -160,95 +169,122 @@ export default class login extends Component {
     }
   }
 
-  _validateEmail () {
-    var email = this.state.email;
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  }
-
   render () {
-    return (
-      <View style={[basestyles.body, basestyles.main_background_color]}>
 
-        {this._renderMessage()}
-
-        <Image style={localstyles.logo_image}
-          source={require('../images/app-logo.png')} />
-
-        <Text style={localstyles.description_text}>{this.state.descriptionText}</Text>
-
-        <View style={localstyles.input_field_wrapper}>
-
-          <TextFieldWithIcon
-            iconTextFieldTypeSource={require('../images/ic_email.png')}
-            iconTextFieldStateSource={require('../images/ic_error.png')}
-            textFieldState={this.state.emailErrorState}
-            textValue={this.state.email}
-            autoFocus={false}
-            onChangeText={(text) => this.setState({
-              email: text,
-              errorEmailInvalid: false,
-              errorUserNotFound: false,
-              errorEmptyEmail: false,
-              emailErrorState: false,
-            })}
-            placeholderText={'Email address'}
-            keyboardType='email-address'
-            returnKeyType='next'
-            onBlur={this.onSubmitEmail}
-            onSubmitEditing={this.onSubmitEmail} />
-
-          <TextFieldWithIcon
-            style={[{marginTop: 20}]}
-            ref='passwordTextField'
-            iconTextFieldTypeSource={require('../images/ic_key.png')}
-            iconTextFieldStateSource={require('../images/ic_error.png')}
-            textFieldState={this.state.passwordErrorState}
-            textValue={this.state.password}
-            autoFocus={false}
-            onChangeText={(text) => this.setState({
-              password: text,
-              errorWrongPassword: false,
-              errorEmptyPassword: false,
-              passwordErrorState: false,
-            })}
-            placeholderText={'Password'}
-            secureTextEntry={true}
-            returnKeyType='go'
-            onSubmitEditing={(event) => this.login()} />
-
+    if (this.state.loading) {
+      return (
+        <View style={[
+          basestyles.body,
+          basestyles.main_background_color,
+          {justifyContent: 'center'}
+        ]}>
           <ActivityIndicator
-            style={basestyles.connecting_indicator}
-            color={'rgba(0, 0, 0, 0.9)'}
-            animating={this.state.connecting} />
-
-          <Button
-            text='Login'
-            disabled={this.state.connecting}
-            style={[{marginTop: 20}]}
-            onpress={this.login}
-            button_styles={this.state.connecting ?
-              localstyles.login_button_disabled :
-              localstyles.login_button}
-            button_text_styles={this.state.connecting ?
-              localstyles.login_button_text_disabled :
-              localstyles.login_button_text} />
-
-          <View style={localstyles.secondary_action_wrapper}>
-            <Button
-              text='Forgot password?'
-              onpress={this.goToResetPassword}
-              button_styles={localstyles.text_button}
-              button_text_styles={localstyles.text_button_text} />
-            <Button
-              text='Create an account'
-              onpress={this.goToSignup}
-              button_styles={localstyles.text_button}
-              button_text_styles={localstyles.text_button_text} />
-          </View>
-
+            size='large'
+            color={'rgba(0, 0, 0, 1)'}
+            animating={this.state.loading} />
         </View>
+      );
+    }
 
+    return (
+
+
+        <View
+          style={[basestyles.body, basestyles.main_background_color]}
+          // behavior='position'
+          // behavior='height'
+          // behavior='padding'
+        >
+          <KeyboardAvoidingView
+            style={basestyles.scroll_body}
+            // behavior='position'
+            // behavior='height'
+            behavior='padding'
+          >
+
+            <Image style={localstyles.logo_image}
+              source={require('../images/app-logo.png')} />
+
+            <Text style={localstyles.description_text}>{this.state.descriptionText}</Text>
+
+            <View style={localstyles.input_field_wrapper}>
+
+              <TextFieldWithIcon
+                iconTextFieldTypeSource={require('../images/ic_email.png')}
+                iconTextFieldStateSource={require('../images/ic_error.png')}
+                textFieldState={this.state.emailErrorState ? 'error' : 'none'}
+                textValue={this.state.email}
+                autoFocus={false}
+                onChangeText={(text) => this.setState({
+                  email: text,
+                  errorEmailInvalid: false,
+                  errorUserNotFound: false,
+                  errorEmptyEmail: false,
+                  emailErrorState: false,
+                })}
+                placeholderText={'Email address'}
+                keyboardType='email-address'
+                returnKeyType='next'
+                onBlur={this.onSubmitEmail}
+                onSubmitEditing={this.onSubmitEmail} />
+
+              <TextFieldWithIcon
+                style={[{marginTop: 20}]}
+                ref='passwordTextField'
+                iconTextFieldTypeSource={require('../images/ic_key.png')}
+                iconTextFieldStateSource={require('../images/ic_error.png')}
+                textFieldState={this.state.passwordErrorState}
+                textValue={this.state.password}
+                autoFocus={false}
+                onChangeText={(text) => this.setState({
+                  password: text,
+                  errorWrongPassword: false,
+                  errorEmptyPassword: false,
+                  passwordErrorState: false,
+                })}
+                placeholderText={'Password'}
+                secureTextEntry={true}
+                returnKeyType='go'
+                onSubmitEditing={(event) => this.login()} />
+
+              {/* <ActivityIndicator
+                style={basestyles.connecting_indicator}
+                color={'rgba(0, 0, 0, 0.9)'}
+              animating={this.state.connecting} /> */}
+
+              <Button
+                text='Login'
+                disabled={this.state.connecting}
+                connecting={this.state.connecting}
+                style={[{marginTop: 20}]}
+                onpress={this.login}
+                button_styles={this.state.connecting ?
+                localstyles.login_button_disabled :
+                localstyles.login_button}
+                button_text_styles={this.state.connecting ?
+                localstyles.login_button_text_disabled :
+                localstyles.login_button_text} />
+
+              <View style={localstyles.secondary_action_wrapper}>
+                <Button
+                  text='Forgot password?'
+                  connecting={false}
+                  onpress={this.goToResetPassword}
+                  button_styles={localstyles.text_button}
+                  button_text_styles={localstyles.text_button_text} />
+                <Button
+                  text='Create an account'
+                  connecting={false}
+                  onpress={this.goToSignup}
+                  button_styles={localstyles.text_button}
+                  button_text_styles={localstyles.text_button_text} />
+              </View>
+
+            </View>
+
+            {this._renderMessage()}
+
+      </KeyboardAvoidingView>
       </View>
     );
   }
@@ -273,41 +309,20 @@ export default class login extends Component {
     }
 
     return (
-      <View style={basestyles.error_notification}>
-
-        <Text numberOfLines={5} style={basestyles.notification_text}>
-          {errorText}
-        </Text>
-
-        <TouchableOpacity
-          style={localstyles.icon_close_position}
-          onPress={this.closeNotification}>
-          <Image
-            source={require('../images/ic_highlight_off.png')}
-            style={[localstyles.icon_close]} />
-        </TouchableOpacity>
-
-      </View>
+      <Notification
+        style={{top: 40}}
+        notificationText={errorText}
+        type={'error'}
+        onDismissNotification={this.closeNotification}
+      />
     );
   }
 }
 
 const localstyles = StyleSheet.create({
-  icon_close: {
-    width: 24,
-    height: 24,
-    // tintColor: 'rgba(200, 200, 200, 0.8)',
-    tintColor: 'rgba(0, 0, 0, 0.4)',
-  },
-
-  icon_close_position: {
-    // position: 'absolute',
-    // alignItems: 'flex-end',
-    right: 10,
-  },
 
   logo_image: {
-    marginTop: 120,
+    marginTop: 60,
     width: 303,
     height: 92,
   },
@@ -319,8 +334,8 @@ const localstyles = StyleSheet.create({
     fontSize: 18,
     marginTop: 10,
     marginBottom: 20,
-    paddingRight: 40,
-    paddingLeft: 40,
+    paddingRight: 20,
+    paddingLeft: 20,
   },
 
   input_field_wrapper: {
@@ -332,9 +347,10 @@ const localstyles = StyleSheet.create({
 
   secondary_action_wrapper: {
     flexDirection: 'row',
-    paddingTop: 80,
-    // flex: 1,
-    // marginTop: 80,
+
+    // paddingTop: 80,
+    flex: 1,
+    marginTop: 20,
   },
 
   login_button_text: {

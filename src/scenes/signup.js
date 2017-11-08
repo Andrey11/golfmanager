@@ -2,18 +2,44 @@
 import React, { Component } from 'react';
 import {
   AppRegistry,
+  StyleSheet,
   ActivityIndicator,
   Text,
   TextInput,
   View,
+  KeyboardAvoidingView,
   Image
 } from 'react-native';
 
 import Button from '../components/button';
+import IconButton from '../components/iconButton';
+import TextFieldWithIcon from '../components/textFieldWithIcon';
+import Notification from '../components/notification';
 
-import styles from '../styles/basestyles.js';
+import * as Validator from '../utilities/validator';
+
+import * as NavActionsUtil from '../navigation/navigationActionsUtil';
+
+import basestyles from '../styles/basestyles.js';
 
 export default class signup extends Component {
+
+  static navigationOptions = ({ navigation }) => ({
+      headerTitle:
+        <Image style={localstyles.logo_image_header}
+          source={require('../images/app-logo.png')} />,
+      headerStyle: basestyles.header,
+      headerTitleStyle: basestyles.header_title,
+      headerLeft:
+        <IconButton
+          iconSource={require('../images/ic_arrow_back.png')}
+          touchableHighlightStyle={basestyles.header_left_button}
+          underlayColor={'rgba(255, 255, 255, 0)'}
+          imageStyle={[basestyles.nav_icon, basestyles.header_icon_button]}
+          onButtonPressed={() => navigation.goBack()}>
+        </IconButton>,
+      headerRight: null
+  });
 
 	constructor (props) {
     super(props);
@@ -23,6 +49,9 @@ export default class signup extends Component {
       email: '',
       password: '',
       connecting: false,
+      usernameTextFieldState: 'none',
+      emailErrorState: 'none',
+      passwordErrorState: 'none',
       serverCommunicating: false,
       creatingAccount: false,
       usernameVerfied: false,
@@ -33,59 +62,70 @@ export default class signup extends Component {
       errorUsernameIsTaken: false,
       errorUsernameIsRequired: false,
       errorUsernameIsTakenText: 'This username is already taken',
-      errorUsernameIsRequiredText: 'To create an account you need a unique username',
+      errorUsernameIsRequiredText: 'To create an account a unique username is required',
       errorEmailInvalidText: 'Email address you provided is invalid',
       errorUserAlreadyInUseText: 'Email address you provided is already in use',
-      errorOperationNotAllowedText: 'Unable create an account. Please contact golfmanager team.',
-      errorPasswordWeakText: 'Password you provided is too short'
+      errorOperationNotAllowedText: 'Unable create an account.\n' +
+      'Please contact golfmanager team.',
+      errorPasswordWeakText: 'Password you provided is too short',
+      createAccount: 'Create account',
+      createAccountInfoText: 'Join Golf Life community and keep track of all ' +
+      'your golf achievements in one place. Play with your friends. ' +
+      'Earn rewards. And most importantly, have fun!',
     };
 
     this.signup = this.signup.bind(this);
     this.addUserToGolfmanagerDatabase = this.addUserToGolfmanagerDatabase.bind(this);
     this.verifyUsernameAvailable = this.verifyUsernameAvailable.bind(this);
-    this.goToLogin = this.goToLogin.bind(this);
-    this._renderMessage = this._renderMessage.bind(this);
+    this._renderNotification = this._renderNotification.bind(this);
+
+    this.firebase = this.props.screenProps.firebase;
 	}
 
   componentDidMount () {
 
   }
 
-  goToLogin () {
-    this.props.navigation.navigate('Login');
-  }
-
   verifyUsernameAvailable () {
-    let firebaseApp = this.props.screenProps.firebase;
+    let firebaseApp = this.firebase;
     let username = this.state.username.toLowerCase();
 
     this.setState({
-      serverCommunicating: true});
+      serverCommunicating: true,
+      usernameTextFieldState: 'communicating',
+    });
 
     if (username.length === 0) {
       this.setState({
         errorUsernameIsTaken: false,
-        usernameVerfied: false,
+        usernameVerfied: true,
         serverCommunicating: false,
-        errorUsernameIsRequired: true
+        errorUsernameIsRequired: true,
+        usernameTextFieldState: 'error',
       });
     } else {
+
+
       let usernamesRef = firebaseApp.database().ref('usernames');
       usernamesRef.orderByValue().equalTo(username).once('value')
       .then((snapshot) => {
         this.setState({
           errorUsernameIsTaken: snapshot.exists(),
-          usernameVerfied: !snapshot.exists(),
+          usernameVerfied: true,
           errorUsernameIsRequired: false,
-          serverCommunicating: false
+          serverCommunicating: false,
+          usernameTextFieldState: snapshot.exists() ? 'error' : 'success',
         });
+
+        if (!snapshot.exists()) {
+          this.refs.emailTextField.setFocus();
+        }
       });
     }
   }
 
   signup () {
-    let firebaseApp = this.props.screenProps.firebase;
-    let fbAuth = firebaseApp.auth();
+    let firebaseAuthentication = this.firebase.auth();
 
     if (this.state.creatingAccount || this.state.serverCommunicating) {
       return;
@@ -101,25 +141,33 @@ export default class signup extends Component {
     // TODO: Should we display a small modal dialog saying
     // "Creating Account"
 
-    fbAuth.createUserWithEmailAndPassword(this.state.email, this.state.password)
+    let email = this.state.email.trim();
+    let password = this.state.password.trim();
+
+    firebaseAuthentication.createUserWithEmailAndPassword(email, password)
     .then((user) => this.setUserDisplayName(user))
     .catch((error) => this.onSignupError(error));
   }
 
   onSignupError (error) {
-    var isErrorEmailInvalid = false;
-    var isErrorUserAlreadyInUse = false;
-    var isErrorOperationNotAllowed = false;
-    var isErrorPasswordWeak = false;
+    let isErrorEmailInvalid = false;
+    let isErrorUserAlreadyInUse = false;
+    let isErrorOperationNotAllowed = false;
+    let isErrorPasswordWeak = false;
+    let emailErrorState = 'none';
+    let passwordErrorState = 'none';
 
     if (error && error.code == 'auth/invalid-email') {
       isErrorEmailInvalid = true;
+      emailErrorState = 'error';
     } else if (error && error.code == 'auth/email-already-in-use') {
       isErrorUserAlreadyInUse = true;
+      emailErrorState = 'error';
     } else if (error && error.code == 'auth/operation-not-allowed') {
       isErrorOperationNotAllowed = true;
     } else if (error && error.code == 'auth/weak-password') {
       isErrorPasswordWeak = true;
+      passwordErrorState = 'error';
     }
 
     this.setState({
@@ -127,6 +175,8 @@ export default class signup extends Component {
       errorUserAlreadyInUse: isErrorUserAlreadyInUse,
       errorOperationNotAllowed: isErrorOperationNotAllowed,
       errorPasswordWeak: isErrorPasswordWeak,
+      emailErrorState: emailErrorState,
+      passwordErrorState: passwordErrorState,
       creatingAccount: false,
       connecting: false,
     });
@@ -138,7 +188,7 @@ export default class signup extends Component {
   }
 
   addUserToGolfmanagerDatabase () {
-    let firebase = this.props.screenProps.firebase;
+    let firebase = this.firebase;
     let user = firebase.auth().currentUser;
     let updates = {};
     let currentDate = new Date().getTime() / 1000;
@@ -165,22 +215,31 @@ export default class signup extends Component {
     return firebase.database().ref().update(updates);
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    if(this.state.usernameVerfied && this.state.usernameVerfied !== prevState.usernameVerfied) {
-      this.refs.emailTextField.focus();
-    } else if (this.state.errorUsernameIsTaken && this.state.errorUsernameIsTaken !== prevState.errorUsernameIsTaken) {
-      this.refs.usernameTextField.focus();
-    }
+  closeNotification () {
+    this.setState({
+      emailErrorState: 'none',
+      passwordErrorState: 'none',
+      errorEmailInvalid: false,
+      errorEmptyEmail: false,
+      errorUserDisabled: false,
+      errorUserNotFound: false,
+      errorWrongPassword: false,
+      errorEmptyPassword: false,
+    });
   }
 
   render () {
     return (
-      <View style={styles.body}>
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_account_box.png')} />
+      <KeyboardAvoidingView
+        style={[basestyles.body, basestyles.main_background_color,]}
+        behavior='position'
+      >
+
+        {/* <View style={basestyles.text_field_with_icon}>
+          <Image style={basestyles.icon_button} source={require('../images/ic_account_box.png')} />
           <TextInput
             ref="usernameTextField"
-            style={styles.textinput_with_two_icons}
+            style={basestyles.textinput_with_two_icons}
             underlineColorAndroid='rgba(0,0,0,0)'
             placeholder={"Username"}
             autoCorrect={false}
@@ -188,21 +247,116 @@ export default class signup extends Component {
             value={this.state.username}
             onBlur={this.verifyUsernameAvailable}
             onChangeText={(text) => this.setState({
-              username: text,
-              errorUsernameIsTaken: false,
-              errorUsernameIsRequired: false
+          username: text,
+          errorUsernameIsTaken: false,
+          errorUsernameIsRequired: false
             })}
             onSubmitEditing={(event) => {
-              this.refs.emailTextField.focus();
+          this.refs.emailTextField.focus();
             }}
           />
           {this._renderStatusNotification()}
+        </View> */}
+
+        <View style={basestyles.side_padding}>
+
+          <Text style={localstyles.title_text}>
+            {this.state.createAccount}
+          </Text>
+
+          <Text style={localstyles.description_text}>
+            {this.state.createAccountInfoText}
+          </Text>
+
+          <TextFieldWithIcon
+            ref='usernameTextField'
+            iconTextFieldTypeSource={require('../images/ic_account_box.png')}
+            textFieldState={this.state.usernameTextFieldState}
+            textValue={this.state.username}
+            autoFocus={false}
+            onChangeText={(text) => this.setState({
+                username: text,
+                usernameVerfied: false,
+                errorUsernameIsTaken: false,
+                errorUsernameIsRequired: false,
+            })}
+            placeholderText={'Username'}
+            keyboardType='default'
+            returnKeyType='next'
+            onBlur={this.verifyUsernameAvailable}
+            onSubmitEditing={this.verifyUsernameAvailable} />
+
+          <TextFieldWithIcon
+            ref='emailTextField'
+            style={[{marginTop: 20}]}
+            iconTextFieldTypeSource={require('../images/ic_email.png')}
+            iconTextFieldStateSource={require('../images/ic_error.png')}
+            textFieldState={this.state.emailErrorState}
+            textValue={this.state.email}
+            autoFocus={false}
+            onChangeText={(text) => this.setState({
+              email: text,
+              errorEmailInvalid: false,
+              errorUserAlreadyInUse: false,
+              errorOperationNotAllowed: false,
+              emailErrorState: 'none',
+            })}
+            placeholderText={'Email address'}
+            keyboardType='email-address'
+            returnKeyType='next'
+            // onBlur={this.onSubmitEmail}
+            onSubmitEditing={() => {
+              if (!Validator.validateEmail(this.state.email)) {
+                this.setState({
+                  errorEmailInvalid: true,
+                  errorUserAlreadyInUse: false,
+                  errorOperationNotAllowed: false,
+                  emailErrorState: 'error',
+                })
+              } else {
+                this.refs.passwordTextField.setFocus();
+              }
+            }} />
+
+          <TextFieldWithIcon
+            ref='passwordTextField'
+            style={[{marginTop: 20}]}
+            iconTextFieldTypeSource={require('../images/ic_key.png')}
+            iconTextFieldStateSource={require('../images/ic_error.png')}
+            textFieldState={this.state.passwordErrorState}
+            textValue={this.state.password}
+            autoFocus={false}
+            onChangeText={(text) => this.setState({
+                password: text,
+                errorWrongPassword: false,
+                errorEmptyPassword: false,
+                passwordErrorState: false,
+            })}
+            placeholderText={'Password'}
+            secureTextEntry={true}
+            returnKeyType='go'
+            onSubmitEditing={(event) => this.signup()} />
+
+          <Button
+            text='Create account'
+            style={[{marginTop: 20}]}
+            disabled={this.state.connecting}
+            connecting={this.state.connecting}
+            onpress={this.signup}
+            button_styles={this.state.connecting ?
+            localstyles.login_button_disabled :
+            localstyles.login_button}
+            button_text_styles={this.state.connecting ?
+            localstyles.login_button_text_disabled :
+            localstyles.login_button_text} />
+
         </View>
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_email.png')} />
+
+        {/* <View style={basestyles.text_field_with_icon}>
+          <Image style={basestyles.icon_button} source={require('../images/ic_email.png')} />
   		    <TextInput
             ref="emailTextField"
-            style={styles.textinput}
+            style={basestyles.textinput}
             keyboardType="email-address"
             placeholder={"Email Address"}
             autoCapitalize="none"
@@ -210,65 +364,58 @@ export default class signup extends Component {
             value={this.state.email}
             blurOnSubmit={false}
             onChangeText={(text) => this.setState({
-              email: text,
-              errorEmailInvalid: false,
-              errorUserAlreadyInUse: false,
-              errorOperationNotAllowed: false
+          email: text,
+          errorEmailInvalid: false,
+          errorUserAlreadyInUse: false,
+          errorOperationNotAllowed: false
             })}
             onSubmitEditing={(event) => {
-              this.refs.passwordTextField.focus();
+          this.refs.passwordTextField.focus();
             }}
           />
-        </View>
-        <View style={styles.text_field_with_icon}>
-          <Image style={styles.icon_button} source={require('../images/ic_key.png')} />
+        </View>*/}
+
+
+
+        {/* <View style={basestyles.text_field_with_icon}>
+          <Image style={basestyles.icon_button} source={require('../images/ic_key.png')} />
           <TextInput
             ref="passwordTextField"
-            style={styles.textinput}
+            style={basestyles.textinput}
             onChangeText={(text) => this.setState({
-              password: text,
-              errorPasswordWeak: false,
+          password: text,
+          errorPasswordWeak: false,
             })}
             value={this.state.password}
             secureTextEntry={true}
             blurOnSubmit={true}
             placeholder={"Password"}
             onSubmitEditing={(event) => {
-              this.signup();
+          this.signup();
             }}
           />
-        </View>
+        </View> */}
 
-        {this._renderMessage()}
+        {this._renderNotification()}
 
-        <ActivityIndicator
-          style={styles.connecting_indicator}
-          color={'rgba(0, 0, 0, 0.9)'}
-          animating={this.state.connecting} />
-
-        <Button
-          text="Got an Account?"
-          onpress={this.goToLogin}
-          button_styles={styles.semi_transparent_button}
-          button_text_styles={styles.semi_transparent_button_text} />
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 
   _renderStatusNotification () {
     if (this.state.serverCommunicating) {
-      return (<ActivityIndicator style={styles.activity_indicator} animating={true} size="small"/>);
+      return (<ActivityIndicator style={basestyles.activity_indicator} animating={true} size="small"/>);
     }
     return (<Image style={this._getStyleForUsernameField()} source={this._getStatusImageForUsernameField()} />);
   }
 
   _getStyleForUsernameField () {
     if (this.state.usernameVerfied) {
-      return styles.icon_button_green;
+      return basestyles.icon_button_green;
     } else if (this.state.errorUsernameIsTaken || this.state.errorUsernameIsRequired) {
-      return styles.icon_button_red;
+      return basestyles.icon_button_red;
     } else {
-      return styles.icon_hidden;
+      return basestyles.icon_hidden;
     }
   }
 
@@ -280,7 +427,7 @@ export default class signup extends Component {
     }
   }
 
-  _renderMessage () {
+  _renderNotification () {
     var errorText = null;
     if (this.state.errorUsernameIsRequired) {
       errorText = this.state.errorUsernameIsRequiredText;
@@ -299,12 +446,81 @@ export default class signup extends Component {
     }
 
     return (
-      <View style={styles.error_notification}>
-        <Image style={styles.icon_notification} source={require('../images/ic_error.png')} />
-        <Text numberOfLines={5} style={styles.notification_text}>{errorText}</Text>
-      </View>
+      <Notification
+        notificationText={errorText}
+        type={'error'}
+        onDismissNotification={this.closeNotification}
+      />
     );
   }
 }
+
+const localstyles = StyleSheet.create({
+
+  logo_image_header: {
+    marginTop: 5,
+    width: 303/2.5,
+    height: 92/2.5,
+  },
+
+  title_text: {
+    color: 'rgba(255, 255, 255, 1)',
+    fontWeight: '100',
+    fontFamily: 'Avenir',
+    fontSize: 24,
+    marginTop: 60,
+    paddingLeft: 20,
+  },
+
+  description_text: {
+    color: 'rgba(255, 255, 255, 1)',
+    fontWeight: '100',
+    fontFamily: 'Avenir',
+    fontSize: 16,
+    textAlign: 'justify',
+    marginTop: 20,
+    marginBottom: 20,
+    paddingRight: 20,
+    paddingLeft: 20,
+  },
+
+  login_button_text: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: '200',
+    fontFamily: 'Avenir',
+  },
+
+  login_button_text_disabled: {
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: '200',
+    fontFamily: 'Avenir',
+  },
+
+  login_button: {
+    height: 50,
+    // width: '100%',
+    // flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(55, 115, 55, 1)',
+    borderColor: 'rgba(55, 115, 55, 1)',
+    borderRadius: 3,
+    borderWidth: 1,
+  },
+
+  login_button_disabled: {
+    height: 50,
+    // width: '100%',
+    // flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'rgba(55, 115, 55, 0.5)',
+    borderColor: 'rgba(55, 115, 55, 0.5)',
+    borderRadius: 3,
+    borderWidth: 1,
+  },
+});
 
 AppRegistry.registerComponent('signup', () => signup);
