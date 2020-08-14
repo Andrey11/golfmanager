@@ -254,7 +254,7 @@ export default class settingsView extends Component {
 */
     return (
       <View style={[basestyles.body,
-                    basestyles.main_background_color]}>
+      basestyles.main_background_color]}>
 
         <Image
           style={basestyles.icon_button_large}

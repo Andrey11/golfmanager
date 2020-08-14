@@ -12,6 +12,7 @@ import {
   TouchableHighlight,
   Modal
 } from 'react-native';
+
 import { CourseTypes, TeeBoxTypes } from '../utilities/const';
 import Button from '../components/button';
 import IconButton from '../components/iconButton';
@@ -142,7 +143,8 @@ export default class course extends Component {
 
         <TeeBoxParScore onRequestClose={this.onModalClosed} />
 
-        <ScrollView style={styles.scroll_body}>
+        {/* <ScrollView style={styles.scroll_body}> */}
+        <ScrollView>
           <View style={styles.text_field_with_icon}>
             <Image style={styles.icon_button} source={require('../images/ic_golf_course.png')} />
             <TextInput

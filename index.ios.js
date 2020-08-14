@@ -15,6 +15,7 @@ import {
 import AuthControl from './src/scenes/authControl';
 import Login from './src/scenes/login';
 import CentralHub from './src/scenes/centralHub';
+import AddCourse from './src/scenes/course';
 import SettingsView from './src/scenes/settingsView';
 import ResetPassword from './src/scenes/resetPassword';
 import Signup from './src/scenes/signup';
@@ -35,6 +36,7 @@ class golfmanager extends React.Component {
       Signup: { screen: Signup },
       CentralHub: { screen: CentralHub },
       SettingsView: { screen: SettingsView },
+      AddCourse: { screen: AddCourse },
     } , {
       initialRouteName: 'Login',
     });

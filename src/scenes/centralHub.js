@@ -107,15 +107,9 @@ export default class centralHub extends Component {
   }
 
   addCourse () {
-    this.props.navigator.push({
-      component: CourseList,
-      passProps: {
-        navHeaderTitle: 'Courses',
-        leftButton: true,
-        rightButton: true,
-        rightButtonName: 'ADD COURSE',
-      }
-    });
+    let nav = this.props.navigation;
+
+    nav.navigate('AddCourse');
   }
 
   addFriend () {
